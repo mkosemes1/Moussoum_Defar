@@ -4,7 +4,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Language(models.Model):
-    """Langues africaines supportées par la plateforme."""
+    """African languages supported by the platform."""
     code = models.CharField(max_length=10, unique=True)
     name = models.CharField(max_length=100)
     region = models.CharField(max_length=100, blank=True)
@@ -19,7 +19,7 @@ class Language(models.Model):
 
 
 class Country(models.Model):
-    """Pays africains."""
+    """African countries."""
     code = models.CharField(max_length=2, unique=True)
     name = models.CharField(max_length=100)
     currency = models.CharField(max_length=10, default='FCFA')
@@ -37,7 +37,7 @@ class Country(models.Model):
 
 
 class Worker(models.Model):
-    """Profil du travailleur africain."""
+    """African worker profile."""
     LEVEL_CHOICES = [
         (1, 'Data Worker'),
         (2, 'Verified Annotator'),
@@ -67,7 +67,7 @@ class Worker(models.Model):
         return f"{self.user.get_full_name() or self.user.username} - Level {self.level}"
 
     def calculate_quality_score(self):
-        """Calcule le score qualité basé sur l'accuracy et le volume."""
+        """Calculate quality score based on accuracy and volume."""
         accuracy_score = self.accuracy * 40
         volume_score = min(self.total_tasks / 1000, 1.0) * 30
         consistency_score = self._calculate_consistency() * 30
@@ -76,7 +76,7 @@ class Worker(models.Model):
         return self.quality_score
 
     def _calculate_consistency(self):
-        """Mesure la constance de la qualité dans le temps."""
+        """Measure quality consistency over time."""
         recent_logs = QualityLog.objects.filter(
             worker=self
         ).order_by('-created_at')[:50]
@@ -96,7 +96,7 @@ class Worker(models.Model):
 
 
 class WorkerLevel(models.Model):
-    """Niveaux et exigences de progression."""
+    """Level and progression requirements."""
     LEVEL_CHOICES = [
         (1, 'Data Worker'),
         (2, 'Verified Annotator'),
@@ -116,7 +116,7 @@ class WorkerLevel(models.Model):
         return f"{self.worker} - Level {self.level}"
 
     def can_advance(self):
-        """Vérifie si le worker peut passer au niveau supérieur."""
+        """Check if the worker can advance to the next level."""
         return (
             self.worker.total_tasks >= self.tasks_required and
             self.worker.accuracy >= self.accuracy_required
@@ -124,12 +124,12 @@ class WorkerLevel(models.Model):
 
 
 class DataCollection(models.Model):
-    """Projet de collecte de données."""
+    """Data collection project."""
     DATA_TYPE_CHOICES = [
         ('audio', 'Audio'),
-        ('text', 'Texte'),
+        ('text', 'Text'),
         ('image', 'Image'),
-        ('video', 'Vidéo'),
+        ('video', 'Video'),
         ('document', 'Document'),
     ]
 
@@ -173,12 +173,12 @@ class DataCollection(models.Model):
 
 
 class DataSubmission(models.Model):
-    """Soumission de données par un worker."""
+    """Worker data submission."""
     STATUS_CHOICES = [
-        ('pending', 'En attente'),
-        ('approved', 'Approuvé'),
-        ('rejected', 'Rejeté'),
-        ('review', 'En révision'),
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+        ('review', 'Under Review'),
     ]
 
     worker = models.ForeignKey(Worker, on_delete=models.CASCADE, related_name='submissions')
@@ -199,7 +199,7 @@ class DataSubmission(models.Model):
         return f"{self.worker} - {self.collection.title} - {self.status}"
 
     def approve(self, score=1.0):
-        """Approuve la soumission."""
+        """Approve the submission."""
         self.status = 'approved'
         self.quality_score = score
         self.save()
@@ -214,14 +214,14 @@ class DataSubmission(models.Model):
         QualityLog.objects.create(worker=self.worker, submission=self, score=score)
 
     def reject(self, reason=''):
-        """Rejette la soumission."""
+        """Reject the submission."""
         self.status = 'rejected'
         self.reviewer_notes = reason
         self.save()
 
 
 class QualityLog(models.Model):
-    """Historique de qualité des soumissions."""
+    """Submission quality history."""
     worker = models.ForeignKey(Worker, on_delete=models.CASCADE, related_name='quality_logs')
     submission = models.ForeignKey(DataSubmission, on_delete=models.CASCADE)
     score = models.FloatField()

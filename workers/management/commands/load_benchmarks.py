@@ -4,10 +4,10 @@ from evaluation.benchmarks import ALL_BENCHMARKS
 
 
 class Command(BaseCommand):
-    help = 'Charge les benchmarks africains dans la base de données'
+    help = 'Load African benchmarks into the database'
 
     def handle(self, *args, **options):
-        self.stdout.write('Chargement des benchmarks africains...')
+        self.stdout.write('Loading African benchmarks...')
 
         for benchmark_data in ALL_BENCHMARKS:
             benchmark, created = AfricanBenchmark.objects.get_or_create(
@@ -25,11 +25,11 @@ class Command(BaseCommand):
 
             if created:
                 self.stdout.write(
-                    self.style.SUCCESS(f'Benchmark créé : {benchmark.name}')
+                    self.style.SUCCESS(f'Benchmark created: {benchmark.name}')
                 )
             else:
                 self.stdout.write(
-                    self.style.WARNING(f'Benchmark existant : {benchmark.name}')
+                    self.style.WARNING(f'Benchmark already exists: {benchmark.name}')
                 )
 
             # Create test cases
@@ -49,12 +49,12 @@ class Command(BaseCommand):
 
                 if created:
                     self.stdout.write(
-                        self.style.SUCCESS(f'  Test créé : {test_case.input_text[:50]}...')
+                        self.style.SUCCESS(f'  Test created: {test_case.input_text[:50]}...')
                     )
 
             # Update test count
             benchmark.update_test_count()
 
         self.stdout.write(
-            self.style.SUCCESS('Benchmarks chargés avec succès !')
+            self.style.SUCCESS('Benchmarks loaded successfully!')
         )

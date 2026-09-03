@@ -1,14 +1,14 @@
 """
-Système de scoring pour les workers.
+Worker scoring system.
 """
 from django.db.models import Avg, Count
 from .models import Worker, QualityLog, DataSubmission
 
 
 class WorkerScoringSystem:
-    """Système de scoring avancé pour les workers."""
+    """Advanced scoring system for workers."""
 
-    # Poids pour le calcul du score qualité
+    # Weights for quality score calculation
     WEIGHTS = {
         'accuracy': 0.4,
         'volume': 0.3,
@@ -16,7 +16,7 @@ class WorkerScoringSystem:
         'recency': 0.1,
     }
 
-    # Seuils pour les niveaux
+    # Level thresholds
     LEVEL_THRESHOLDS = {
         1: {'tasks': 0, 'accuracy': 0},
         2: {'tasks': 100, 'accuracy': 80},
@@ -28,20 +28,20 @@ class WorkerScoringSystem:
     @classmethod
     def calculate_quality_score(cls, worker):
         """
-        Calcule le score qualité composite d'un worker.
+        Calculate composite quality score for a worker.
         
         Score = (accuracy * 0.4) + (volume * 0.3) + (consistency * 0.2) + (recency * 0.1)
         """
-        # Score d'accuracy (0-40)
+        # Accuracy score (0-40)
         accuracy_score = worker.accuracy * cls.WEIGHTS['accuracy']
 
-        # Score de volume (0-30)
+        # Volume score (0-30)
         volume_score = min(worker.total_tasks / 1000, 1.0) * 30 * cls.WEIGHTS['volume']
 
-        # Score de constance (0-20)
+        # Consistency score (0-20)
         consistency_score = cls._calculate_consistency(worker) * 20 * cls.WEIGHTS['consistency']
 
-        # Score de récence (0-10)
+        # Recency score (0-10)
         recency_score = cls._calculate_recency(worker) * 10 * cls.WEIGHTS['recency']
 
         total_score = accuracy_score + volume_score + consistency_score + recency_score
@@ -51,8 +51,8 @@ class WorkerScoringSystem:
     @classmethod
     def _calculate_consistency(cls, worker):
         """
-        Mesure la constance de la qualité dans le temps.
-        Retourne un score entre 0 et 1.
+        Measure quality consistency over time.
+        Returns a score between 0 and 1.
         """
         recent_logs = QualityLog.objects.filter(
             worker=worker
@@ -69,14 +69,14 @@ class WorkerScoringSystem:
         variance = sum((s - mean) ** 2 for s in scores) / len(scores)
         std_dev = variance ** 0.5
 
-        # Plus l'écart-type est faible, plus la constance est élevée
+        # Lower standard deviation means higher consistency
         return max(0, 1.0 - (std_dev / mean))
 
     @classmethod
     def _calculate_recency(cls, worker):
         """
-        Mesure l'activité récente du worker.
-        Retourne un score entre 0 et 1.
+        Measure recent worker activity.
+        Returns a score between 0 and 1.
         """
         from django.utils import timezone
         from datetime import timedelta
@@ -89,7 +89,7 @@ class WorkerScoringSystem:
         if not recent_submissions:
             return 0
 
-        # Vérifier si le worker a soumis des données dans les 7 derniers jours
+        # Check if worker submitted data in the last 7 days
         last_submission = recent_submissions[0].submitted_at
         days_since = (timezone.now() - last_submission).days
 
@@ -105,11 +105,11 @@ class WorkerScoringSystem:
     @classmethod
     def determine_level(cls, worker):
         """
-        Détermine le niveau d'un worker basé sur ses performances.
+        Determine worker level based on performance.
         """
         current_level = worker.level
 
-        # Vérifier chaque niveau de haut en bas
+        # Check each level from top to bottom
         for level in range(5, 0, -1):
             thresholds = cls.LEVEL_THRESHOLDS[level]
             if (
@@ -123,7 +123,7 @@ class WorkerScoringSystem:
     @classmethod
     def update_worker_score(cls, worker):
         """
-        Met à jour le score et le niveau d'un worker.
+        Update worker score and level.
         """
         worker.quality_score = cls.calculate_quality_score(worker)
         worker.level = cls.determine_level(worker)
@@ -133,12 +133,12 @@ class WorkerScoringSystem:
     @classmethod
     def get_worker_stats(cls, worker):
         """
-        Retourne les statistiques complètes d'un worker.
+        Return comprehensive worker statistics.
         """
         from django.utils import timezone
         from datetime import timedelta
 
-        # Statistiques de base
+        # Basic statistics
         total_submissions = DataSubmission.objects.filter(worker=worker).count()
         approved_submissions = DataSubmission.objects.filter(
             worker=worker, status='approved'
@@ -147,19 +147,19 @@ class WorkerScoringSystem:
             worker=worker, status='rejected'
         ).count()
 
-        # Score moyen
+        # Average quality score
         avg_quality = QualityLog.objects.filter(
             worker=worker
         ).aggregate(avg=Avg('score'))['avg'] or 0
 
-        # Activité récente (7 derniers jours)
+        # Recent activity (last 7 days)
         week_ago = timezone.now() - timedelta(days=7)
         recent_tasks = DataSubmission.objects.filter(
             worker=worker,
             submitted_at__gte=week_ago
         ).count()
 
-        # Top compétences
+        # Top skills
         top_languages = worker.languages.all()[:5]
 
         return {
@@ -180,7 +180,7 @@ class WorkerScoringSystem:
     @classmethod
     def _can_advance_level(cls, worker):
         """
-        Vérifie si le worker peut passer au niveau supérieur.
+        Check if worker can advance to the next level.
         """
         next_level = worker.level + 1
         if next_level > 5:

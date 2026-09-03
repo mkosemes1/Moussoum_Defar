@@ -3,9 +3,9 @@ from django.contrib.auth.models import User
 
 
 class Client(models.Model):
-    """Profil client (entreprise/startup)."""
+    """Client profile (company/startup)."""
     PLAN_CHOICES = [
-        ('free', 'Gratuit'),
+        ('free', 'Free'),
         ('starter', 'Starter'),
         ('pro', 'Pro'),
         ('enterprise', 'Enterprise'),
@@ -34,12 +34,12 @@ class Client(models.Model):
 
 
 class Subscription(models.Model):
-    """Abonnement client."""
+    """Client subscription."""
     STATUS_CHOICES = [
-        ('active', 'Actif'),
-        ('cancelled', 'Annulé'),
-        ('expired', 'Expiré'),
-        ('past_due', 'En retard'),
+        ('active', 'Active'),
+        ('cancelled', 'Cancelled'),
+        ('expired', 'Expired'),
+        ('past_due', 'Past Due'),
     ]
 
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='subscriptions')

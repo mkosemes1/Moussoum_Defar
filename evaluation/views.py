@@ -10,7 +10,7 @@ from .serializers import (
     EvaluationSerializer, EvaluationCreateSerializer,
     TestExecutionSerializer, APIKeySerializer
 )
-from .scoring import evaluate_model
+from .tasks import evaluate_model
 
 
 class AfricanBenchmarkViewSet(viewsets.ReadOnlyModelViewSet):

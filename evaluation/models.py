@@ -3,17 +3,17 @@ from django.contrib.auth.models import User
 
 
 class AfricanBenchmark(models.Model):
-    """Benchmark par pays/contexte africain."""
+    """Benchmark by African country/context."""
     CATEGORY_CHOICES = [
-        ('cultural', 'Compréhension culturelle'),
-        ('linguistic', 'Linguistique'),
+        ('cultural', 'Cultural Understanding'),
+        ('linguistic', 'Linguistic'),
         ('commercial', 'Commercial'),
-        ('administratif', 'Administratif'),
-        ('medical', 'Médical'),
-        ('agricultural', 'Agricole'),
-        ('financial', 'Financier'),
-        ('educational', 'Éducatif'),
-        ('mixed', 'Mixte'),
+        ('administrative', 'Administrative'),
+        ('medical', 'Medical'),
+        ('agricultural', 'Agricultural'),
+        ('financial', 'Financial'),
+        ('educational', 'Educational'),
+        ('mixed', 'Mixed'),
     ]
 
     name = models.CharField(max_length=200)
@@ -22,7 +22,7 @@ class AfricanBenchmark(models.Model):
     country_name = models.CharField(max_length=100)
     version = models.CharField(max_length=10, default='1.0')
     language_code = models.CharField(max_length=10, default='fr')
-    language_name = models.CharField(max_length=100, default='Français')
+    language_name = models.CharField(max_length=100, default='French')
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='mixed')
     test_count = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
@@ -42,19 +42,19 @@ class AfricanBenchmark(models.Model):
 
 
 class TestCase(models.Model):
-    """Cas de test africain."""
+    """African test case."""
     DIFFICULTY_CHOICES = [
-        (1, 'Facile'),
-        (2, 'Moyen'),
-        (3, 'Difficile'),
+        (1, 'Easy'),
+        (2, 'Medium'),
+        (3, 'Hard'),
         (4, 'Expert'),
-        (5, 'Extrême'),
+        (5, 'Extreme'),
     ]
 
     benchmark = models.ForeignKey(AfricanBenchmark, on_delete=models.CASCADE)
     input_text = models.TextField()
     expected_output = models.TextField()
-    context = models.TextField(help_text="Contexte culturel/commercial/local")
+    context = models.TextField(help_text="Cultural/commercial/local context")
     category = models.CharField(max_length=50, blank=True)
     difficulty = models.IntegerField(choices=DIFFICULTY_CHOICES, default=2)
     scoring_criteria = models.JSONField(default=dict)
@@ -70,13 +70,13 @@ class TestCase(models.Model):
 
 
 class Evaluation(models.Model):
-    """Évaluation d'un modèle IA."""
+    """AI model evaluation."""
     STATUS_CHOICES = [
-        ('pending', 'En attente'),
-        ('running', 'En cours'),
-        ('completed', 'Terminé'),
-        ('failed', 'Échoué'),
-        ('cancelled', 'Annulé'),
+        ('pending', 'Pending'),
+        ('running', 'Running'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+        ('cancelled', 'Cancelled'),
     ]
 
     client = models.ForeignKey(User, on_delete=models.CASCADE, related_name='evaluations')
@@ -110,7 +110,7 @@ class Evaluation(models.Model):
         return (self.passed_tests / self.total_tests) * 100
 
     def calculate_scores(self):
-        """Calcule les scores à partir des exécutions de test."""
+        """Calculate scores from test executions."""
         executions = self.testexecution_set.all()
         if not executions.exists():
             return
@@ -121,7 +121,7 @@ class Evaluation(models.Model):
         self.score_overall = executions.aggregate(models.Avg('score'))['score__avg']
         self.avg_latency_ms = executions.aggregate(models.Avg('latency_ms'))['latency_ms__avg']
 
-        # Score par catégorie
+        # Score by category
         categories = {}
         for execution in executions:
             cat = execution.test_case.category or 'uncategorized'
@@ -138,7 +138,7 @@ class Evaluation(models.Model):
 
 
 class TestExecution(models.Model):
-    """Exécution d'un test individuel."""
+    """Individual test execution."""
     evaluation = models.ForeignKey(Evaluation, on_delete=models.CASCADE)
     test_case = models.ForeignKey(TestCase, on_delete=models.CASCADE)
     model_response = models.TextField()
@@ -155,7 +155,7 @@ class TestExecution(models.Model):
 
 
 class APIKey(models.Model):
-    """Clé d'accès API pour les clients."""
+    """Client API access key."""
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='api_keys')
     name = models.CharField(max_length=100)
     key = models.CharField(max_length=64, unique=True)

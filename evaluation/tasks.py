@@ -8,7 +8,7 @@ from .scoring import score_response
 
 @shared_task(bind=True)
 def evaluate_model(self, evaluation_id):
-    """Évalue un modèle IA contre un benchmark africain."""
+    """Evaluate an AI model against an African benchmark."""
     try:
         evaluation = Evaluation.objects.get(id=evaluation_id)
     except Evaluation.DoesNotExist:

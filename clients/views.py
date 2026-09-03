@@ -21,19 +21,19 @@ class RegisterView(viewsets.ViewSet):
 
         if not all([username, email, password, company_name]):
             return Response(
-                {'error': 'Tous les champs sont requis'},
+                {'error': 'All fields are required'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         if User.objects.filter(username=username).exists():
             return Response(
-                {'error': 'Ce nom d\'utilisateur existe déjà'},
+                {'error': 'Username already exists'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         if User.objects.filter(email=email).exists():
             return Response(
-                {'error': 'Cet email est déjà utilisé'},
+                {'error': 'Email already in use'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -99,7 +99,7 @@ class LoginView(viewsets.ViewSet):
 
         if user is None:
             return Response(
-                {'error': 'Identifiants incorrects'},
+                {'error': 'Invalid credentials'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
 
@@ -172,7 +172,7 @@ class ClientViewSet(viewsets.ModelViewSet):
 
         if subscription:
             return Response(SubscriptionSerializer(subscription).data)
-        return Response({'error': 'Aucun abonnement actif'}, status=404)
+        return Response({'error': 'No active subscription'}, status=404)
 
     @action(detail=False, methods=['post'])
     def upgrade_plan(self, request):
@@ -181,7 +181,7 @@ class ClientViewSet(viewsets.ModelViewSet):
 
         if new_plan not in ['free', 'starter', 'pro', 'enterprise']:
             return Response(
-                {'error': 'Plan invalide'},
+                {'error': 'Invalid plan'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 

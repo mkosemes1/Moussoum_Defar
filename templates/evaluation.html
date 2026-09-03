@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moussoum Defar - AI Evaluation Lab</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        header { background: linear-gradient(135deg, #1a5f2a 0%, #2d8a4e 100%); color: white; padding: 30px; border-radius: 10px; margin-bottom: 30px; }
+        h1 { font-size: 28px; margin-bottom: 10px; }
+        .subtitle { opacity: 0.9; font-size: 16px; }
+        .card { background: white; border-radius: 10px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .card h2 { color: #1a5f2a; margin-bottom: 15px; font-size: 20px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
+        input, select, textarea { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; transition: border-color 0.3s; }
+        input:focus, select:focus, textarea:focus { border-color: #1a5f2a; outline: none; }
+        .help-text { font-size: 12px; color: #888; margin-top: 5px; }
+        .btn { background: #1a5f2a; color: white; padding: 14px 28px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: background 0.3s; }
+        .btn:hover { background: #2d8a4e; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .benchmarks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 10px; }
+        .benchmark-option { border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .benchmark-option:hover { border-color: #1a5f2a; background: #f0fff4; }
+        .benchmark-option.selected { border-color: #1a5f2a; background: #e6f7ed; }
+        .benchmark-option input { display: none; }
+        .benchmark-option h3 { font-size: 16px; margin-bottom: 5px; }
+        .benchmark-option p { font-size: 12px; color: #888; }
+        .result { display: none; margin-top: 20px; }
+        .result.show { display: block; }
+        .score-card { text-align: center; padding: 20px; }
+        .score-value { font-size: 48px; font-weight: bold; color: #1a5f2a; }
+        .score-label { font-size: 14px; color: #888; }
+        .scores-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
+        .score-item { padding: 15px; background: #f9f9f9; border-radius: 8px; }
+        .score-item-label { font-size: 12px; color: #888; }
+        .score-item-value { font-size: 24px; font-weight: bold; color: #1a5f2a; }
+        .loading { text-align: center; padding: 40px; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #1a5f2a; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .error { background: #fee; border: 1px solid #fcc; padding: 15px; border-radius: 8px; color: #c00; }
+        .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+        .step { text-align: center; }
+        .step-number { width: 40px; height: 40px; background: #1a5f2a; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold; }
+        .step-title { font-weight: 600; margin-bottom: 5px; }
+        .step-desc { font-size: 12px; color: #888; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Moussoum Defar</h1>
+            <p class="subtitle">African AI Evaluation Lab</p>
+        </header>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-title">Choose Benchmark</div>
+                <div class="step-desc">Select the African context to test</div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-title">Add Your Model</div>
+                <div class="step-desc">Provide your API endpoint</div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-title">Get Results</div>
+                <div class="step-desc">Receive detailed evaluation report</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Evaluate Your AI Model</h2>
+            <form id="evaluationForm">
+                <div class="form-group">
+                    <label>Select Benchmark</label>
+                    <div class="benchmarks">
+                        <label class="benchmark-option">
+                            <input type="radio" name="benchmark" value="1" checked>
+                            <h3>Senegal</h3>
+                            <p>22 tests</p>
+                        </label>
+                        <label class="benchmark-option">
+                            <input type="radio" name="benchmark" value="2">
+                            <h3>Nigeria</h3>
+                            <p>19 tests</p>
+                        </label>
+                        <label class="benchmark-option">
+                            <input type="radio" name="benchmark" value="3">
+                            <h3>Kenya</h3>
+                            <p>21 tests</p>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="modelName">Model Name</label>
+                    <input type="text" id="modelName" placeholder="e.g., My Banking Chatbot" required>
+                    <p class="help-text">A name to identify your model in the results</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="modelEndpoint">API Endpoint URL</label>
+                    <input type="url" id="modelEndpoint" placeholder="https://api.yourmodel.com/predict" required>
+                    <p class="help-text">Your model's API must accept POST requests with {"input": "question"} and return {"output": "answer"}</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="apiKey">API Key (Optional)</label>
+                    <input type="text" id="apiKey" placeholder="sk-...">
+                    <p class="help-text">If your API requires authentication</p>
+                </div>
+
+                <button type="submit" class="btn" id="submitBtn">Start Evaluation</button>
+            </form>
+        </div>
+
+        <div class="card result" id="resultCard">
+            <h2>Evaluation Results</h2>
+            <div id="loadingState" class="loading">
+                <div class="spinner"></div>
+                <p>Evaluating your model...</p>
+            </div>
+            <div id="resultContent" style="display: none;">
+                <div class="score-card">
+                    <div class="score-value" id="overallScore">--</div>
+                    <div class="score-label">Overall Score</div>
+                </div>
+                <div class="scores-grid">
+                    <div class="score-item">
+                        <div class="score-item-label">Total Tests</div>
+                        <div class="score-item-value" id="totalTests">--</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-item-label">Passed Tests</div>
+                        <div class="score-item-value" id="passedTests">--</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-item-label">Success Rate</div>
+                        <div class="score-item-value" id="successRate">--%</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-item-label">Avg Latency</div>
+                        <div class="score-item-value" id="avgLatency">--ms</div>
+                    </div>
+                </div>
+                <div id="categoryScores" style="margin-top: 20px;"></div>
+            </div>
+            <div id="errorState" class="error" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Benchmark selection
+        document.querySelectorAll('.benchmark-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.benchmark-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+        document.querySelector('.benchmark-option').classList.add('selected');
+
+        // Form submission
+        document.getElementById('evaluationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const benchmarkId = document.querySelector('input[name="benchmark"]:checked').value;
+            const modelName = document.getElementById('modelName').value;
+            const modelEndpoint = document.getElementById('modelEndpoint').value;
+            const apiKey = document.getElementById('apiKey').value;
+
+            // Show loading state
+            document.getElementById('resultCard').classList.add('show');
+            document.getElementById('loadingState').style.display = 'block';
+            document.getElementById('resultContent').style.display = 'none';
+            document.getElementById('errorState').style.display = 'none';
+            document.getElementById('submitBtn').disabled = true;
+
+            try {
+                // Create evaluation
+                const response = await fetch('/api/v1/evaluations/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+                    },
+                    body: JSON.stringify({
+                        benchmark_id: parseInt(benchmarkId),
+                        model_name: modelName,
+                        model_endpoint: modelEndpoint,
+                        model_api_key: apiKey
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create evaluation');
+                }
+
+                const data = await response.json();
+                const evalId = data.id;
+
+                // Poll for results
+                await pollResults(evalId);
+
+            } catch (error) {
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('errorState').style.display = 'block';
+                document.getElementById('errorState').textContent = error.message;
+            } finally {
+                document.getElementById('submitBtn').disabled = false;
+            }
+        });
+
+        async function pollResults(evalId) {
+            const maxAttempts = 60; // 5 minutes max
+            let attempts = 0;
+
+            while (attempts < maxAttempts) {
+                await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
+
+                const response = await fetch(`/api/v1/evaluations/${evalId}/report/`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'completed') {
+                    displayResults(data);
+                    return;
+                } else if (data.status === 'failed') {
+                    throw new Error('Evaluation failed');
+                }
+
+                attempts++;
+            }
+
+            throw new Error('Evaluation timed out');
+        }
+
+        function displayResults(data) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('resultContent').style.display = 'block';
+
+            document.getElementById('overallScore').textContent = (data.overall_score || 0).toFixed(1);
+            document.getElementById('totalTests').textContent = data.total_tests || 0;
+            document.getElementById('passedTests').textContent = data.passed_tests || 0;
+            document.getElementById('successRate').textContent = (data.success_rate || 0).toFixed(1) + '%';
+            document.getElementById('avgLatency').textContent = (data.avg_latency_ms || 0).toFixed(0) + 'ms';
+
+            // Category scores
+            const categoryDiv = document.getElementById('categoryScores');
+            categoryDiv.innerHTML = '<h3 style="margin-bottom: 10px;">Scores by Category</h3>';
+            
+            if (data.score_by_category) {
+                for (const [category, score] of Object.entries(data.score_by_category)) {
+                    categoryDiv.innerHTML += `
+                        <div style="display: flex; justify-content: space-between; padding: 10px; background: #f9f9f9; border-radius: 5px; margin-bottom: 5px;">
+                            <span>${category}</span>
+                            <strong>${score.toFixed(1)}/100</strong>
+                        </div>
+                    `;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

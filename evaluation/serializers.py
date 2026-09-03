@@ -60,10 +60,38 @@ class EvaluationSerializer(serializers.ModelSerializer):
 
 
 class EvaluationCreateSerializer(serializers.Serializer):
-    benchmark_id = serializers.IntegerField()
-    model_name = serializers.CharField(max_length=200)
-    model_endpoint = serializers.URLField(required=False, allow_blank=True)
-    model_api_key = serializers.CharField(max_length=200, required=False, allow_blank=True)
+    """
+    Serializer for creating a new evaluation.
+    
+    The client provides:
+    - benchmark_id: Which benchmark to test against (e.g., 1 for Senegal)
+    - model_name: Name of the model being tested
+    - model_endpoint: URL of the model's API (must accept POST with {"input": "..."})
+    - model_api_key: API key for authentication (optional)
+    
+    The model API must:
+    - Accept POST requests with JSON body
+    - Return JSON with the model's response
+    - Support keys: output, response, answer, result, message, text, or content
+    """
+    benchmark_id = serializers.IntegerField(
+        help_text="ID of the benchmark to test against (e.g., 1=Senegal, 2=Nigeria, 3=Kenya)"
+    )
+    model_name = serializers.CharField(
+        max_length=200,
+        help_text="Name of your model (e.g., 'My Banking Chatbot')"
+    )
+    model_endpoint = serializers.URLField(
+        required=False,
+        allow_blank=True,
+        help_text="URL of your model's API endpoint (e.g., https://api.yourmodel.com/predict)"
+    )
+    model_api_key = serializers.CharField(
+        max_length=200,
+        required=False,
+        allow_blank=True,
+        help_text="API key for authentication (optional)"
+    )
 
 
 class APIKeySerializer(serializers.ModelSerializer):

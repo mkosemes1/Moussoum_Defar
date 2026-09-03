@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: moussoum_defar
+      POSTGRES_USER: moussoum_defar
+      POSTGRES_PASSWORD: moussoum_defar_secret
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+      - media_data:/app/media
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_DB=moussoum_defar
+      - POSTGRES_USER=moussoum_defar
+      - POSTGRES_PASSWORD=moussoum_defar_secret
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+    depends_on:
+      - db
+      - redis
+      - minio
+
+  celery:
+    build: .
+    command: celery -A Moussoum_Defar worker -l info
+    volumes:
+      - .:/app
+    environment:
+      - POSTGRES_DB=moussoum_defar
+      - POSTGRES_USER=moussoum_defar
+      - POSTGRES_PASSWORD=moussoum_defar_secret
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+    depends_on:
+      - db
+      - redis
+      - minio
+
+  celery-beat:
+    build: .
+    command: celery -A Moussoum_Defar beat -l info
+    volumes:
+      - .:/app
+    environment:
+      - POSTGRES_DB=moussoum_defar
+      - POSTGRES_USER=moussoum_defar
+      - POSTGRES_PASSWORD=moussoum_defar_secret
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+
+volumes:
+  postgres_data:
+  minio_data:
+  media_data:

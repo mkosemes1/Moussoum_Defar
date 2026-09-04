@@ -4,7 +4,7 @@
 
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![Django](https://img.shields.io/badge/Django-5.0+-green.svg)](https://djangoproject.com)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-Non--Commercial-blue.svg)](LICENSE)
 
 ---
 
@@ -163,7 +163,13 @@ curl http://localhost:8000/api/v1/evaluations/1/report/ \
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
+**Non-Commercial License** - Free for learning, research, and open-source contribution.
+
+Commercial use requires written permission from Moussoum Defar.
+
+See [LICENSE](LICENSE) for full details.
+
+To request commercial license: contact@moussoumdefar.com
 
 ---
 

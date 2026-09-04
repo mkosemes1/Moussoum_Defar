@@ -1,21 +1,63 @@
-MIT License
+Moussoum Defar License Agreement
 
-Copyright (c) 2024 Moussoum Defar
+Copyright (c) 2024 Moussoum Defar. All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+TERMS AND CONDITIONS FOR USE, MODIFICATION, AND DISTRIBUTION
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. DEFINITIONS
+   - "Software" refers to the Moussoum Defar codebase and associated files
+   - "Commercial Use" means any use intended for or resulting in commercial advantage or monetary compensation
+   - "Non-Commercial Use" means research, education, personal learning, and open-source contribution without monetary gain
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+2. PERMITTED USES (FREE)
+   You are free to:
+   a) Use the Software for non-commercial purposes
+   b) Study and modify the Software
+   c) Share modifications with others under this same license
+   d) Use the Software for academic research and education
+   e) Contribute to the project on GitHub
+
+3. COMMERCIAL USE (REQUIRES PERMISSION)
+   You CANNOT use the Software for commercial purposes without explicit written permission from Moussoum Defar, including but not limited to:
+   a) Selling the Software or services based on it
+   b) Using it in a commercial product or service
+   c) Offering it as a paid SaaS solution
+   d) Using it to generate revenue
+   e) Incorporating it into proprietary software
+
+4. HOW TO OBTAIN COMMERCIAL LICENSE
+   To request commercial use permission:
+   - Email: contact@moussoumdefar.com
+   - Subject: "Commercial License Request"
+   - Include: Your name, company, intended use, and contact information
+
+5. MODIFICATIONS
+   If you modify the Software:
+   a) You must share your modifications under this same license
+   b) You must clearly indicate what changes you made
+   c) You cannot remove copyright notices
+
+6. ATTRIBUTION
+   When using the Software, you must:
+   a) Include the original copyright notice
+   b) State that modifications were made (if applicable)
+   c) Provide a link to the original project
+
+7. DISCLAIMER
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+8. TERMINATION
+   This license terminates automatically if you violate any terms. Upon termination, you must cease all use and destroy all copies.
+
+9. GOVERNING LAW
+   This license shall be governed by the laws of Senegal.
+
+---
+
+SUMMARY:
+- FREE for learning, research, and non-commercial use
+- COMMERCIAL USE requires written permission from Moussoum Defar
+- Modifications must be shared under the same license
+- Attribution required
+
+Contact: contact@moussoumdefar.com

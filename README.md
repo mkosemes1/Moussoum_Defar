@@ -10,9 +10,9 @@
 
 ## The Problem
 
-I built this because I was frustrated. Every time I tested an AI model with African context, it failed.
+I built this because I see the limit of the existing AIs, every time we tested an AI model with African context, it failed or it can't be as goodas in the West.
 
-Try asking a chatbot about Wave or Orange Money - it doesn't know what you're talking about. Ask it to understand Wolof mixed with French - it's lost. Ask about FCFA or how to get a birth certificate in Dakar - nothing.
+Try asking a chatbot about our means of payment or our finances or even in relation to our educational evolution - it doesn't know what you're talking about. Ask it to understand Wolof mixed with French - it's lost. Ask about FCFA or how to get a birth certificate in Dakar - nothing.
 
 The AI industry has a blind spot: Africa. All the data, benchmarks, and tools are built for Western contexts. We're just... not part of the conversation.
 
@@ -20,9 +20,9 @@ The AI industry has a blind spot: Africa. All the data, benchmarks, and tools ar
 
 Moussoum Defar is my attempt to fix this. It's a platform where:
 
-- African workers collect real data from real communities
+- African workers collect real data from real communities ( student, linguist, or expert)
 - AI models get tested against African benchmarks (not just translated Western ones)
-- We build the infrastructure that's been missing
+- We build the infrastructure that's been missing since the AI Boom
 
 I started with 3 countries (Senegal, Nigeria, Kenya) and 62 test cases. But the goal is to cover the whole continent.
 

@@ -8,33 +8,36 @@
 
 ---
 
-## Why Moussoum Defar?
+## The Problem
 
-AI doesn't understand Africa. Models trained on Western data fail with:
-- African languages (Wolof, Swahili, Hausa, Yoruba...)
-- Local systems (Mobile Money, FCFA, NIN, KRA...)
-- Cultural context (Teranga, Jollof Rice, Maasai traditions...)
+I built this because I was frustrated. Every time I tested an AI model with African context, it failed.
 
-**Moussoum Defar is the missing infrastructure to make AI reliable in Africa.**
+Try asking a chatbot about Wave or Orange Money - it doesn't know what you're talking about. Ask it to understand Wolof mixed with French - it's lost. Ask about FCFA or how to get a birth certificate in Dakar - nothing.
+
+The AI industry has a blind spot: Africa. All the data, benchmarks, and tools are built for Western contexts. We're just... not part of the conversation.
+
+## Why This Exists
+
+Moussoum Defar is my attempt to fix this. It's a platform where:
+
+- African workers collect real data from real communities
+- AI models get tested against African benchmarks (not just translated Western ones)
+- We build the infrastructure that's been missing
+
+I started with 3 countries (Senegal, Nigeria, Kenya) and 62 test cases. But the goal is to cover the whole continent.
 
 ---
 
-## Features
+## What It Does
 
-### African Data Hub
-- Collect text, voice, and image data from African communities
-- Pay workers via Mobile Money
-- Quality scoring and validation system
+### Data Collection
+Real people, real data. Workers across Africa get paid to collect text, voice, and images in their own languages and communities. No more scraping the internet for "African data."
 
-### AI Evaluation Lab
-- Test AI models against African benchmarks
-- 62 test cases across 3 countries (Senegal, Nigeria, Kenya)
-- Detailed reports by category and language
+### AI Evaluation
+You have an AI model? Test it. Send it through 62 African test cases and see if it actually understands the context. Not just "does it speak French?" but "does it understand what a senegalese person means when they say 'Nanga def?'"
 
-### AI Workforce
-- Network of African workers (students, linguists, experts)
-- 5-level progression system
-- Quality reputation scoring
+### Worker System
+Students, linguists, experts - they all earn money by contributing to better AI. There's a scoring system, levels, the whole gamification thing. The better you are, the more you earn.
 
 ---
 
@@ -181,4 +184,6 @@ To request commercial license: malickoseme@gmail.com
 
 ---
 
-**Built with for Africa**
+**Made in Africa, for Africa.**
+
+If you want to help, open an issue or send me an email.

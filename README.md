@@ -169,7 +169,7 @@ Commercial use requires written permission from Moussoum Defar.
 
 See [LICENSE](LICENSE) for full details.
 
-To request commercial license: contact@moussoumdefar.com
+To request commercial license: malickoseme@gmail.com
 
 ---
 
@@ -177,7 +177,7 @@ To request commercial license: contact@moussoumdefar.com
 
 - Documentation: /api/docs/
 - Issues: GitHub Issues
-- Email: contact@moussoumdefar.com
+- Email: malickoseme@gmail.com
 
 ---
 

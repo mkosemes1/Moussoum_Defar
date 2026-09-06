@@ -60,8 +60,16 @@ docker compose up
 ```
 
 **Access:**
+- Home: http://localhost:8000/templates/index.html
 - Admin: http://localhost:8000/admin/
 - API Docs: http://localhost:8000/api/docs/
+
+**Web Interfaces:**
+- Worker Registration: http://localhost:8000/templates/worker-register.html
+- Worker Login: http://localhost:8000/templates/worker-login.html
+- Worker Dashboard: http://localhost:8000/templates/worker-dashboard.html
+- Client Registration: http://localhost:8000/templates/client-register.html
+- Client Login: http://localhost:8000/templates/client-login.html
 - Evaluation UI: http://localhost:8000/templates/evaluation.html
 
 ---

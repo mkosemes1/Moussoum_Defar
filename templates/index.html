@@ -5,230 +5,397 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moussoum Defar - African AI Infrastructure</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Navbar */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* ===== NAVBAR ===== */
         .navbar {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 1000;
-            background: rgba(15, 23, 42, 0.95);
+            background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(20px);
-            padding: 16px 40px;
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 0 48px;
+            height: 64px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
         .nav-logo {
-            font-size: 24px;
-            font-weight: 800;
+            font-size: 18px;
+            font-weight: 500;
             color: white;
             text-decoration: none;
             display: flex;
             align-items: center;
             gap: 10px;
+            letter-spacing: -0.01em;
         }
 
         .nav-logo-icon {
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             background: linear-gradient(135deg, #10b981, #059669);
-            border-radius: 10px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 14px;
+            font-weight: 700;
         }
 
         .nav-links {
             display: flex;
-            gap: 12px;
+            gap: 4px;
             align-items: center;
         }
 
         .nav-link {
-            color: rgba(255,255,255,0.8);
+            color: rgba(255,255,255,0.6);
             text-decoration: none;
-            font-size: 15px;
-            font-weight: 500;
-            padding: 10px 20px;
-            border-radius: 8px;
-            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 400;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s;
         }
 
-        .nav-link:hover {
-            color: white;
-            background: rgba(255,255,255,0.1);
-        }
+        .nav-link:hover { color: white; background: rgba(255,255,255,0.06); }
 
         .nav-btn {
             background: #10b981;
             color: white;
-            padding: 10px 24px;
-            border-radius: 8px;
+            padding: 8px 20px;
+            border-radius: 9999px;
             text-decoration: none;
-            font-weight: 600;
-            font-size: 15px;
-            transition: all 0.3s;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s;
             border: none;
             cursor: pointer;
         }
 
-        .nav-btn:hover {
-            background: #059669;
-            transform: translateY(-2px);
-        }
+        .nav-btn:hover { background: #059669; transform: translateY(-1px); }
 
         .nav-btn-outline {
             background: transparent;
-            border: 2px solid #10b981;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.8);
         }
 
-        .nav-btn-outline:hover {
-            background: #10b981;
-        }
+        .nav-btn-outline:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.06); }
 
-        /* Hero with 3D */
-        .hero-wrapper {
-            padding-top: 100px;
-            padding-bottom: 40px;
-            min-height: 90vh;
-            background: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+        /* ===== HERO ===== */
+        .hero {
             position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000000;
             overflow: hidden;
         }
 
-        .hero-wrapper::before {
+        .hero::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(16, 185, 129, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 50% 40%, rgba(16, 185, 129, 0.06) 0%, transparent 70%),
+                radial-gradient(ellipse 60% 40% at 20% 60%, rgba(59, 130, 246, 0.03) 0%, transparent 60%);
         }
 
-        /* Grid Lines Background */
-        .grid-bg {
+        /* Grid background */
+        .hero-grid {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                linear-gradient(rgba(16, 185, 129, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(16, 185, 129, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            perspective: 1000px;
-        }
-
-        .grid-floor {
-            position: absolute;
-            bottom: 0;
-            left: -50%;
-            right: -50%;
-            height: 40%;
-            background: 
-                linear-gradient(rgba(16, 185, 129, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(16, 185, 129, 0.1) 1px, transparent 1px);
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
             background-size: 80px 80px;
-            transform: rotateX(60deg);
-            transform-origin: bottom;
-            animation: gridMove 20s linear infinite;
+            mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 20%, transparent 70%);
+            -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 20%, transparent 70%);
         }
 
-        @keyframes gridMove {
+        /* Perspective grid floor */
+        .hero-floor {
+            position: absolute;
+            bottom: -20%;
+            left: -20%;
+            right: -20%;
+            height: 60%;
+            background-image:
+                linear-gradient(rgba(16, 185, 129, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(16, 185, 129, 0.06) 1px, transparent 1px);
+            background-size: 100px 100px;
+            transform: perspective(500px) rotateX(60deg);
+            transform-origin: center bottom;
+            mask-image: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
+            -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
+            animation: floorScroll 20s linear infinite;
+        }
+
+        @keyframes floorScroll {
             0% { background-position: 0 0; }
-            100% { background-position: 80px 80px; }
+            100% { background-position: 100px 100px; }
         }
 
-        /* Floating 3D Objects */
-        .floating-objects {
+        /* Wireframe Africa Map */
+        .africa-wireframe {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 420px;
+            height: 500px;
+            opacity: 0;
+            animation: wireframeReveal 2s ease 0.3s forwards;
+        }
+
+        @keyframes wireframeReveal {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .africa-wireframe svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 40px rgba(16, 185, 129, 0.15));
+        }
+
+        .africa-wireframe .map-outline {
+            fill: none;
+            stroke: rgba(16, 185, 129, 0.35);
+            stroke-width: 1.2;
+            stroke-dasharray: 2000;
+            stroke-dashoffset: 2000;
+            animation: drawMap 3s ease 0.5s forwards;
+        }
+
+        .africa-wireframe .map-fill {
+            fill: rgba(16, 185, 129, 0.03);
+            opacity: 0;
+            animation: fadeIn 1s ease 2s forwards;
+        }
+
+        .africa-wireframe .grid-line {
+            stroke: rgba(16, 185, 129, 0.08);
+            stroke-width: 0.5;
+            stroke-dasharray: 4 4;
+        }
+
+        .africa-wireframe .data-line {
+            fill: none;
+            stroke: rgba(16, 185, 129, 0.15);
+            stroke-width: 0.8;
+            stroke-dasharray: 600;
+            stroke-dashoffset: 600;
+            animation: drawMap 2s ease 1.5s forwards;
+        }
+
+        @keyframes drawMap {
+            to { stroke-dashoffset: 0; }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Country nodes on wireframe */
+        .wireframe-node {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), 0 0 30px rgba(16, 185, 129, 0.2);
+            opacity: 0;
+            animation: nodeAppear 0.5s ease forwards;
+        }
+
+        .wireframe-node::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            animation: nodePulse 2.5s ease-in-out infinite;
+        }
+
+        .wireframe-node::after {
+            content: attr(data-label);
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.6);
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.05em;
+        }
+
+        .wireframe-node:nth-child(1) { top: 35%; left: 38%; animation-delay: 2.2s; }
+        .wireframe-node:nth-child(2) { top: 45%; left: 52%; animation-delay: 2.5s; }
+        .wireframe-node:nth-child(3) { top: 58%; left: 62%; animation-delay: 2.8s; }
+
+        @keyframes nodeAppear {
+            0% { opacity: 0; transform: scale(0); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes nodePulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(2); opacity: 0; }
+        }
+
+        /* Connection lines between nodes */
+        .wireframe-connection {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
         }
 
-        .float-cube {
+        .wireframe-connection line {
+            stroke: rgba(16, 185, 129, 0.12);
+            stroke-width: 0.8;
+            stroke-dasharray: 4 4;
+            animation: connectionPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes connectionPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Orbital data elements */
+        .orbital-system {
             position: absolute;
-            width: 60px;
-            height: 60px;
-            transform-style: preserve-3d;
-            animation: floatRotate 15s ease-in-out infinite;
+            inset: 0;
+            pointer-events: none;
         }
 
-        .float-cube:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
-        .float-cube:nth-child(2) { top: 60%; left: 15%; animation-delay: -3s; }
-        .float-cube:nth-child(3) { top: 30%; right: 10%; animation-delay: -6s; }
-        .float-cube:nth-child(4) { top: 70%; right: 15%; animation-delay: -9s; }
-        .float-cube:nth-child(5) { top: 50%; left: 5%; animation-delay: -12s; }
-
-        .cube-face {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            border: 2px solid rgba(16, 185, 129, 0.3);
-            background: rgba(16, 185, 129, 0.05);
-            backdrop-filter: blur(5px);
-        }
-
-        .cube-face.front { transform: translateZ(30px); }
-        .cube-face.back { transform: translateZ(-30px) rotateY(180deg); }
-        .cube-face.left { transform: translateX(-30px) rotateY(-90deg); }
-        .cube-face.right { transform: translateX(30px) rotateY(90deg); }
-        .cube-face.top { transform: translateY(-30px) rotateX(90deg); }
-        .cube-face.bottom { transform: translateY(30px) rotateX(-90deg); }
-
-        @keyframes floatRotate {
-            0%, 100% { transform: translateY(0) rotateX(0) rotateY(0); }
-            25% { transform: translateY(-20px) rotateX(90deg) rotateY(90deg); }
-            50% { transform: translateY(0) rotateX(180deg) rotateY(180deg); }
-            75% { transform: translateY(20px) rotateX(270deg) rotateY(270deg); }
-        }
-
-        /* Floating Spheres */
-        .float-sphere {
+        .orbit-ring {
             position: absolute;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, rgba(16, 185, 129, 0.4), rgba(16, 185, 129, 0.1));
-            box-shadow: 0 0 40px rgba(16, 185, 129, 0.2);
-            animation: sphereFloat 8s ease-in-out infinite;
+            border: 1px solid rgba(255,255,255,0.04);
         }
 
-        .float-sphere:nth-child(6) { width: 100px; height: 100px; top: 15%; left: 20%; animation-delay: 0s; }
-        .float-sphere:nth-child(7) { width: 60px; height: 60px; top: 40%; right: 20%; animation-delay: -2s; }
-        .float-sphere:nth-child(8) { width: 80px; height: 80px; bottom: 20%; left: 30%; animation-delay: -4s; }
-        .float-sphere:nth-child(9) { width: 40px; height: 40px; top: 25%; right: 30%; animation-delay: -6s; }
-
-        @keyframes sphereFloat {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-30px) scale(1.1); }
+        .orbit-ring:nth-child(1) {
+            width: 700px; height: 700px;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotateX(65deg);
+            animation: orbitSpin 40s linear infinite;
         }
 
-        /* Glowing Rings */
-        .glow-ring {
+        .orbit-ring:nth-child(2) {
+            width: 550px; height: 550px;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotateX(65deg) rotateZ(45deg);
+            animation: orbitSpin 35s linear infinite reverse;
+        }
+
+        .orbit-ring:nth-child(3) {
+            width: 850px; height: 850px;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotateX(65deg) rotateZ(20deg);
+            animation: orbitSpin 50s linear infinite;
+        }
+
+        @keyframes orbitSpin {
+            from { transform: translate(-50%, -50%) rotateX(65deg) rotateZ(0deg); }
+            to { transform: translate(-50%, -50%) rotateX(65deg) rotateZ(360deg); }
+        }
+
+        /* Orbiting data cards */
+        .orbit-item {
             position: absolute;
-            border-radius: 50%;
-            border: 2px solid rgba(16, 185, 129, 0.2);
-            animation: ringPulse 4s ease-in-out infinite;
+            width: 56px;
+            height: 56px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            backdrop-filter: blur(10px);
+            animation: floatItem 6s ease-in-out infinite;
         }
 
-        .glow-ring:nth-child(10) { width: 300px; height: 300px; top: 10%; right: 5%; animation-delay: 0s; }
-        .glow-ring:nth-child(11) { width: 200px; height: 200px; bottom: 15%; left: 10%; animation-delay: -1s; }
-        .glow-ring:nth-child(12) { width: 150px; height: 150px; top: 50%; left: 50%; animation-delay: -2s; }
+        .orbit-item:nth-child(4) { top: 12%; left: 10%; animation-delay: 0s; }
+        .orbit-item:nth-child(5) { top: 8%; right: 12%; animation-delay: -1s; }
+        .orbit-item:nth-child(6) { bottom: 18%; left: 8%; animation-delay: -2s; }
+        .orbit-item:nth-child(7) { bottom: 12%; right: 10%; animation-delay: -3s; }
+        .orbit-item:nth-child(8) { top: 45%; left: 3%; animation-delay: -4s; }
+        .orbit-item:nth-child(9) { top: 45%; right: 3%; animation-delay: -5s; }
 
-        @keyframes ringPulse {
-            0%, 100% { transform: scale(1); opacity: 0.3; }
-            50% { transform: scale(1.1); opacity: 0.6; }
+        @keyframes floatItem {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        /* Floating wireframe shapes */
+        .wire-float {
+            position: absolute;
+            border: 1px solid rgba(16, 185, 129, 0.1);
+            animation: wireFloat 12s ease-in-out infinite;
+        }
+
+        .wire-float:nth-child(10) {
+            width: 60px; height: 60px; top: 20%; left: 15%;
+            transform: rotate(45deg);
+            animation-delay: 0s;
+        }
+
+        .wire-float:nth-child(11) {
+            width: 40px; height: 40px; top: 70%; right: 15%;
+            border-radius: 50%;
+            animation-delay: -4s;
+        }
+
+        .wire-float:nth-child(12) {
+            width: 50px; height: 50px; bottom: 25%; left: 20%;
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+            animation-delay: -8s;
+        }
+
+        @keyframes wireFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.4; }
+            50% { transform: translateY(-20px) rotate(10deg); opacity: 0.7; }
+        }
+
+        /* Code snippet particles */
+        .code-snippet {
+            position: absolute;
+            font-family: 'Geist Mono', 'Courier New', monospace;
+            font-size: 11px;
+            color: rgba(16, 185, 129, 0.25);
+            letter-spacing: 0.02em;
+            animation: snippetDrift 8s ease-in-out infinite;
+            white-space: nowrap;
+        }
+
+        .code-snippet:nth-child(13) { top: 15%; left: 20%; animation-delay: 0s; }
+        .code-snippet:nth-child(14) { top: 25%; right: 18%; animation-delay: -2s; }
+        .code-snippet:nth-child(15) { bottom: 30%; left: 12%; animation-delay: -4s; }
+        .code-snippet:nth-child(16) { bottom: 20%; right: 22%; animation-delay: -6s; }
+
+        @keyframes snippetDrift {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.2; }
+            25% { transform: translateY(-15px) translateX(5px); opacity: 0.5; }
+            50% { transform: translateY(-8px) translateX(-3px); opacity: 0.3; }
+            75% { transform: translateY(-20px) translateX(8px); opacity: 0.6; }
         }
 
         /* Hero Content */
@@ -236,793 +403,496 @@
             position: relative;
             z-index: 10;
             text-align: center;
-            padding: 0 40px;
+            padding: 0 24px;
+            max-width: 900px;
         }
 
-        .hero-badge {
+        .hero-tag {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 14px;
-            color: #10b981;
-            margin-bottom: 24px;
-            animation: fadeInUp 0.8s ease;
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 32px;
+            opacity: 0;
+            animation: textReveal 0.8s ease 0.5s forwards;
         }
 
-        .hero-badge-dot {
-            width: 8px;
-            height: 8px;
+        .hero-tag-dot {
+            width: 6px;
+            height: 6px;
             background: #10b981;
             border-radius: 50%;
             animation: pulse 2s ease-in-out infinite;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
         }
 
         .hero h1 {
-            font-size: 64px;
-            font-weight: 900;
+            font-family: 'Inter', sans-serif;
+            font-size: 72px;
+            font-weight: 300;
             color: white;
-            margin-bottom: 20px;
-            line-height: 1.1;
-            letter-spacing: -2px;
-            animation: fadeInUp 0.8s ease 0.1s both;
+            line-height: 1.05;
+            letter-spacing: -0.02em;
+            margin-bottom: 28px;
+            opacity: 0;
+            animation: textReveal 1s ease 0.7s forwards;
         }
 
-        .hero h1 span {
+        .hero h1 strong {
+            font-weight: 400;
             background: linear-gradient(135deg, #10b981, #3b82f6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
-        .hero-subtitle {
-            font-size: 20px;
-            color: rgba(255,255,255,0.7);
-            max-width: 600px;
-            margin: 0 auto 40px;
+        .hero-sub {
+            font-size: 18px;
+            font-weight: 400;
+            color: rgba(255,255,255,0.5);
             line-height: 1.7;
-            animation: fadeInUp 0.8s ease 0.2s both;
+            max-width: 560px;
+            margin: 0 auto 48px;
+            opacity: 0;
+            animation: textReveal 1s ease 0.9s forwards;
         }
 
-        .hero-buttons {
+        .hero-actions {
             display: flex;
             gap: 16px;
             justify-content: center;
-            animation: fadeInUp 0.8s ease 0.3s both;
+            opacity: 0;
+            animation: textReveal 1s ease 1.1s forwards;
         }
 
-        .btn-hero {
-            padding: 18px 36px;
-            font-size: 16px;
-            font-weight: 700;
-            border-radius: 12px;
-            text-decoration: none;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-hero-primary {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
-        }
-
-        .btn-hero-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.5);
-        }
-
-        .btn-hero-secondary {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border: 2px solid rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-        }
-
-        .btn-hero-secondary:hover {
-            background: rgba(255,255,255,0.15);
-            border-color: rgba(255,255,255,0.3);
-            transform: translateY(-3px);
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
+        @keyframes textReveal {
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Stats Section */
-        .stats-section {
-            padding: 80px 40px;
-            background: #0f172a;
+        .btn-primary {
+            padding: 14px 32px;
+            font-size: 15px;
+            font-weight: 500;
+            background: #10b981;
+            color: white;
+            border-radius: 9999px;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
         }
 
-        .stats-container {
+        .btn-primary:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-secondary {
+            padding: 14px 32px;
+            font-size: 15px;
+            font-weight: 500;
+            background: transparent;
+            color: rgba(255,255,255,0.8);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 9999px;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            border-color: rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.04);
+            transform: translateY(-2px);
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            animation: textReveal 1s ease 1.5s forwards;
+        }
+
+        .scroll-indicator span {
+            font-size: 11px;
+            color: rgba(255,255,255,0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .scroll-arrow {
+            width: 24px;
+            height: 24px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.3);
+            font-size: 12px;
+            animation: scrollBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(4px); }
+        }
+
+        /* ===== STATS BAND ===== */
+        .stats-band {
+            background: #09090b;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 48px 0;
+        }
+
+        .stats-inner {
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 32px;
+            padding: 0 48px;
         }
 
-        .stat-box {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8));
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            border-radius: 16px;
-            padding: 32px;
+        .stat-item {
             text-align: center;
             position: relative;
-            overflow: hidden;
-            transition: all 0.3s;
         }
 
-        .stat-box:hover {
-            transform: translateY(-5px);
-            border-color: rgba(16, 185, 129, 0.4);
-            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.15);
-        }
-
-        .stat-box::before {
+        .stat-item:not(:last-child)::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
             right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #10b981, #3b82f6);
+            top: 10%;
+            height: 80%;
+            width: 1px;
+            background: rgba(255,255,255,0.06);
         }
 
-        .stat-icon-wrapper {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.05));
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 32px;
-        }
-
-        .stat-number {
-            font-size: 42px;
-            font-weight: 900;
+        .stat-num {
+            font-size: 40px;
+            font-weight: 300;
             color: white;
+            letter-spacing: -0.02em;
             margin-bottom: 4px;
         }
 
+        .stat-num .accent { color: #10b981; }
+
         .stat-label {
-            font-size: 14px;
-            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.35);
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 0.08em;
         }
 
-        /* Features Section */
-        .features-section {
-            padding: 100px 40px;
-            background: linear-gradient(180deg, #0f172a, #1e293b);
+        /* ===== FEATURES ===== */
+        .features {
+            padding: 120px 48px;
+            background: #000000;
         }
 
-        .section-header {
+        .features-header {
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 80px;
         }
 
-        .section-tag {
-            display: inline-block;
-            background: rgba(16, 185, 129, 0.1);
-            color: #10b981;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
+        .features-tag {
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.35);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.1em;
             margin-bottom: 16px;
         }
 
-        .section-title {
-            font-size: 40px;
-            font-weight: 800;
+        .features-title {
+            font-size: 48px;
+            font-weight: 300;
             color: white;
+            letter-spacing: -0.02em;
             margin-bottom: 16px;
         }
 
-        .section-subtitle {
-            font-size: 18px;
-            color: rgba(255,255,255,0.6);
-            max-width: 600px;
+        .features-sub {
+            font-size: 16px;
+            color: rgba(255,255,255,0.45);
+            max-width: 500px;
             margin: 0 auto;
         }
 
         .features-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 32px;
+            gap: 1px;
             max-width: 1200px;
             margin: 0 auto;
-        }
-
-        .feature-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.6));
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 20px;
-            padding: 40px 32px;
-            transition: all 0.4s;
-            position: relative;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 16px;
             overflow: hidden;
         }
 
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), transparent);
-            opacity: 0;
-            transition: opacity 0.4s;
+        .feature-cell {
+            background: #09090b;
+            padding: 48px 36px;
+            transition: background 0.3s;
         }
 
-        .feature-card:hover::before {
-            opacity: 1;
+        .feature-cell:hover {
+            background: #0f0f12;
         }
 
-        .feature-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(16, 185, 129, 0.3);
-        }
-
-        .feature-icon-box {
-            width: 70px;
-            height: 70px;
-            border-radius: 16px;
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
-            margin-bottom: 24px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .feature-icon-box.green {
-            background: linear-gradient(135deg, #10b981, #059669);
-            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
-        }
-
-        .feature-icon-box.blue {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
-        }
-
-        .feature-icon-box.purple {
-            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
-        }
-
-        .feature-card h3 {
             font-size: 22px;
+            margin-bottom: 24px;
+        }
+
+        .feature-icon.green { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.15); }
+        .feature-icon.blue { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.15); }
+        .feature-icon.purple { background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.15); }
+
+        .feature-cell h3 {
+            font-size: 18px;
+            font-weight: 500;
             color: white;
-            margin-bottom: 12px;
-            position: relative;
-            z-index: 1;
+            margin-bottom: 10px;
         }
 
-        .feature-card p {
-            font-size: 15px;
-            color: rgba(255,255,255,0.6);
+        .feature-cell p {
+            font-size: 14px;
+            color: rgba(255,255,255,0.4);
             line-height: 1.7;
-            position: relative;
-            z-index: 1;
         }
 
-        /* Countries Section */
-        .countries-section {
-            padding: 100px 40px;
-            background: #0f172a;
+        /* ===== COUNTRIES ===== */
+        .countries {
+            padding: 120px 48px;
+            background: #09090b;
+        }
+
+        .countries-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .countries-tag {
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.35);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 16px;
+        }
+
+        .countries-title {
+            font-size: 48px;
+            font-weight: 300;
+            color: white;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+        }
+
+        .countries-sub {
+            font-size: 16px;
+            color: rgba(255,255,255,0.45);
         }
 
         .countries-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 32px;
+            gap: 24px;
             max-width: 1200px;
             margin: 0 auto;
         }
 
         .country-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8));
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            transition: all 0.4s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .country-card::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #10b981, #3b82f6);
-            transform: scaleX(0);
-            transition: transform 0.4s;
-        }
-
-        .country-card:hover::after {
-            transform: scaleX(1);
+            background: #000000;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 40px 32px;
+            transition: all 0.3s;
         }
 
         .country-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(16, 185, 129, 0.3);
+            border-color: rgba(16, 185, 129, 0.2);
+            transform: translateY(-4px);
         }
 
-        .country-flag {
-            font-size: 64px;
-            margin-bottom: 20px;
-        }
-
-        .country-card h3 {
-            font-size: 24px;
-            color: white;
-            margin-bottom: 8px;
-        }
-
-        .country-card p {
-            font-size: 14px;
-            color: rgba(255,255,255,0.5);
-            margin-bottom: 20px;
-        }
+        .country-flag { font-size: 48px; margin-bottom: 20px; }
+        .country-card h3 { font-size: 22px; font-weight: 500; color: white; margin-bottom: 8px; }
+        .country-card p { font-size: 14px; color: rgba(255,255,255,0.4); margin-bottom: 20px; line-height: 1.6; }
 
         .country-badge {
             display: inline-block;
-            background: rgba(16, 185, 129, 0.15);
+            font-size: 12px;
+            font-weight: 500;
             color: #10b981;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.15);
+            padding: 6px 14px;
+            border-radius: 9999px;
         }
 
-        /* CTA Section */
-        .cta-section {
-            padding: 100px 40px;
-            background: linear-gradient(135deg, #0d6b3d 0%, #094d2c 100%);
+        /* ===== CTA ===== */
+        .cta {
+            padding: 120px 48px;
+            background: #000000;
             text-align: center;
             position: relative;
             overflow: hidden;
         }
 
-        .cta-section::before {
+        .cta::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
-            animation: rotate 30s linear infinite;
+            inset: 0;
+            background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(16, 185, 129, 0.06) 0%, transparent 70%);
         }
 
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
+        .cta-content { position: relative; z-index: 1; }
 
-        .cta-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .cta-section h2 {
-            font-size: 44px;
-            font-weight: 800;
+        .cta h2 {
+            font-size: 52px;
+            font-weight: 300;
             color: white;
+            letter-spacing: -0.02em;
             margin-bottom: 16px;
         }
 
-        .cta-section p {
-            font-size: 18px;
-            color: rgba(255,255,255,0.8);
-            max-width: 500px;
+        .cta p {
+            font-size: 16px;
+            color: rgba(255,255,255,0.45);
+            max-width: 440px;
             margin: 0 auto 40px;
         }
 
-        .cta-buttons {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-        }
+        .cta-actions { display: flex; gap: 16px; justify-content: center; }
 
-        /* Footer */
+        /* ===== FOOTER ===== */
         .footer {
-            background: #0a0f1a;
-            padding: 80px 40px 40px;
+            background: #000000;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            padding: 64px 48px 40px;
         }
 
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        .footer-inner { max-width: 1200px; margin: 0 auto; }
 
         .footer-grid {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1fr;
             gap: 48px;
-            margin-bottom: 60px;
+            margin-bottom: 48px;
         }
 
         .footer-brand h3 {
-            font-size: 28px;
+            font-size: 18px;
+            font-weight: 500;
             color: white;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .footer-brand p {
-            font-size: 15px;
-            color: rgba(255,255,255,0.5);
-            line-height: 1.8;
-        }
+        .footer-brand p { font-size: 14px; color: rgba(255,255,255,0.35); line-height: 1.7; }
 
         .footer-col h4 {
-            font-size: 16px;
-            color: white;
-            margin-bottom: 20px;
+            font-size: 11px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.3);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.08em;
+            margin-bottom: 20px;
         }
 
-        .footer-col ul {
-            list-style: none;
-        }
+        .footer-col ul { list-style: none; }
 
-        .footer-col li {
-            margin-bottom: 12px;
-        }
+        .footer-col li { margin-bottom: 12px; }
 
         .footer-col a {
-            color: rgba(255,255,255,0.5);
+            color: rgba(255,255,255,0.45);
             text-decoration: none;
             font-size: 14px;
-            transition: color 0.3s;
+            transition: color 0.2s;
         }
 
-        .footer-col a:hover {
-            color: #10b981;
-        }
+        .footer-col a:hover { color: white; }
 
         .footer-bottom {
-            border-top: 1px solid rgba(255,255,255,0.08);
+            border-top: 1px solid rgba(255,255,255,0.04);
             padding-top: 32px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .footer-bottom p {
-            font-size: 14px;
-            color: rgba(255,255,255,0.4);
-        }
+        .footer-bottom p { font-size: 13px; color: rgba(255,255,255,0.25); }
 
-        .footer-social {
-            display: flex;
-            gap: 12px;
-        }
+        .footer-social { display: flex; gap: 12px; }
 
         .footer-social a {
-            width: 44px;
-            height: 44px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: rgba(255,255,255,0.6);
+            color: rgba(255,255,255,0.4);
             text-decoration: none;
-            font-size: 18px;
-            transition: all 0.3s;
+            font-size: 13px;
+            transition: all 0.2s;
         }
 
-        .footer-social a:hover {
-            background: #10b981;
-            border-color: #10b981;
-            color: white;
-        }
+        .footer-social a:hover { background: rgba(255,255,255,0.08); color: white; }
 
-        /* 3D Africa Map */
-        .africa-container {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%) scale(1.3);
-            perspective: 1200px;
-        }
-
-        .africa-map {
-            width: 320px;
-            height: 350px;
-            position: relative;
-            transform-style: preserve-3d;
-            animation: africaRotate 12s ease-in-out infinite;
-        }
-
-        @keyframes africaRotate {
-            0%, 100% { transform: rotateY(-5deg) rotateX(5deg); }
-            25% { transform: rotateY(5deg) rotateX(-3deg); }
-            50% { transform: rotateY(-3deg) rotateX(5deg); }
-            75% { transform: rotateY(5deg) rotateX(-5deg); }
-        }
-
-        .africa-shape {
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 280px;
-            height: 320px;
-            background: linear-gradient(145deg, #10b981, #059669, #047857);
-            clip-path: polygon(
-                35% 0%, 45% 2%, 55% 0%, 65% 5%, 75% 15%, 80% 25%,
-                85% 35%, 88% 45%, 90% 55%, 85% 65%, 78% 75%, 70% 85%,
-                60% 95%, 50% 100%, 40% 95%, 30% 85%, 25% 75%, 20% 65%,
-                15% 55%, 12% 45%, 15% 35%, 20% 25%, 25% 15%, 30% 5%
-            );
-            box-shadow: 
-                inset 0 0 60px rgba(255,255,255,0.15),
-                0 20px 60px rgba(16, 185, 129, 0.4),
-                0 0 100px rgba(16, 185, 129, 0.2);
-        }
-
-        .africa-shape::before {
-            content: '';
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            bottom: 10px;
-            background: linear-gradient(145deg, rgba(255,255,255,0.1), transparent);
-            clip-path: polygon(
-                35% 0%, 45% 2%, 55% 0%, 65% 5%, 75% 15%, 80% 25%,
-                85% 35%, 88% 45%, 90% 55%, 85% 65%, 78% 75%, 70% 85%,
-                60% 95%, 50% 100%, 40% 95%, 30% 85%, 25% 75%, 20% 65%,
-                15% 55%, 12% 45%, 15% 35%, 20% 25%, 25% 15%, 30% 5%
-            );
-        }
-
-        /* Country dots on map */
-        .country-dot {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background: #fbbf24;
-            border-radius: 50%;
-            box-shadow: 0 0 15px #fbbf24, 0 0 30px #fbbf24;
-            animation: dotPulse 2s ease-in-out infinite;
-        }
-
-        .country-dot::after {
-            content: attr(data-name);
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 10px;
-            color: #fbbf24;
-            white-space: nowrap;
-            font-weight: 600;
-            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
-        }
-
-        .country-dot.sn { top: 30%; left: 35%; animation-delay: 0s; }
-        .country-dot.ng { top: 45%; left: 55%; animation-delay: -0.5s; }
-        .country-dot.ke { top: 55%; left: 65%; animation-delay: -1s; }
-
-        @keyframes dotPulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 15px #fbbf24, 0 0 30px #fbbf24; }
-            50% { transform: scale(1.3); box-shadow: 0 0 25px #fbbf24, 0 0 50px #fbbf24; }
-        }
-
-        /* Glow rings around Africa */
-        .africa-ring {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            border: 2px solid rgba(16, 185, 129, 0.2);
-            animation: ringExpand 4s ease-out infinite;
-        }
-
-        .africa-ring:nth-child(1) { width: 350px; height: 380px; animation-delay: 0s; }
-        .africa-ring:nth-child(2) { width: 400px; height: 430px; animation-delay: -1.3s; }
-        .africa-ring:nth-child(3) { width: 450px; height: 480px; animation-delay: -2.6s; }
-
-        @keyframes ringExpand {
-            0% { opacity: 0.6; transform: translate(-50%, -50%) scale(0.9); }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
-        }
-
-        /* 3D Coding Head */
-        .head-container {
-            position: absolute;
-            top: 15%;
-            left: 50%;
-            transform: translateX(-50%);
-            perspective: 800px;
-            z-index: 10;
-        }
-
-        .coding-head {
-            width: 100px;
-            height: 110px;
-            position: relative;
-            transform-style: preserve-3d;
-            animation: headBob 3s ease-in-out infinite;
-        }
-
-        @keyframes headBob {
-            0%, 100% { transform: translateY(0) rotateY(0deg); }
-            25% { transform: translateY(-8px) rotateY(5deg); }
-            50% { transform: translateY(-3px) rotateY(0deg); }
-            75% { transform: translateY(-10px) rotateY(-5deg); }
-        }
-
-        .head-main {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(145deg, #3b82f6, #1d4ed8);
-            border-radius: 30px 30px 25px 25px;
-            position: relative;
-            box-shadow: 
-                inset 0 0 25px rgba(255,255,255,0.15),
-                0 15px 40px rgba(59, 130, 246, 0.5);
-        }
-
-        /* Face */
-        .face {
-            position: absolute;
-            top: 25px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 70px;
-            height: 50px;
-        }
-
-        .eye {
-            position: absolute;
-            width: 18px;
-            height: 18px;
-            background: #10b981;
-            border-radius: 50%;
-            top: 5px;
-            box-shadow: 0 0 20px #10b981, 0 0 40px #10b981;
-            animation: eyeBlink 4s ease-in-out infinite;
-        }
-
-        .eye.left { left: 10px; }
-        .eye.right { right: 10px; }
-
-        @keyframes eyeBlink {
-            0%, 90%, 100% { transform: scaleY(1); }
-            95% { transform: scaleY(0.1); }
-        }
-
-        .visor {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 28px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 8px;
-            border: 2px solid rgba(59, 130, 246, 0.5);
-        }
-
-        .mouth {
-            position: absolute;
-            bottom: 5px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 20px;
-            height: 6px;
-            background: #10b981;
-            border-radius: 3px;
-            box-shadow: 0 0 10px #10b981;
-        }
-
-        /* Antenna */
-        .antenna {
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .antenna-rod {
-            width: 4px;
-            height: 25px;
-            background: linear-gradient(to top, #3b82f6, #60a5fa);
-            margin: 0 auto;
-        }
-
-        .antenna-tip {
-            width: 14px;
-            height: 14px;
-            background: #10b981;
-            border-radius: 50%;
-            margin: -2px auto 0;
-            box-shadow: 0 0 20px #10b981, 0 0 40px #10b981;
-            animation: antennaPulse 1.5s ease-in-out infinite;
-        }
-
-        @keyframes antennaPulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 20px #10b981, 0 0 40px #10b981; }
-            50% { transform: scale(1.2); box-shadow: 0 0 30px #10b981, 0 0 60px #10b981; }
-        }
-
-        /* Code particles */
-        .code-particles {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 200px;
-            height: 200px;
-        }
-
-        .code-particle {
-            position: absolute;
-            font-family: monospace;
-            font-size: 12px;
-            color: rgba(16, 185, 129, 0.6);
-            animation: particleFloat 6s ease-in-out infinite;
-        }
-
-        .code-particle:nth-child(1) { top: 0; left: 20%; animation-delay: 0s; content: '</>; }
-        .code-particle:nth-child(2) { top: 20%; right: 10%; animation-delay: -1s; }
-        .code-particle:nth-child(3) { bottom: 20%; left: 10%; animation-delay: -2s; }
-        .code-particle:nth-child(4) { bottom: 0; right: 20%; animation-delay: -3s; }
-        .code-particle:nth-child(5) { top: 50%; left: 0; animation-delay: -4s; }
-
-        @keyframes particleFloat {
-            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.6; }
-            50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
-        }
-
-        /* Responsive */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            .navbar { padding: 12px 20px; }
+            .navbar { padding: 0 20px; }
             .nav-links { display: none; }
             .hero h1 { font-size: 36px; }
-            .hero-subtitle { font-size: 16px; }
-            .hero-buttons { flex-direction: column; }
-            .stats-container, .features-grid, .countries-grid, .footer-grid {
-                grid-template-columns: 1fr;
-            }
-            .cta-section h2 { font-size: 28px; }
-            .cta-buttons { flex-direction: column; }
-            .footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
+            .hero-sub { font-size: 16px; }
+            .hero-actions { flex-direction: column; align-items: center; }
+            .stats-inner { grid-template-columns: repeat(2, 1fr); }
+            .stat-item:nth-child(2)::after { display: none; }
+            .features-grid { grid-template-columns: 1fr; }
+            .countries-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .africa-wireframe { transform: translate(-50%, -50%) scale(0.6); }
+            .orbit-item { display: none; }
+            .code-snippet { display: none; }
         }
     </style>
 </head>
@@ -1034,243 +904,187 @@
             Moussoum Defar
         </a>
         <div class="nav-links">
-            <a href="#features" class="nav-link">Features</a>
+            <a href="#features" class="nav-link">Platform</a>
             <a href="#countries" class="nav-link">Countries</a>
             <a href="/api/docs/" class="nav-link">API</a>
-            <a href="/templates/client-login.html" class="nav-btn nav-btn-outline">Login</a>
-            <a href="/templates/client-register.html" class="nav-btn">Register</a>
+            <a href="/templates/client-login.html" class="nav-btn-outline nav-btn">Sign in</a>
+            <a href="/templates/client-register.html" class="nav-btn">Get Started</a>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <div class="hero-wrapper">
-        <div class="grid-bg">
-            <div class="grid-floor"></div>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-grid"></div>
+        <div class="hero-floor"></div>
+
+        <!-- Orbital system -->
+        <div class="orbital-system">
+            <div class="orbit-ring"></div>
+            <div class="orbit-ring"></div>
+            <div class="orbit-ring"></div>
+            <div class="orbit-item">🌍</div>
+            <div class="orbit-item">📊</div>
+            <div class="orbit-item">🗣️</div>
+            <div class="orbit-item">💰</div>
+            <div class="orbit-item">🧬</div>
+            <div class="orbit-item">🔗</div>
+            <div class="wire-float"></div>
+            <div class="wire-float"></div>
+            <div class="wire-float"></div>
+            <div class="code-snippet">lang: "wolof"</div>
+            <div class="code-snippet">currency: "FCFA"</div>
+            <div class="code-snippet">mpesa.transfer(1500)</div>
+            <div class="code-snippet">evaluate(model, "sn")</div>
         </div>
 
-        <!-- Floating 3D Objects -->
-        <div class="floating-objects">
-            <!-- Cubes -->
-            <div class="float-cube">
-                <div class="cube-face front"></div>
-                <div class="cube-face back"></div>
-                <div class="cube-face left"></div>
-                <div class="cube-face right"></div>
-                <div class="cube-face top"></div>
-                <div class="cube-face bottom"></div>
-            </div>
-            <div class="float-cube">
-                <div class="cube-face front"></div>
-                <div class="cube-face back"></div>
-                <div class="cube-face left"></div>
-                <div class="cube-face right"></div>
-                <div class="cube-face top"></div>
-                <div class="cube-face bottom"></div>
-            </div>
-            <div class="float-cube">
-                <div class="cube-face front"></div>
-                <div class="cube-face back"></div>
-                <div class="cube-face left"></div>
-                <div class="cube-face right"></div>
-                <div class="cube-face top"></div>
-                <div class="cube-face bottom"></div>
-            </div>
-            <div class="float-cube">
-                <div class="cube-face front"></div>
-                <div class="cube-face back"></div>
-                <div class="cube-face left"></div>
-                <div class="cube-face right"></div>
-                <div class="cube-face top"></div>
-                <div class="cube-face bottom"></div>
-            </div>
-            <div class="float-cube">
-                <div class="cube-face front"></div>
-                <div class="cube-face back"></div>
-                <div class="cube-face left"></div>
-                <div class="cube-face right"></div>
-                <div class="cube-face top"></div>
-                <div class="cube-face bottom"></div>
-            </div>
+        <!-- Wireframe Africa -->
+        <div class="africa-wireframe">
+            <svg viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="wireGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.4" />
+                        <stop offset="100%" style="stop-color:#10b981;stop-opacity:0.1" />
+                    </linearGradient>
+                </defs>
 
-            <!-- Spheres -->
-            <div class="float-sphere"></div>
-            <div class="float-sphere"></div>
-            <div class="float-sphere"></div>
-            <div class="float-sphere"></div>
+                <!-- Grid lines -->
+                <line x1="20" y1="0" x2="20" y2="260" class="grid-line"/>
+                <line x1="60" y1="0" x2="60" y2="260" class="grid-line"/>
+                <line x1="100" y1="0" x2="100" y2="260" class="grid-line"/>
+                <line x1="140" y1="0" x2="140" y2="260" class="grid-line"/>
+                <line x1="180" y1="0" x2="180" y2="260" class="grid-line"/>
+                <line x1="0" y1="30" x2="200" y2="30" class="grid-line"/>
+                <line x1="0" y1="80" x2="200" y2="80" class="grid-line"/>
+                <line x1="0" y1="130" x2="200" y2="130" class="grid-line"/>
+                <line x1="0" y1="180" x2="200" y2="180" class="grid-line"/>
+                <line x1="0" y1="230" x2="200" y2="230" class="grid-line"/>
 
-            <!-- Rings -->
-            <div class="glow-ring"></div>
-            <div class="glow-ring"></div>
-            <div class="glow-ring"></div>
+                <!-- Africa outline (wireframe) -->
+                <path class="map-fill" d="M 95 5 C 105 3 115 5 120 10 C 130 18 135 25 140 35 C 148 50 155 65 160 80 C 165 95 170 110 172 125 C 174 140 175 155 172 170 C 168 188 160 205 150 218 C 140 232 128 242 115 252 C 105 260 95 265 85 268 C 75 270 65 268 55 262 C 45 255 38 245 32 232 C 26 218 22 202 20 185 C 18 168 18 150 20 135 C 22 118 26 102 32 88 C 38 72 45 58 55 45 C 62 35 70 25 78 18 C 85 12 90 7 95 5 Z"/>
+                <path class="map-outline" d="M 95 5 C 105 3 115 5 120 10 C 130 18 135 25 140 35 C 148 50 155 65 160 80 C 165 95 170 110 172 125 C 174 140 175 155 172 170 C 168 188 160 205 150 218 C 140 232 128 242 115 252 C 105 260 95 265 85 268 C 75 270 65 268 55 262 C 45 255 38 245 32 232 C 26 218 22 202 20 185 C 18 168 18 150 20 135 C 22 118 26 102 32 88 C 38 72 45 58 55 45 C 62 35 70 25 78 18 C 85 12 90 7 95 5 Z"/>
 
-            <!-- 3D Africa Map with Coding Head -->
-            <div class="africa-container">
-                <!-- Glow rings around Africa -->
-                <div class="africa-ring"></div>
-                <div class="africa-ring"></div>
-                <div class="africa-ring"></div>
+                <!-- Data flow lines -->
+                <path class="data-line" d="M 75 80 Q 90 100 85 130 Q 80 160 90 180"/>
+                <path class="data-line" d="M 105 90 Q 115 120 110 150 Q 105 180 115 200" style="animation-delay: 0.3s"/>
+                <path class="data-line" d="M 60 100 Q 80 120 95 140 Q 110 160 120 175" style="animation-delay: 0.6s"/>
+            </svg>
 
-                <div class="africa-map">
-                    <!-- Africa shape -->
-                    <div class="africa-shape">
-                        <!-- Country dots -->
-                        <div class="country-dot sn" data-name="Senegal"></div>
-                        <div class="country-dot ng" data-name="Nigeria"></div>
-                        <div class="country-dot ke" data-name="Kenya"></div>
-                    </div>
+            <!-- Country nodes -->
+            <div class="wireframe-node" data-label="Dakar"></div>
+            <div class="wireframe-node" data-label="Lagos"></div>
+            <div class="wireframe-node" data-label="Nairobi"></div>
 
-                    <!-- 3D Coding Head on top -->
-                    <div class="head-container">
-                        <div class="coding-head">
-                            <div class="antenna">
-                                <div class="antenna-tip"></div>
-                                <div class="antenna-rod"></div>
-                            </div>
-                            <div class="head-main">
-                                <div class="face">
-                                    <div class="visor"></div>
-                                    <div class="eye left"></div>
-                                    <div class="eye right"></div>
-                                    <div class="mouth"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Code particles -->
-                    <div class="code-particles">
-                        <div class="code-particle">&lt;/&gt;</div>
-                        <div class="code-particle">{}</div>
-                        <div class="code-particle">AI</div>
-                        <div class="code-particle">01</div>
-                        <div class="code-particle">ML</div>
-                    </div>
-                </div>
-            </div>
+            <!-- Connection lines SVG overlay -->
+            <svg class="wireframe-connection" viewBox="0 0 200 260">
+                <line x1="75" y1="80" x2="105" y2="90"/>
+                <line x1="105" y1="90" x2="115" y2="130"/>
+                <line x1="75" y1="80" x2="115" y2="130"/>
+            </svg>
         </div>
 
-        <!-- Hero Content -->
+        <!-- Content -->
         <div class="hero-content">
-            <div class="hero-badge">
-                <span class="hero-badge-dot"></span>
-                Building Africa's AI Future
+            <div class="hero-tag">
+                <span class="hero-tag-dot"></span>
+                Building Africa's AI Infrastructure
             </div>
-            <h1>The Missing <span>AI Infrastructure</span> for Africa</h1>
-            <p class="hero-subtitle">We help AI models understand African contexts, languages, and cultures. Test your models against real African benchmarks.</p>
-            <div class="hero-buttons">
-                <a href="/templates/client-register.html" class="btn-hero btn-hero-primary">
-                    Get Started Free
-                    <span>→</span>
-                </a>
-                <a href="/templates/worker-register.html" class="btn-hero btn-hero-secondary">
-                    Become a Worker
-                </a>
+            <h1>The missing <strong>data layer</strong> for African AI</h1>
+            <p class="hero-sub">We provide the benchmarks, workforce, and data pipelines that help AI models understand African languages, cultures, and contexts.</p>
+            <div class="hero-actions">
+                <a href="/templates/client-register.html" class="btn-primary">Get Started Free →</a>
+                <a href="/templates/worker-register.html" class="btn-secondary">Join as a Worker</a>
             </div>
+        </div>
+
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <div class="scroll-arrow">↓</div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <div class="stats-band">
+        <div class="stats-inner">
+            <div class="stat-item"><div class="stat-num"><span class="accent">3</span></div><div class="stat-label">Countries</div></div>
+            <div class="stat-item"><div class="stat-num">62</div><div class="stat-label">Test Cases</div></div>
+            <div class="stat-item"><div class="stat-num">10<span class="accent">+</span></div><div class="stat-label">Languages</div></div>
+            <div class="stat-item"><div class="stat-num">$<span class="accent">0</span></div><div class="stat-label">To Start</div></div>
         </div>
     </div>
 
-    <!-- Stats Section -->
-    <div class="stats-section">
-        <div class="stats-container">
-            <div class="stat-box">
-                <div class="stat-icon-wrapper">🌍</div>
-                <div class="stat-number">3</div>
-                <div class="stat-label">Countries</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-icon-wrapper">📝</div>
-                <div class="stat-number">62</div>
-                <div class="stat-label">Test Cases</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-icon-wrapper">🗣️</div>
-                <div class="stat-number">10+</div>
-                <div class="stat-label">Languages</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-icon-wrapper">💰</div>
-                <div class="stat-number">$0</div>
-                <div class="stat-label">To Start</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Features Section -->
-    <div class="features-section" id="features">
-        <div class="section-header">
-            <div class="section-tag">What We Do</div>
-            <h2 class="section-title">Complete AI Infrastructure</h2>
-            <p class="section-subtitle">From data collection to model evaluation, we provide everything you need to build AI that understands Africa.</p>
+    <!-- Features -->
+    <section class="features" id="features">
+        <div class="features-header">
+            <div class="features-tag">Platform</div>
+            <h2 class="features-title">Complete AI infrastructure</h2>
+            <p class="features-sub">From data collection to model evaluation — everything you need to build AI that understands Africa.</p>
         </div>
         <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon-box green">📊</div>
+            <div class="feature-cell">
+                <div class="feature-icon green">📊</div>
                 <h3>Data Collection</h3>
                 <p>Real people across Africa get paid to collect text, voice, and images in their own languages and communities.</p>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon-box blue">🧪</div>
+            <div class="feature-cell">
+                <div class="feature-icon blue">🧪</div>
                 <h3>AI Evaluation</h3>
                 <p>Test your AI models against African benchmarks. See if they understand mobile money, local languages, and culture.</p>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon-box purple">👥</div>
+            <div class="feature-cell">
+                <div class="feature-icon purple">👥</div>
                 <h3>Worker System</h3>
                 <p>Students, linguists, and experts earn money contributing to better AI. Levels, scoring, and gamification.</p>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Countries Section -->
-    <div class="countries-section" id="countries">
-        <div class="section-header">
-            <div class="section-tag">Benchmarks</div>
-            <h2 class="section-title">African Context Testing</h2>
-            <p class="section-subtitle">Start testing your AI models against real African contexts and scenarios.</p>
+    <!-- Countries -->
+    <section class="countries" id="countries">
+        <div class="countries-header">
+            <div class="countries-tag">Benchmarks</div>
+            <h2 class="countries-title">African context testing</h2>
+            <p class="countries-sub">Start testing your AI models against real African contexts and scenarios.</p>
         </div>
         <div class="countries-grid">
             <div class="country-card">
                 <div class="country-flag">🇸🇳</div>
                 <h3>Senegal</h3>
                 <p>Wolof, FCFA, Mobile Money, Culture</p>
-                <span class="country-badge">22 Tests</span>
+                <span class="country-badge">22 tests</span>
             </div>
             <div class="country-card">
                 <div class="country-flag">🇳🇬</div>
                 <h3>Nigeria</h3>
                 <p>Pidgin, Naira, Fintech, Security</p>
-                <span class="country-badge">19 Tests</span>
+                <span class="country-badge">19 tests</span>
             </div>
             <div class="country-card">
                 <div class="country-flag">🇰🇪</div>
                 <h3>Kenya</h3>
                 <p>Sheng, M-Pesa, Culture, Health</p>
-                <span class="country-badge">21 Tests</span>
+                <span class="country-badge">21 tests</span>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- CTA Section -->
-    <div class="cta-section">
+    <!-- CTA -->
+    <section class="cta">
         <div class="cta-content">
-            <h2>Ready to Build AI for Africa?</h2>
+            <h2>Build AI for Africa</h2>
             <p>Join us in building the AI infrastructure that Africa deserves. Start for free today.</p>
-            <div class="cta-buttons">
-                <a href="/templates/client-register.html" class="btn-hero btn-hero-primary">Start Free Trial</a>
-                <a href="/templates/worker-register.html" class="btn-hero btn-hero-secondary">Join as Worker</a>
+            <div class="cta-actions">
+                <a href="/templates/client-register.html" class="btn-primary">Start Free Trial</a>
+                <a href="/templates/worker-register.html" class="btn-secondary">Join as Worker</a>
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="footer-content">
+        <div class="footer-inner">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <h3>
-                        <div class="nav-logo-icon" style="width: 32px; height: 32px; font-size: 16px;">M</div>
-                        Moussoum Defar
-                    </h3>
+                    <h3><div class="nav-logo-icon" style="width:28px;height:28px;font-size:12px;">M</div> Moussoum Defar</h3>
                     <p>Building the missing data and AI infrastructure for Africa. We believe AI should understand every African language, culture, and context.</p>
                 </div>
                 <div class="footer-col">
@@ -1301,12 +1115,8 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 Moussoum Defar. Made in Africa, for Africa.</p>
-                <div class="footer-social">
-                    <a href="#">𝕏</a>
-                    <a href="#">in</a>
-                    <a href="#">GH</a>
-                </div>
+                <p>© 2024 Moussoum Defar. Made in Africa, for Africa.</p>
+                <div class="footer-social"><a href="#">X</a><a href="#">in</a><a href="#">GH</a></div>
             </div>
         </div>
     </footer>

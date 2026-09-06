@@ -975,6 +975,155 @@
             50% { opacity: 0.8; transform: translateX(-50%) scale(1.1); }
         }
 
+        /* 3D Electric Car */
+        .car-container {
+            position: absolute;
+            left: 8%;
+            bottom: 15%;
+            perspective: 800px;
+        }
+
+        .car {
+            transform-style: preserve-3d;
+            animation: carFloat 5s ease-in-out infinite;
+        }
+
+        @keyframes carFloat {
+            0%, 100% { transform: translateY(0) rotateY(-15deg); }
+            50% { transform: translateY(-10px) rotateY(-15deg); }
+        }
+
+        .car-body {
+            width: 180px;
+            height: 50px;
+            background: linear-gradient(145deg, #10b981, #059669);
+            border-radius: 10px 10px 5px 5px;
+            position: relative;
+            box-shadow: 
+                inset 0 5px 15px rgba(255,255,255,0.2),
+                0 10px 30px rgba(16, 185, 129, 0.4);
+        }
+
+        .car-top {
+            position: absolute;
+            top: -35px;
+            left: 30px;
+            width: 100px;
+            height: 35px;
+            background: linear-gradient(145deg, #0d9668, #047857);
+            border-radius: 10px 10px 0 0;
+            box-shadow: inset 0 5px 10px rgba(255,255,255,0.15);
+        }
+
+        .car-window {
+            position: absolute;
+            top: 8px;
+            width: 35px;
+            height: 20px;
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border-radius: 5px 5px 0 0;
+            box-shadow: inset 0 0 10px rgba(59, 130, 246, 0.3);
+        }
+
+        .car-window.front { left: 55px; }
+        .car-window.back { left: 5px; }
+
+        .car-headlight {
+            position: absolute;
+            right: -5px;
+            top: 15px;
+            width: 15px;
+            height: 12px;
+            background: #fbbf24;
+            border-radius: 0 5px 5px 0;
+            box-shadow: 0 0 15px #fbbf24, 0 0 30px #fbbf24;
+            animation: headlightPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes headlightPulse {
+            0%, 100% { box-shadow: 0 0 15px #fbbf24, 0 0 30px #fbbf24; }
+            50% { box-shadow: 0 0 25px #fbbf24, 0 0 50px #fbbf24; }
+        }
+
+        .car-taillight {
+            position: absolute;
+            left: -5px;
+            top: 15px;
+            width: 15px;
+            height: 12px;
+            background: #ef4444;
+            border-radius: 5px 0 0 5px;
+            box-shadow: 0 0 15px #ef4444;
+        }
+
+        .car-wheel {
+            position: absolute;
+            bottom: -12px;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(145deg, #374151, #1f2937);
+            border-radius: 50%;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.5);
+        }
+
+        .car-wheel::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(145deg, #6b7280, #4b5563);
+            border-radius: 50%;
+        }
+
+        .car-wheel.front { right: 15px; }
+        .car-wheel.back { left: 15px; }
+
+        .car-stripe {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            height: 3px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+        }
+
+        .car-glow {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 40px;
+            background: radial-gradient(ellipse, rgba(16, 185, 129, 0.3) 0%, transparent 70%);
+            filter: blur(10px);
+        }
+
+        .ev-badge {
+            position: absolute;
+            top: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #10b981;
+            font-weight: 600;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ev-badge::before {
+            content: '⚡';
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .navbar { padding: 12px 20px; }
@@ -1067,6 +1216,25 @@
             <div class="glow-ring"></div>
             <div class="glow-ring"></div>
             <div class="glow-ring"></div>
+
+            <!-- 3D Electric Car -->
+            <div class="car-container">
+                <div class="car">
+                    <div class="ev-badge">Electric Vehicle</div>
+                    <div class="car-body">
+                        <div class="car-top">
+                            <div class="car-window back"></div>
+                            <div class="car-window front"></div>
+                        </div>
+                        <div class="car-headlight"></div>
+                        <div class="car-taillight"></div>
+                        <div class="car-stripe"></div>
+                        <div class="car-wheel front"></div>
+                        <div class="car-wheel back"></div>
+                    </div>
+                    <div class="car-glow"></div>
+                </div>
+            </div>
 
             <!-- 3D Robot -->
             <div class="robot-container">

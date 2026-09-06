@@ -6,355 +6,643 @@
     <title>Moussoum Defar - African AI Infrastructure</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <style>
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, #0d6b3d 0%, #094d2c 50%, #073d22 100%);
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-logo {
+            font-size: 24px;
+            font-weight: 800;
             color: white;
-            padding: 80px 40px;
-            border-radius: 16px;
-            margin-bottom: 48px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            color: white;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .nav-btn {
+            background: #10b981;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .nav-btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn-outline {
+            background: transparent;
+            border: 2px solid #10b981;
+        }
+
+        .nav-btn-outline:hover {
+            background: #10b981;
+        }
+
+        /* Hero with 3D */
+        .hero-wrapper {
+            padding-top: 100px;
+            padding-bottom: 60px;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
             position: relative;
             overflow: hidden;
+        }
+
+        .hero-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(16, 185, 129, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+        }
+
+        /* Grid Lines Background */
+        .grid-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(16, 185, 129, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(16, 185, 129, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            perspective: 1000px;
+        }
+
+        .grid-floor {
+            position: absolute;
+            bottom: 0;
+            left: -50%;
+            right: -50%;
+            height: 40%;
+            background: 
+                linear-gradient(rgba(16, 185, 129, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(16, 185, 129, 0.1) 1px, transparent 1px);
+            background-size: 80px 80px;
+            transform: rotateX(60deg);
+            transform-origin: bottom;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 80px 80px; }
+        }
+
+        /* Floating 3D Objects */
+        .floating-objects {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .float-cube {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            transform-style: preserve-3d;
+            animation: floatRotate 15s ease-in-out infinite;
+        }
+
+        .float-cube:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .float-cube:nth-child(2) { top: 60%; left: 15%; animation-delay: -3s; }
+        .float-cube:nth-child(3) { top: 30%; right: 10%; animation-delay: -6s; }
+        .float-cube:nth-child(4) { top: 70%; right: 15%; animation-delay: -9s; }
+        .float-cube:nth-child(5) { top: 50%; left: 5%; animation-delay: -12s; }
+
+        .cube-face {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            background: rgba(16, 185, 129, 0.05);
+            backdrop-filter: blur(5px);
+        }
+
+        .cube-face.front { transform: translateZ(30px); }
+        .cube-face.back { transform: translateZ(-30px) rotateY(180deg); }
+        .cube-face.left { transform: translateX(-30px) rotateY(-90deg); }
+        .cube-face.right { transform: translateX(30px) rotateY(90deg); }
+        .cube-face.top { transform: translateY(-30px) rotateX(90deg); }
+        .cube-face.bottom { transform: translateY(30px) rotateX(-90deg); }
+
+        @keyframes floatRotate {
+            0%, 100% { transform: translateY(0) rotateX(0) rotateY(0); }
+            25% { transform: translateY(-20px) rotateX(90deg) rotateY(90deg); }
+            50% { transform: translateY(0) rotateX(180deg) rotateY(180deg); }
+            75% { transform: translateY(20px) rotateX(270deg) rotateY(270deg); }
+        }
+
+        /* Floating Spheres */
+        .float-sphere {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(16, 185, 129, 0.4), rgba(16, 185, 129, 0.1));
+            box-shadow: 0 0 40px rgba(16, 185, 129, 0.2);
+            animation: sphereFloat 8s ease-in-out infinite;
+        }
+
+        .float-sphere:nth-child(6) { width: 100px; height: 100px; top: 15%; left: 20%; animation-delay: 0s; }
+        .float-sphere:nth-child(7) { width: 60px; height: 60px; top: 40%; right: 20%; animation-delay: -2s; }
+        .float-sphere:nth-child(8) { width: 80px; height: 80px; bottom: 20%; left: 30%; animation-delay: -4s; }
+        .float-sphere:nth-child(9) { width: 40px; height: 40px; top: 25%; right: 30%; animation-delay: -6s; }
+
+        @keyframes sphereFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.1); }
+        }
+
+        /* Glowing Rings */
+        .glow-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid rgba(16, 185, 129, 0.2);
+            animation: ringPulse 4s ease-in-out infinite;
+        }
+
+        .glow-ring:nth-child(10) { width: 300px; height: 300px; top: 10%; right: 5%; animation-delay: 0s; }
+        .glow-ring:nth-child(11) { width: 200px; height: 200px; bottom: 15%; left: 10%; animation-delay: -1s; }
+        .glow-ring:nth-child(12) { width: 150px; height: 150px; top: 50%; left: 50%; animation-delay: -2s; }
+
+        @keyframes ringPulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.1); opacity: 0.6; }
+        }
+
+        /* Hero Content */
+        .hero-content {
+            position: relative;
+            z-index: 10;
             text-align: center;
+            padding: 0 40px;
         }
 
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -100px;
-            right: -100px;
-            width: 400px;
-            height: 400px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 50%;
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            color: #10b981;
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s ease;
         }
 
-        .hero::after {
-            content: '';
-            position: absolute;
-            bottom: -150px;
-            left: -50px;
-            width: 300px;
-            height: 300px;
-            background: rgba(255,255,255,0.03);
+        .hero-badge-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
             border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
         }
 
         .hero h1 {
-            font-size: 48px;
-            font-weight: 800;
-            margin-bottom: 16px;
-            position: relative;
-            z-index: 1;
-            letter-spacing: -1px;
+            font-size: 64px;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            letter-spacing: -2px;
+            animation: fadeInUp 0.8s ease 0.1s both;
         }
 
-        .hero p {
+        .hero h1 span {
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
             font-size: 20px;
-            opacity: 0.9;
+            color: rgba(255,255,255,0.7);
             max-width: 600px;
-            margin: 0 auto 32px;
-            position: relative;
-            z-index: 1;
-            line-height: 1.6;
+            margin: 0 auto 40px;
+            line-height: 1.7;
+            animation: fadeInUp 0.8s ease 0.2s both;
         }
 
         .hero-buttons {
             display: flex;
             gap: 16px;
             justify-content: center;
-            position: relative;
-            z-index: 1;
+            animation: fadeInUp 0.8s ease 0.3s both;
         }
 
-        .hero .btn {
-            padding: 16px 32px;
+        .btn-hero {
+            padding: 18px 36px;
             font-size: 16px;
+            font-weight: 700;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .hero .btn-white {
-            background: white;
-            color: #0d6b3d;
+        .btn-hero-primary {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
         }
 
-        .hero .btn-white:hover {
-            background: #f0f0f0;
+        .btn-hero-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.5);
         }
 
-        /* Stats Bar */
-        .stats-bar {
+        .btn-hero-secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-hero-secondary:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.3);
+            transform: translateY(-3px);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 80px 40px;
+            background: #0f172a;
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
-            margin-bottom: 64px;
+            gap: 32px;
         }
 
-        .stat-item {
+        .stat-box {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8));
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 16px;
+            padding: 32px;
             text-align: center;
-            padding: 32px 20px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
         }
 
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            border-radius: 50%;
+        .stat-box:hover {
+            transform: translateY(-5px);
+            border-color: rgba(16, 185, 129, 0.4);
+            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.15);
+        }
+
+        .stat-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+        }
+
+        .stat-icon-wrapper {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.05));
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 16px;
-            font-size: 28px;
+            margin: 0 auto 20px;
+            font-size: 32px;
         }
 
         .stat-number {
-            font-size: 36px;
-            font-weight: 800;
-            color: #0d6b3d;
+            font-size: 42px;
+            font-weight: 900;
+            color: white;
             margin-bottom: 4px;
         }
 
         .stat-label {
             font-size: 14px;
-            color: #64748b;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 100px 40px;
+            background: linear-gradient(180deg, #0f172a, #1e293b);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
-        }
-
-        /* About Section */
-        .about {
-            margin-bottom: 64px;
-        }
-
-        .about h2 {
-            text-align: center;
-            font-size: 32px;
-            color: #1e293b;
             margin-bottom: 16px;
         }
 
-        .about-subtitle {
-            text-align: center;
-            font-size: 18px;
-            color: #64748b;
-            max-width: 700px;
-            margin: 0 auto 48px;
+        .section-title {
+            font-size: 40px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 16px;
         }
 
-        .pillars {
+        .section-subtitle {
+            font-size: 18px;
+            color: rgba(255,255,255,0.6);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        .pillar {
-            background: white;
-            border-radius: 16px;
-            padding: 40px 32px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            border: 1px solid #e2e8f0;
-            transition: all 0.3s ease;
-        }
-
-        .pillar:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.12);
-        }
-
-        .pillar-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 24px;
+        .feature-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.6));
+            border: 1px solid rgba(255,255,255,0.08);
             border-radius: 20px;
+            padding: 40px 32px;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .feature-icon-box {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 36px;
-        }
-
-        .pillar-icon.green {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-        }
-
-        .pillar-icon.blue {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-        }
-
-        .pillar-icon.purple {
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-            color: white;
-        }
-
-        .pillar h3 {
-            font-size: 22px;
-            color: #1e293b;
-            margin-bottom: 12px;
-        }
-
-        .pillar p {
-            font-size: 15px;
-            color: #64748b;
-            line-height: 1.7;
-        }
-
-        /* How It Works */
-        .how-it-works {
-            background: #f8fafc;
-            padding: 64px 40px;
-            border-radius: 16px;
-            margin-bottom: 64px;
-        }
-
-        .how-it-works h2 {
-            text-align: center;
             font-size: 32px;
-            color: #1e293b;
-            margin-bottom: 48px;
-        }
-
-        .steps-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 40px;
-            position: relative;
-        }
-
-        .steps-container::before {
-            content: '';
-            position: absolute;
-            top: 40px;
-            left: 15%;
-            right: 15%;
-            height: 3px;
-            background: linear-gradient(90deg, #10b981, #3b82f6, #8b5cf6);
-            z-index: 0;
-        }
-
-        .step-card {
-            text-align: center;
+            margin-bottom: 24px;
             position: relative;
             z-index: 1;
         }
 
-        .step-number {
-            width: 80px;
-            height: 80px;
-            background: white;
-            border: 4px solid #10b981;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 28px;
-            font-weight: 800;
-            color: #10b981;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        .feature-icon-box.green {
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
         }
 
-        .step-card h3 {
-            font-size: 20px;
-            color: #1e293b;
-            margin-bottom: 8px;
+        .feature-icon-box.blue {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
         }
 
-        .step-card p {
+        .feature-icon-box.purple {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
+        }
+
+        .feature-card h3 {
+            font-size: 22px;
+            color: white;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-card p {
             font-size: 15px;
-            color: #64748b;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
         }
 
         /* Countries Section */
-        .countries {
-            margin-bottom: 64px;
-        }
-
-        .countries h2 {
-            text-align: center;
-            font-size: 32px;
-            color: #1e293b;
-            margin-bottom: 16px;
-        }
-
-        .countries-subtitle {
-            text-align: center;
-            font-size: 18px;
-            color: #64748b;
-            margin-bottom: 40px;
+        .countries-section {
+            padding: 100px 40px;
+            background: #0f172a;
         }
 
         .countries-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
+            gap: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .country-card {
-            background: white;
-            border-radius: 16px;
-            padding: 32px;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8));
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 40px;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            border: 1px solid #e2e8f0;
-            transition: all 0.3s ease;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .country-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+
+        .country-card:hover::after {
+            transform: scaleX(1);
         }
 
         .country-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            transform: translateY(-8px);
+            border-color: rgba(16, 185, 129, 0.3);
         }
 
         .country-flag {
-            font-size: 48px;
-            margin-bottom: 16px;
+            font-size: 64px;
+            margin-bottom: 20px;
         }
 
         .country-card h3 {
-            font-size: 20px;
-            color: #1e293b;
+            font-size: 24px;
+            color: white;
             margin-bottom: 8px;
         }
 
         .country-card p {
             font-size: 14px;
-            color: #64748b;
-            margin-bottom: 16px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 20px;
         }
 
-        .country-tests {
+        .country-badge {
             display: inline-block;
-            background: #e8f5e9;
-            color: #0d6b3d;
-            padding: 6px 16px;
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            padding: 8px 20px;
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
         }
 
         /* CTA Section */
-        .cta {
+        .cta-section {
+            padding: 100px 40px;
             background: linear-gradient(135deg, #0d6b3d 0%, #094d2c 100%);
-            color: white;
-            padding: 64px 40px;
-            border-radius: 16px;
             text-align: center;
-            margin-bottom: 64px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .cta h2 {
-            font-size: 36px;
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+            animation: rotate 30s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-section h2 {
+            font-size: 44px;
+            font-weight: 800;
+            color: white;
             margin-bottom: 16px;
         }
 
-        .cta p {
+        .cta-section p {
             font-size: 18px;
-            opacity: 0.9;
-            max-width: 600px;
-            margin: 0 auto 32px;
+            color: rgba(255,255,255,0.8);
+            max-width: 500px;
+            margin: 0 auto 40px;
         }
 
         .cta-buttons {
@@ -365,58 +653,67 @@
 
         /* Footer */
         .footer {
-            background: #1e293b;
-            color: white;
-            padding: 64px 40px 32px;
-            border-radius: 16px;
+            background: #0a0f1a;
+            padding: 80px 40px 40px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .footer-grid {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1fr;
             gap: 48px;
-            margin-bottom: 48px;
+            margin-bottom: 60px;
         }
 
         .footer-brand h3 {
-            font-size: 24px;
+            font-size: 28px;
+            color: white;
             margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .footer-brand p {
             font-size: 15px;
-            color: #94a3b8;
-            line-height: 1.7;
+            color: rgba(255,255,255,0.5);
+            line-height: 1.8;
         }
 
-        .footer-links h4 {
+        .footer-col h4 {
             font-size: 16px;
-            margin-bottom: 16px;
             color: white;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .footer-links ul {
+        .footer-col ul {
             list-style: none;
         }
 
-        .footer-links li {
-            margin-bottom: 10px;
+        .footer-col li {
+            margin-bottom: 12px;
         }
 
-        .footer-links a {
-            color: #94a3b8;
+        .footer-col a {
+            color: rgba(255,255,255,0.5);
             text-decoration: none;
             font-size: 14px;
-            transition: color 0.2s;
+            transition: color 0.3s;
         }
 
-        .footer-links a:hover {
+        .footer-col a:hover {
             color: #10b981;
         }
 
         .footer-bottom {
-            border-top: 1px solid #334155;
-            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding-top: 32px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -424,190 +721,272 @@
 
         .footer-bottom p {
             font-size: 14px;
-            color: #94a3b8;
+            color: rgba(255,255,255,0.4);
         }
 
         .footer-social {
             display: flex;
-            gap: 16px;
+            gap: 12px;
         }
 
         .footer-social a {
-            width: 40px;
-            height: 40px;
-            background: #334155;
-            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: rgba(255,255,255,0.6);
             text-decoration: none;
-            transition: background 0.2s;
+            font-size: 18px;
+            transition: all 0.3s;
         }
 
         .footer-social a:hover {
             background: #10b981;
+            border-color: #10b981;
+            color: white;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .hero h1 { font-size: 32px; }
-            .hero p { font-size: 16px; }
+            .navbar { padding: 12px 20px; }
+            .nav-links { display: none; }
+            .hero h1 { font-size: 36px; }
+            .hero-subtitle { font-size: 16px; }
             .hero-buttons { flex-direction: column; }
-            .stats-bar, .pillars, .steps-container, .countries-grid, .footer-grid {
+            .stats-container, .features-grid, .countries-grid, .footer-grid {
                 grid-template-columns: 1fr;
             }
-            .steps-container::before { display: none; }
+            .cta-section h2 { font-size: 28px; }
             .cta-buttons { flex-direction: column; }
-            .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+            .footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Hero Section -->
-        <div class="hero">
-            <h1>Moussoum Defar</h1>
-            <p>The missing data and AI infrastructure for Africa. We help AI models understand African contexts, languages, and cultures.</p>
-            <div class="hero-buttons">
-                <a href="/templates/client-register.html" class="btn btn-white">Register as Company</a>
-                <a href="/templates/worker-register.html" class="btn btn-outline" style="border-color: white; color: white;">Become a Worker</a>
-            </div>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="/templates/index.html" class="nav-logo">
+            <div class="nav-logo-icon">M</div>
+            Moussoum Defar
+        </a>
+        <div class="nav-links">
+            <a href="#features" class="nav-link">Features</a>
+            <a href="#countries" class="nav-link">Countries</a>
+            <a href="/api/docs/" class="nav-link">API</a>
+            <a href="/templates/client-login.html" class="nav-btn nav-btn-outline">Login</a>
+            <a href="/templates/client-register.html" class="nav-btn">Register</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-wrapper">
+        <div class="grid-bg">
+            <div class="grid-floor"></div>
         </div>
 
-        <!-- Stats Bar -->
-        <div class="stats-bar">
-            <div class="stat-item">
-                <div class="stat-icon">🌍</div>
+        <!-- Floating 3D Objects -->
+        <div class="floating-objects">
+            <!-- Cubes -->
+            <div class="float-cube">
+                <div class="cube-face front"></div>
+                <div class="cube-face back"></div>
+                <div class="cube-face left"></div>
+                <div class="cube-face right"></div>
+                <div class="cube-face top"></div>
+                <div class="cube-face bottom"></div>
+            </div>
+            <div class="float-cube">
+                <div class="cube-face front"></div>
+                <div class="cube-face back"></div>
+                <div class="cube-face left"></div>
+                <div class="cube-face right"></div>
+                <div class="cube-face top"></div>
+                <div class="cube-face bottom"></div>
+            </div>
+            <div class="float-cube">
+                <div class="cube-face front"></div>
+                <div class="cube-face back"></div>
+                <div class="cube-face left"></div>
+                <div class="cube-face right"></div>
+                <div class="cube-face top"></div>
+                <div class="cube-face bottom"></div>
+            </div>
+            <div class="float-cube">
+                <div class="cube-face front"></div>
+                <div class="cube-face back"></div>
+                <div class="cube-face left"></div>
+                <div class="cube-face right"></div>
+                <div class="cube-face top"></div>
+                <div class="cube-face bottom"></div>
+            </div>
+            <div class="float-cube">
+                <div class="cube-face front"></div>
+                <div class="cube-face back"></div>
+                <div class="cube-face left"></div>
+                <div class="cube-face right"></div>
+                <div class="cube-face top"></div>
+                <div class="cube-face bottom"></div>
+            </div>
+
+            <!-- Spheres -->
+            <div class="float-sphere"></div>
+            <div class="float-sphere"></div>
+            <div class="float-sphere"></div>
+            <div class="float-sphere"></div>
+
+            <!-- Rings -->
+            <div class="glow-ring"></div>
+            <div class="glow-ring"></div>
+            <div class="glow-ring"></div>
+        </div>
+
+        <!-- Hero Content -->
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="hero-badge-dot"></span>
+                Building Africa's AI Future
+            </div>
+            <h1>The Missing <span>AI Infrastructure</span> for Africa</h1>
+            <p class="hero-subtitle">We help AI models understand African contexts, languages, and cultures. Test your models against real African benchmarks.</p>
+            <div class="hero-buttons">
+                <a href="/templates/client-register.html" class="btn-hero btn-hero-primary">
+                    Get Started Free
+                    <span>→</span>
+                </a>
+                <a href="/templates/worker-register.html" class="btn-hero btn-hero-secondary">
+                    Become a Worker
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="stats-section">
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-icon-wrapper">🌍</div>
                 <div class="stat-number">3</div>
                 <div class="stat-label">Countries</div>
             </div>
-            <div class="stat-item">
-                <div class="stat-icon">📝</div>
+            <div class="stat-box">
+                <div class="stat-icon-wrapper">📝</div>
                 <div class="stat-number">62</div>
                 <div class="stat-label">Test Cases</div>
             </div>
-            <div class="stat-item">
-                <div class="stat-icon">🗣️</div>
+            <div class="stat-box">
+                <div class="stat-icon-wrapper">🗣️</div>
                 <div class="stat-number">10+</div>
                 <div class="stat-label">Languages</div>
             </div>
-            <div class="stat-item">
-                <div class="stat-icon">💰</div>
+            <div class="stat-box">
+                <div class="stat-icon-wrapper">💰</div>
                 <div class="stat-number">$0</div>
                 <div class="stat-label">To Start</div>
             </div>
         </div>
+    </div>
 
-        <!-- About Section -->
-        <div class="about">
-            <h2>What We Do</h2>
-            <p class="about-subtitle">Moussoum Defar is building the data infrastructure that Africa has been missing in the AI revolution.</p>
-            
-            <div class="pillars">
-                <div class="pillar">
-                    <div class="pillar-icon green">📊</div>
-                    <h3>Data Collection</h3>
-                    <p>Real people across Africa get paid to collect text, voice, and images in their own languages and communities.</p>
-                </div>
-                <div class="pillar">
-                    <div class="pillar-icon blue">🧪</div>
-                    <h3>AI Evaluation</h3>
-                    <p>Test your AI models against African benchmarks. See if they understand mobile money, local languages, and culture.</p>
-                </div>
-                <div class="pillar">
-                    <div class="pillar-icon purple">👥</div>
-                    <h3>Worker System</h3>
-                    <p>Students, linguists, and experts earn money contributing to better AI. Levels, scoring, and gamification.</p>
-                </div>
+    <!-- Features Section -->
+    <div class="features-section" id="features">
+        <div class="section-header">
+            <div class="section-tag">What We Do</div>
+            <h2 class="section-title">Complete AI Infrastructure</h2>
+            <p class="section-subtitle">From data collection to model evaluation, we provide everything you need to build AI that understands Africa.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon-box green">📊</div>
+                <h3>Data Collection</h3>
+                <p>Real people across Africa get paid to collect text, voice, and images in their own languages and communities.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-box blue">🧪</div>
+                <h3>AI Evaluation</h3>
+                <p>Test your AI models against African benchmarks. See if they understand mobile money, local languages, and culture.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-box purple">👥</div>
+                <h3>Worker System</h3>
+                <p>Students, linguists, and experts earn money contributing to better AI. Levels, scoring, and gamification.</p>
             </div>
         </div>
+    </div>
 
-        <!-- How It Works -->
-        <div class="how-it-works">
-            <h2>How It Works</h2>
-            <div class="steps-container">
-                <div class="step-card">
-                    <div class="step-number">1</div>
-                    <h3>Choose a Benchmark</h3>
-                    <p>Select the African country and context you want to test against.</p>
-                </div>
-                <div class="step-card">
-                    <div class="step-number">2</div>
-                    <h3>Submit Your Model</h3>
-                    <p>Provide your AI model's API endpoint and we'll run the tests.</p>
-                </div>
-                <div class="step-card">
-                    <div class="step-number">3</div>
-                    <h3>Get Results</h3>
-                    <p>Receive a detailed report on how your model performs in African contexts.</p>
-                </div>
+    <!-- Countries Section -->
+    <div class="countries-section" id="countries">
+        <div class="section-header">
+            <div class="section-tag">Benchmarks</div>
+            <h2 class="section-title">African Context Testing</h2>
+            <p class="section-subtitle">Start testing your AI models against real African contexts and scenarios.</p>
+        </div>
+        <div class="countries-grid">
+            <div class="country-card">
+                <div class="country-flag">🇸🇳</div>
+                <h3>Senegal</h3>
+                <p>Wolof, FCFA, Mobile Money, Culture</p>
+                <span class="country-badge">22 Tests</span>
+            </div>
+            <div class="country-card">
+                <div class="country-flag">🇳🇬</div>
+                <h3>Nigeria</h3>
+                <p>Pidgin, Naira, Fintech, Security</p>
+                <span class="country-badge">19 Tests</span>
+            </div>
+            <div class="country-card">
+                <div class="country-flag">🇰🇪</div>
+                <h3>Kenya</h3>
+                <p>Sheng, M-Pesa, Culture, Health</p>
+                <span class="country-badge">21 Tests</span>
             </div>
         </div>
+    </div>
 
-        <!-- Countries Section -->
-        <div class="countries">
-            <h2>Available Benchmarks</h2>
-            <p class="countries-subtitle">Start testing your AI models against real African contexts.</p>
-            
-            <div class="countries-grid">
-                <div class="country-card">
-                    <div class="country-flag">🇸🇳</div>
-                    <h3>Senegal</h3>
-                    <p>Wolof, FCFA, Mobile Money, Culture</p>
-                    <span class="country-tests">22 Tests</span>
-                </div>
-                <div class="country-card">
-                    <div class="country-flag">🇳🇬</div>
-                    <h3>Nigeria</h3>
-                    <p>Pidgin, Naira, Fintech, Security</p>
-                    <span class="country-tests">19 Tests</span>
-                </div>
-                <div class="country-card">
-                    <div class="country-flag">🇰🇪</div>
-                    <h3>Kenya</h3>
-                    <p>Sheng, M-Pesa, Culture, Health</p>
-                    <span class="country-tests">21 Tests</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- CTA Section -->
-        <div class="cta">
-            <h2>Ready to Get Started?</h2>
-            <p>Join us in building the AI infrastructure that Africa deserves.</p>
+    <!-- CTA Section -->
+    <div class="cta-section">
+        <div class="cta-content">
+            <h2>Ready to Build AI for Africa?</h2>
+            <p>Join us in building the AI infrastructure that Africa deserves. Start for free today.</p>
             <div class="cta-buttons">
-                <a href="/templates/client-register.html" class="btn btn-white">Test Your AI Model</a>
-                <a href="/templates/worker-register.html" class="btn btn-outline" style="border-color: white; color: white;">Become a Data Worker</a>
+                <a href="/templates/client-register.html" class="btn-hero btn-hero-primary">Start Free Trial</a>
+                <a href="/templates/worker-register.html" class="btn-hero btn-hero-secondary">Join as Worker</a>
             </div>
         </div>
+    </div>
 
-        <!-- Footer -->
-        <div class="footer">
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <h3>Moussoum Defar</h3>
+                    <h3>
+                        <div class="nav-logo-icon" style="width: 32px; height: 32px; font-size: 16px;">M</div>
+                        Moussoum Defar
+                    </h3>
                     <p>Building the missing data and AI infrastructure for Africa. We believe AI should understand every African language, culture, and context.</p>
                 </div>
-                <div class="footer-links">
+                <div class="footer-col">
                     <h4>Platform</h4>
                     <ul>
                         <li><a href="/templates/client-register.html">For Companies</a></li>
                         <li><a href="/templates/worker-register.html">For Workers</a></li>
                         <li><a href="/templates/evaluation.html">Evaluation Lab</a></li>
-                        <li><a href="/api/docs/">API Documentation</a></li>
+                        <li><a href="/api/docs/">API Docs</a></li>
                     </ul>
                 </div>
-                <div class="footer-links">
+                <div class="footer-col">
                     <h4>Countries</h4>
                     <ul>
                         <li><a href="#">Senegal</a></li>
                         <li><a href="#">Nigeria</a></li>
                         <li><a href="#">Kenya</a></li>
-                        <li><a href="#">More Coming Soon</a></li>
+                        <li><a href="#">Coming Soon</a></li>
                     </ul>
                 </div>
-                <div class="footer-links">
+                <div class="footer-col">
                     <h4>Contact</h4>
                     <ul>
                         <li><a href="mailto:malickoseme@gmail.com">malickoseme@gmail.com</a></li>
@@ -625,6 +1004,6 @@
                 </div>
             </div>
         </div>
-    </div>
+    </footer>
 </body>
 </html>

@@ -102,7 +102,7 @@
 
         .auth-card {
             width: 100%;
-            max-width: 480px;
+            max-width: 500px;
             background: rgba(30, 41, 59, 0.8);
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 24px;
@@ -171,6 +171,166 @@
             color: white;
         }
 
+        /* Multi-Select Dropdown */
+        .multi-select-wrapper {
+            position: relative;
+        }
+
+        .multi-select-trigger {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            font-size: 15px;
+            color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .multi-select-trigger:hover {
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .multi-select-trigger.active {
+            border-color: #10b981;
+        }
+
+        .multi-select-trigger .arrow {
+            font-size: 12px;
+            transition: transform 0.3s;
+        }
+
+        .multi-select-trigger.active .arrow {
+            transform: rotate(180deg);
+        }
+
+        .multi-select-trigger .selected-count {
+            background: #10b981;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .multi-select-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            max-height: 0;
+            overflow: hidden;
+            z-index: 100;
+            transition: max-height 0.3s ease;
+        }
+
+        .multi-select-dropdown.open {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .dropdown-header {
+            padding: 12px 16px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .dropdown-option {
+            padding: 12px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: background 0.2s;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .dropdown-option:hover {
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .dropdown-option.selected {
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .dropdown-option .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .dropdown-option.selected .checkbox {
+            background: #10b981;
+            border-color: #10b981;
+        }
+
+        .dropdown-option .checkbox::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .dropdown-option.selected .checkbox::after {
+            opacity: 1;
+        }
+
+        .dropdown-option .lang-name {
+            flex: 1;
+        }
+
+        .selected-langs-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .selected-lang-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            border-radius: 20px;
+            font-size: 13px;
+            color: #10b981;
+            font-weight: 500;
+        }
+
+        .selected-lang-tag button {
+            background: none;
+            border: none;
+            color: #10b981;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+            opacity: 0.7;
+        }
+
+        .selected-lang-tag button:hover {
+            opacity: 1;
+        }
+
         .btn-submit {
             width: 100%;
             padding: 16px;
@@ -225,124 +385,11 @@
         .alert-error { background: rgba(220, 38, 38, 0.1); color: #fca5a5; border: 1px solid rgba(220, 38, 38, 0.3); }
         .alert-success { background: rgba(16, 185, 129, 0.1); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.3); }
 
-        /* Language Selection Section - Below Form */
-        .language-section {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px;
-            padding: 24px;
-            margin-top: 8px;
-        }
-
-        .language-section h3 {
-            font-size: 16px;
-            color: white;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .language-section h3 span {
-            font-size: 20px;
-        }
-
-        .lang-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-
-        .lang-chip {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 12px 16px;
-            background: rgba(255,255,255,0.05);
-            border: 2px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
-            color: rgba(255,255,255,0.7);
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-        }
-
-        .lang-chip:hover {
-            border-color: rgba(16, 185, 129, 0.5);
-            background: rgba(16, 185, 129, 0.1);
-            color: white;
-        }
-
-        .lang-chip.selected {
-            background: #10b981;
-            border-color: #10b981;
-            color: white;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-        }
-
-        .lang-chip .check {
-            display: none;
-            font-size: 14px;
-        }
-
-        .lang-chip.selected .check {
-            display: inline;
-        }
-
-        .selected-languages {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .selected-lang-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 14px;
-            background: #10b981;
-            border-radius: 20px;
-            font-size: 13px;
-            color: white;
-            font-weight: 600;
-        }
-
-        .selected-lang-tag button {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            font-size: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-        }
-
-        .selected-lang-tag button:hover {
-            background: rgba(255,255,255,0.4);
-        }
-
-        .no-lang-text {
-            color: rgba(255,255,255,0.4);
-            font-size: 14px;
-        }
-
         @media (max-width: 900px) {
             .auth-wrapper { flex-direction: column; }
             .auth-left { padding: 40px 20px; }
             .auth-right { padding: 20px; }
             .form-row { grid-template-columns: 1fr; }
-            .lang-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
@@ -414,6 +461,21 @@
                         </div>
                     </div>
 
+                    <!-- Language Multi-Select Dropdown -->
+                    <div class="form-group">
+                        <label>Languages</label>
+                        <div class="multi-select-wrapper" id="langWrapper">
+                            <div class="multi-select-trigger" id="langTrigger">
+                                <span id="langPlaceholder">Select languages...</span>
+                                <span class="arrow">▼</span>
+                            </div>
+                            <div class="multi-select-dropdown" id="langDropdown">
+                                <div class="dropdown-header">Choose your languages</div>
+                            </div>
+                        </div>
+                        <div class="selected-langs-display" id="selectedLangsDisplay"></div>
+                    </div>
+
                     <div class="form-group">
                         <label>Bio</label>
                         <textarea id="bio" rows="3" placeholder="Tell us about your skills and experience..."></textarea>
@@ -421,15 +483,6 @@
 
                     <button type="submit" class="btn-submit" id="submitBtn">Create Account</button>
                 </form>
-
-                <!-- Language Selection Below Form -->
-                <div class="language-section">
-                    <h3><span>🗣️</span> Select Your Languages</h3>
-                    <div class="lang-grid" id="langGrid"></div>
-                    <div class="selected-languages" id="selectedLanguages">
-                        <span class="no-lang-text">No languages selected yet</span>
-                    </div>
-                </div>
 
                 <div class="auth-footer">
                     Already have an account? <a href="/templates/worker-login.html">Login here</a>
@@ -482,39 +535,47 @@
             countrySelect.appendChild(opt);
         });
 
-        // Render language grid
-        const langGrid = document.getElementById('langGrid');
-        const selectedLangsContainer = document.getElementById('selectedLanguages');
+        // Multi-select dropdown
+        const langTrigger = document.getElementById('langTrigger');
+        const langDropdown = document.getElementById('langDropdown');
+        const langPlaceholder = document.getElementById('langPlaceholder');
+        const selectedLangsDisplay = document.getElementById('selectedLangsDisplay');
 
-        function renderLangGrid() {
-            langGrid.innerHTML = allLanguages.map(l => `
-                <div class="lang-chip ${selectedLangs.includes(l.code) ? 'selected' : ''}" data-code="${l.code}">
-                    <span class="check">✓</span>
-                    ${l.name}
+        // Render dropdown options
+        function renderDropdown() {
+            const optionsHtml = allLanguages.map(l => `
+                <div class="dropdown-option ${selectedLangs.includes(l.code) ? 'selected' : ''}" data-code="${l.code}">
+                    <div class="checkbox"></div>
+                    <span class="lang-name">${l.name}</span>
                 </div>
             `).join('');
 
-            langGrid.querySelectorAll('.lang-chip').forEach(chip => {
-                chip.addEventListener('click', () => {
-                    const code = chip.dataset.code;
+            langDropdown.innerHTML = '<div class="dropdown-header">Choose your languages</div>' + optionsHtml;
+
+            langDropdown.querySelectorAll('.dropdown-option').forEach(opt => {
+                opt.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const code = opt.dataset.code;
                     if (selectedLangs.includes(code)) {
                         selectedLangs = selectedLangs.filter(l => l !== code);
                     } else {
                         selectedLangs.push(code);
                     }
-                    renderLangGrid();
-                    renderSelectedLangs();
+                    renderDropdown();
+                    renderSelectedTags();
+                    updatePlaceholder();
                 });
             });
         }
 
-        function renderSelectedLangs() {
+        // Render selected tags
+        function renderSelectedTags() {
             if (selectedLangs.length === 0) {
-                selectedLangsContainer.innerHTML = '<span class="no-lang-text">No languages selected yet</span>';
+                selectedLangsDisplay.innerHTML = '';
                 return;
             }
 
-            selectedLangsContainer.innerHTML = selectedLangs
+            selectedLangsDisplay.innerHTML = selectedLangs
                 .map(code => {
                     const lang = allLanguages.find(l => l.code === code);
                     return `
@@ -526,13 +587,42 @@
                 }).join('');
         }
 
+        // Update placeholder text
+        function updatePlaceholder() {
+            if (selectedLangs.length === 0) {
+                langPlaceholder.textContent = 'Select languages...';
+                langPlaceholder.style.color = 'rgba(255,255,255,0.5)';
+            } else {
+                langPlaceholder.textContent = `${selectedLangs.length} language(s) selected`;
+                langPlaceholder.style.color = 'white';
+            }
+        }
+
+        // Remove language
         window.removeLang = function(code) {
             selectedLangs = selectedLangs.filter(l => l !== code);
-            renderLangGrid();
-            renderSelectedLangs();
+            renderDropdown();
+            renderSelectedTags();
+            updatePlaceholder();
         };
 
-        renderLangGrid();
+        // Toggle dropdown
+        langTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            langTrigger.classList.toggle('active');
+            langDropdown.classList.toggle('open');
+        });
+
+        // Close dropdown on outside click
+        document.addEventListener('click', (e) => {
+            if (!document.getElementById('langWrapper').contains(e.target)) {
+                langTrigger.classList.remove('active');
+                langDropdown.classList.remove('open');
+            }
+        });
+
+        // Initialize
+        renderDropdown();
 
         // Form submission
         document.getElementById('registerForm').addEventListener('submit', async function(e) {

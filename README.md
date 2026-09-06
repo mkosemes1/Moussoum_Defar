@@ -68,17 +68,32 @@ docker compose up
 
 ## API Endpoints
 
+### Client (AI Model Testing)
+
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/api/v1/auth/register/` | POST | Register new user |
-| `/api/v1/auth/login/` | POST | Login |
-| `/api/v1/workers/` | GET | List workers |
+| `/api/v1/auth/register/` | POST | Register new client |
+| `/api/v1/auth/login/` | POST | Client login |
+| `/api/v1/clients/` | GET | List clients |
+| `/api/v1/clients/me/` | GET | Get current client profile |
+| `/api/v1/clients/usage/` | GET | Check evaluation usage |
 | `/api/v1/benchmarks/` | GET | List African benchmarks |
 | `/api/v1/benchmarks/{id}/tests/` | GET | Get test cases for benchmark |
 | `/api/v1/evaluations/` | POST | Submit model for evaluation |
 | `/api/v1/evaluations/{id}/report/` | GET | Get evaluation report |
 | `/api/v1/api-keys/` | GET | Manage API keys |
-| `/api/v1/clients/` | GET | List clients |
+
+### Worker (Data Collection)
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/workers/auth/register/` | POST | Register as worker |
+| `/api/v1/workers/auth/login/` | POST | Worker login |
+| `/api/v1/workers/auth/profile/` | GET/PUT | Get/update worker profile |
+| `/api/v1/workers/` | GET | List all workers |
+| `/api/v1/workers/{id}/` | GET | Get worker details |
+| `/api/v1/workers/data-collections/` | GET | List data collection projects |
+| `/api/v1/workers/submissions/` | POST | Submit data |
 
 ---
 
@@ -109,6 +124,66 @@ docker compose up
 ---
 
 ## API Examples
+
+### Client: Register
+
+```bash
+curl -X POST http://localhost:8000/api/v1/auth/register/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "mycompany",
+    "email": "contact@mycompany.com",
+    "password": "securepass123",
+    "company_name": "My Company SARL",
+    "company_description": "AI chatbot for banking"
+  }'
+```
+
+### Client: Login
+
+```bash
+curl -X POST http://localhost:8000/api/v1/auth/login/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "mycompany",
+    "password": "securepass123"
+  }'
+```
+
+### Worker: Register
+
+```bash
+curl -X POST http://localhost:8000/api/v1/workers/auth/register/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "amine_worker",
+    "email": "amine@example.com",
+    "password": "securepass123",
+    "password2": "securepass123",
+    "phone": "+221771234567",
+    "country": 1,
+    "languages": [1, 2],
+    "bio": "Linguist specializing in Wolof and French"
+  }'
+```
+
+### Worker: Login
+
+```bash
+curl -X POST http://localhost:8000/api/v1/workers/auth/login/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "amine_worker",
+    "password": "securepass123"
+  }'
+```
+
+### Worker: Get Profile
+
+```bash
+curl http://localhost:8000/api/v1/workers/auth/profile/ \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
 
 ### Evaluate a Model
 

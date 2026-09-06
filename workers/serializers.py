@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
 from .models import (
     Language, Country, Worker, WorkerLevel,
     DataCollection, DataSubmission, QualityLog
@@ -40,6 +41,74 @@ class WorkerSerializer(serializers.ModelSerializer):
             'accuracy', 'balance', 'is_verified', 'bio',
             'created_at', 'updated_at'
         ]
+
+
+class WorkerRegisterSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=150)
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True, validators=[validate_password])
+    password2 = serializers.CharField(write_only=True)
+    phone = serializers.CharField(max_length=20, required=False, default='')
+    country = serializers.PrimaryKeyRelatedField(
+        queryset=Country.objects.all(), required=False, allow_null=True
+    )
+    languages = serializers.PrimaryKeyRelatedField(
+        queryset=Language.objects.all(), many=True, required=False
+    )
+    bio = serializers.CharField(required=False, default='')
+
+    def validate_username(self, value):
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError("Username already exists")
+        return value
+
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Email already in use")
+        return value
+
+    def validate(self, attrs):
+        if attrs['password'] != attrs['password2']:
+            raise serializers.ValidationError({"password": "Passwords do not match"})
+        return attrs
+
+    def create(self, validated_data):
+        username = validated_data['username']
+        email = validated_data['email']
+        password = validated_data['password']
+        phone = validated_data.get('phone', '')
+        country = validated_data.get('country', None)
+        languages = validated_data.get('languages', [])
+        bio = validated_data.get('bio', '')
+
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
+
+        worker = Worker.objects.create(
+            user=user,
+            phone=phone,
+            country=country,
+            bio=bio
+        )
+
+        if languages:
+            worker.languages.set(languages)
+
+        return worker
+
+
+class WorkerLoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+
+class WorkerUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Worker
+        fields = ['phone', 'country', 'languages', 'bio']
 
 
 class WorkerCreateSerializer(serializers.ModelSerializer):

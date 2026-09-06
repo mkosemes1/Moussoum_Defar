@@ -9,8 +9,11 @@ urlpatterns = [
     # API Documentation
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    # API endpoints
+    # Client auth
     path('api/v1/auth/', include('clients.urls_auth')),
+    # Worker auth
+    path('api/v1/workers/auth/', include('workers.urls_auth')),
+    # API endpoints
     path('api/v1/workers/', include('workers.urls')),
     path('api/v1/', include('evaluation.urls')),
     path('api/v1/clients/', include('clients.urls')),

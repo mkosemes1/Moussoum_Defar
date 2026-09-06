@@ -49,13 +49,11 @@ class WorkerRegisterSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True)
     phone = serializers.CharField(max_length=20, required=False, default='')
-    country = serializers.PrimaryKeyRelatedField(
-        queryset=Country.objects.all(), required=False, allow_null=True
+    country = serializers.CharField(max_length=10, required=False, allow_blank=True, allow_null=True)
+    languages = serializers.ListField(
+        child=serializers.CharField(max_length=10), required=False, default=[]
     )
-    languages = serializers.PrimaryKeyRelatedField(
-        queryset=Language.objects.all(), many=True, required=False
-    )
-    bio = serializers.CharField(required=False, default='')
+    bio = serializers.CharField(required=False, default='', allow_blank=True)
 
     def validate_username(self, value):
         if User.objects.filter(username=value).exists():
@@ -77,8 +75,8 @@ class WorkerRegisterSerializer(serializers.Serializer):
         email = validated_data['email']
         password = validated_data['password']
         phone = validated_data.get('phone', '')
-        country = validated_data.get('country', None)
-        languages = validated_data.get('languages', [])
+        country_code = validated_data.get('country', '')
+        lang_codes = validated_data.get('languages', [])
         bio = validated_data.get('bio', '')
 
         user = User.objects.create_user(
@@ -87,6 +85,10 @@ class WorkerRegisterSerializer(serializers.Serializer):
             password=password
         )
 
+        country = None
+        if country_code:
+            country = Country.objects.filter(code=country_code).first()
+
         worker = Worker.objects.create(
             user=user,
             phone=phone,
@@ -94,8 +96,9 @@ class WorkerRegisterSerializer(serializers.Serializer):
             bio=bio
         )
 
-        if languages:
-            worker.languages.set(languages)
+        if lang_codes:
+            langs = Language.objects.filter(code__in=lang_codes)
+            worker.languages.set(langs)
 
         return worker
 

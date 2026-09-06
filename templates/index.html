@@ -98,7 +98,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #000000;
+            background: linear-gradient(180deg, #0f172a 0%, #1a2236 50%, #0f172a 100%);
             overflow: hidden;
         }
 
@@ -107,8 +107,9 @@
             position: absolute;
             inset: 0;
             background:
-                radial-gradient(ellipse 80% 60% at 50% 40%, rgba(16, 185, 129, 0.06) 0%, transparent 70%),
-                radial-gradient(ellipse 60% 40% at 20% 60%, rgba(59, 130, 246, 0.03) 0%, transparent 60%);
+                radial-gradient(ellipse 80% 60% at 50% 40%, rgba(16, 185, 129, 0.08) 0%, transparent 70%),
+                radial-gradient(ellipse 60% 40% at 20% 60%, rgba(59, 130, 246, 0.05) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 30% at 80% 30%, rgba(139, 92, 246, 0.03) 0%, transparent 60%);
         }
 
         /* Grid background */
@@ -116,8 +117,8 @@
             position: absolute;
             inset: 0;
             background-image:
-                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
             background-size: 80px 80px;
             mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 20%, transparent 70%);
             -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 20%, transparent 70%);
@@ -131,13 +132,13 @@
             right: -20%;
             height: 60%;
             background-image:
-                linear-gradient(rgba(16, 185, 129, 0.06) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(16, 185, 129, 0.06) 1px, transparent 1px);
+                linear-gradient(rgba(16, 185, 129, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(16, 185, 129, 0.08) 1px, transparent 1px);
             background-size: 100px 100px;
             transform: perspective(500px) rotateX(60deg);
             transform-origin: center bottom;
-            mask-image: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
-            -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
+            mask-image: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%);
+            -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%);
             animation: floorScroll 20s linear infinite;
         }
 
@@ -146,139 +147,7 @@
             100% { background-position: 100px 100px; }
         }
 
-        /* Wireframe Africa Map */
-        .africa-wireframe {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: 420px;
-            height: 500px;
-            opacity: 0;
-            animation: wireframeReveal 2s ease 0.3s forwards;
-        }
-
-        @keyframes wireframeReveal {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
-
-        .africa-wireframe svg {
-            width: 100%;
-            height: 100%;
-            filter: drop-shadow(0 0 40px rgba(16, 185, 129, 0.15));
-        }
-
-        .africa-wireframe .map-outline {
-            fill: none;
-            stroke: rgba(16, 185, 129, 0.35);
-            stroke-width: 1.2;
-            stroke-dasharray: 2000;
-            stroke-dashoffset: 2000;
-            animation: drawMap 3s ease 0.5s forwards;
-        }
-
-        .africa-wireframe .map-fill {
-            fill: rgba(16, 185, 129, 0.03);
-            opacity: 0;
-            animation: fadeIn 1s ease 2s forwards;
-        }
-
-        .africa-wireframe .grid-line {
-            stroke: rgba(16, 185, 129, 0.08);
-            stroke-width: 0.5;
-            stroke-dasharray: 4 4;
-        }
-
-        .africa-wireframe .data-line {
-            fill: none;
-            stroke: rgba(16, 185, 129, 0.15);
-            stroke-width: 0.8;
-            stroke-dasharray: 600;
-            stroke-dashoffset: 600;
-            animation: drawMap 2s ease 1.5s forwards;
-        }
-
-        @keyframes drawMap {
-            to { stroke-dashoffset: 0; }
-        }
-
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
-
-        /* Country nodes on wireframe */
-        .wireframe-node {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #10b981;
-            box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), 0 0 30px rgba(16, 185, 129, 0.2);
-            opacity: 0;
-            animation: nodeAppear 0.5s ease forwards;
-        }
-
-        .wireframe-node::before {
-            content: '';
-            position: absolute;
-            inset: -8px;
-            border-radius: 50%;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            animation: nodePulse 2.5s ease-in-out infinite;
-        }
-
-        .wireframe-node::after {
-            content: attr(data-label);
-            position: absolute;
-            top: -24px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 10px;
-            font-weight: 500;
-            color: rgba(255,255,255,0.6);
-            white-space: nowrap;
-            font-family: 'Inter', sans-serif;
-            letter-spacing: 0.05em;
-        }
-
-        .wireframe-node:nth-child(1) { top: 35%; left: 38%; animation-delay: 2.2s; }
-        .wireframe-node:nth-child(2) { top: 45%; left: 52%; animation-delay: 2.5s; }
-        .wireframe-node:nth-child(3) { top: 58%; left: 62%; animation-delay: 2.8s; }
-
-        @keyframes nodeAppear {
-            0% { opacity: 0; transform: scale(0); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes nodePulse {
-            0%, 100% { transform: scale(1); opacity: 0.6; }
-            50% { transform: scale(2); opacity: 0; }
-        }
-
-        /* Connection lines between nodes */
-        .wireframe-connection {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-
-        .wireframe-connection line {
-            stroke: rgba(16, 185, 129, 0.12);
-            stroke-width: 0.8;
-            stroke-dasharray: 4 4;
-            animation: connectionPulse 3s ease-in-out infinite;
-        }
-
-        @keyframes connectionPulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.8; }
-        }
-
-        /* Orbital data elements */
+        /* Code snippet particles */
         .orbital-system {
             position: absolute;
             inset: 0;
@@ -288,7 +157,7 @@
         .orbit-ring {
             position: absolute;
             border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
         }
 
         .orbit-ring:nth-child(1) {
@@ -322,8 +191,8 @@
             position: absolute;
             width: 56px;
             height: 56px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -380,7 +249,7 @@
             position: absolute;
             font-family: 'Geist Mono', 'Courier New', monospace;
             font-size: 11px;
-            color: rgba(16, 185, 129, 0.25);
+            color: rgba(16, 185, 129, 0.35);
             letter-spacing: 0.02em;
             animation: snippetDrift 8s ease-in-out infinite;
             white-space: nowrap;
@@ -562,9 +431,9 @@
 
         /* ===== STATS BAND ===== */
         .stats-band {
-            background: #09090b;
-            border-top: 1px solid rgba(255,255,255,0.04);
-            border-bottom: 1px solid rgba(255,255,255,0.04);
+            background: linear-gradient(180deg, #131928 0%, #181f30 100%);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
             padding: 48px 0;
         }
 
@@ -613,7 +482,7 @@
         /* ===== FEATURES ===== */
         .features {
             padding: 120px 48px;
-            background: #000000;
+            background: linear-gradient(180deg, #0f172a 0%, #151d2e 100%);
         }
 
         .features-header {
@@ -648,34 +517,34 @@
         .features-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 1px;
+            gap: 24px;
             max-width: 1200px;
             margin: 0 auto;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 16px;
-            overflow: hidden;
         }
 
         .feature-cell {
-            background: #09090b;
-            padding: 48px 36px;
-            transition: background 0.3s;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 56px 40px;
+            transition: all 0.3s;
         }
 
         .feature-cell:hover {
-            background: #0f0f12;
+            background: rgba(20, 28, 45, 0.7);
+            border-color: rgba(16, 185, 129, 0.2);
+            transform: translateY(-4px);
         }
 
         .feature-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
-            margin-bottom: 24px;
+            font-size: 28px;
+            margin-bottom: 28px;
         }
 
         .feature-icon.green { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.15); }
@@ -683,22 +552,22 @@
         .feature-icon.purple { background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.15); }
 
         .feature-cell h3 {
-            font-size: 18px;
+            font-size: 22px;
             font-weight: 500;
             color: white;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .feature-cell p {
-            font-size: 14px;
-            color: rgba(255,255,255,0.4);
+            font-size: 15px;
+            color: rgba(255,255,255,0.45);
             line-height: 1.7;
         }
 
         /* ===== COUNTRIES ===== */
         .countries {
             padding: 120px 48px;
-            background: #09090b;
+            background: linear-gradient(180deg, #151d2e 0%, #0f172a 100%);
         }
 
         .countries-header {
@@ -737,16 +606,18 @@
         }
 
         .country-card {
-            background: #000000;
-            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255,255,255,0.08);
             border-radius: 16px;
             padding: 40px 32px;
             transition: all 0.3s;
+            backdrop-filter: blur(10px);
         }
 
         .country-card:hover {
-            border-color: rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.25);
             transform: translateY(-4px);
+            background: rgba(20, 28, 45, 0.7);
         }
 
         .country-flag { font-size: 48px; margin-bottom: 20px; }
@@ -767,7 +638,7 @@
         /* ===== CTA ===== */
         .cta {
             padding: 120px 48px;
-            background: #000000;
+            background: linear-gradient(135deg, #0d3320 0%, #1a2236 50%, #0f172a 100%);
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -777,7 +648,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(16, 185, 129, 0.06) 0%, transparent 70%);
+            background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
         }
 
         .cta-content { position: relative; z-index: 1; }
@@ -801,8 +672,8 @@
 
         /* ===== FOOTER ===== */
         .footer {
-            background: #000000;
-            border-top: 1px solid rgba(255,255,255,0.04);
+            background: #0a0f1a;
+            border-top: 1px solid rgba(255,255,255,0.06);
             padding: 64px 48px 40px;
         }
 
@@ -935,51 +806,6 @@
             <div class="code-snippet">currency: "FCFA"</div>
             <div class="code-snippet">mpesa.transfer(1500)</div>
             <div class="code-snippet">evaluate(model, "sn")</div>
-        </div>
-
-        <!-- Wireframe Africa -->
-        <div class="africa-wireframe">
-            <svg viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="wireGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.4" />
-                        <stop offset="100%" style="stop-color:#10b981;stop-opacity:0.1" />
-                    </linearGradient>
-                </defs>
-
-                <!-- Grid lines -->
-                <line x1="20" y1="0" x2="20" y2="260" class="grid-line"/>
-                <line x1="60" y1="0" x2="60" y2="260" class="grid-line"/>
-                <line x1="100" y1="0" x2="100" y2="260" class="grid-line"/>
-                <line x1="140" y1="0" x2="140" y2="260" class="grid-line"/>
-                <line x1="180" y1="0" x2="180" y2="260" class="grid-line"/>
-                <line x1="0" y1="30" x2="200" y2="30" class="grid-line"/>
-                <line x1="0" y1="80" x2="200" y2="80" class="grid-line"/>
-                <line x1="0" y1="130" x2="200" y2="130" class="grid-line"/>
-                <line x1="0" y1="180" x2="200" y2="180" class="grid-line"/>
-                <line x1="0" y1="230" x2="200" y2="230" class="grid-line"/>
-
-                <!-- Africa outline (wireframe) -->
-                <path class="map-fill" d="M 95 5 C 105 3 115 5 120 10 C 130 18 135 25 140 35 C 148 50 155 65 160 80 C 165 95 170 110 172 125 C 174 140 175 155 172 170 C 168 188 160 205 150 218 C 140 232 128 242 115 252 C 105 260 95 265 85 268 C 75 270 65 268 55 262 C 45 255 38 245 32 232 C 26 218 22 202 20 185 C 18 168 18 150 20 135 C 22 118 26 102 32 88 C 38 72 45 58 55 45 C 62 35 70 25 78 18 C 85 12 90 7 95 5 Z"/>
-                <path class="map-outline" d="M 95 5 C 105 3 115 5 120 10 C 130 18 135 25 140 35 C 148 50 155 65 160 80 C 165 95 170 110 172 125 C 174 140 175 155 172 170 C 168 188 160 205 150 218 C 140 232 128 242 115 252 C 105 260 95 265 85 268 C 75 270 65 268 55 262 C 45 255 38 245 32 232 C 26 218 22 202 20 185 C 18 168 18 150 20 135 C 22 118 26 102 32 88 C 38 72 45 58 55 45 C 62 35 70 25 78 18 C 85 12 90 7 95 5 Z"/>
-
-                <!-- Data flow lines -->
-                <path class="data-line" d="M 75 80 Q 90 100 85 130 Q 80 160 90 180"/>
-                <path class="data-line" d="M 105 90 Q 115 120 110 150 Q 105 180 115 200" style="animation-delay: 0.3s"/>
-                <path class="data-line" d="M 60 100 Q 80 120 95 140 Q 110 160 120 175" style="animation-delay: 0.6s"/>
-            </svg>
-
-            <!-- Country nodes -->
-            <div class="wireframe-node" data-label="Dakar"></div>
-            <div class="wireframe-node" data-label="Lagos"></div>
-            <div class="wireframe-node" data-label="Nairobi"></div>
-
-            <!-- Connection lines SVG overlay -->
-            <svg class="wireframe-connection" viewBox="0 0 200 260">
-                <line x1="75" y1="80" x2="105" y2="90"/>
-                <line x1="105" y1="90" x2="115" y2="130"/>
-                <line x1="75" y1="80" x2="115" y2="130"/>
-            </svg>
         </div>
 
         <!-- Content -->

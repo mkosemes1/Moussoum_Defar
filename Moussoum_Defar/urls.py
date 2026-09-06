@@ -1,7 +1,8 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.static import serve
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
@@ -17,6 +18,8 @@ urlpatterns = [
     path('api/v1/workers/', include('workers.urls')),
     path('api/v1/', include('evaluation.urls')),
     path('api/v1/clients/', include('clients.urls')),
+    # Web pages
+    re_path(r'^templates/(?P<path>.*)$', serve, {'document_root': settings.BASE_DIR / 'templates'}),
 ]
 
 if settings.DEBUG:

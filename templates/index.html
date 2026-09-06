@@ -750,6 +750,231 @@
             color: white;
         }
 
+        /* 3D Robot */
+        .robot-container {
+            position: absolute;
+            right: 10%;
+            top: 50%;
+            transform: translateY(-50%);
+            perspective: 1000px;
+        }
+
+        .robot {
+            transform-style: preserve-3d;
+            animation: robotFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes robotFloat {
+            0%, 100% { transform: translateY(0) rotateY(0deg); }
+            25% { transform: translateY(-15px) rotateY(5deg); }
+            50% { transform: translateY(-5px) rotateY(0deg); }
+            75% { transform: translateY(-20px) rotateY(-5deg); }
+        }
+
+        .robot-head {
+            width: 80px;
+            height: 90px;
+            background: linear-gradient(145deg, #3b82f6, #1d4ed8);
+            border-radius: 20px 20px 15px 15px;
+            margin: 0 auto;
+            position: relative;
+            transform-style: preserve-3d;
+            box-shadow: 
+                inset 0 0 20px rgba(255,255,255,0.1),
+                0 10px 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .robot-face {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 50px;
+        }
+
+        .robot-eye {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: #10b981;
+            border-radius: 50%;
+            top: 5px;
+            box-shadow: 0 0 15px #10b981, 0 0 30px #10b981;
+            animation: eyeGlow 2s ease-in-out infinite;
+        }
+
+        .robot-eye.left { left: 8px; }
+        .robot-eye.right { right: 8px; }
+
+        @keyframes eyeGlow {
+            0%, 100% { box-shadow: 0 0 15px #10b981, 0 0 30px #10b981; }
+            50% { box-shadow: 0 0 25px #10b981, 0 0 50px #10b981; }
+        }
+
+        .robot-mouth {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 4px;
+            box-shadow: 0 0 10px #10b981;
+        }
+
+        .robot-antenna {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(to top, #3b82f6, #60a5fa);
+        }
+
+        .antenna-ball {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 12px;
+            background: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 20px #10b981;
+            animation: antennaPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes antennaPulse {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.3); }
+        }
+
+        .robot-neck {
+            width: 20px;
+            height: 15px;
+            background: linear-gradient(to bottom, #2563eb, #1d4ed8);
+            margin: 0 auto;
+            border-radius: 3px;
+        }
+
+        .robot-body {
+            width: 100px;
+            height: 120px;
+            background: linear-gradient(145deg, #3b82f6, #1d4ed8);
+            border-radius: 15px 15px 20px 20px;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: 
+                inset 0 0 30px rgba(255,255,255,0.1),
+                0 15px 40px rgba(59, 130, 246, 0.3);
+        }
+
+        .robot-chest {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chest-light {
+            width: 20px;
+            height: 20px;
+            background: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 20px #10b981, 0 0 40px #10b981;
+            animation: chestPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes chestPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        .robot-arm {
+            position: absolute;
+            width: 25px;
+            height: 80px;
+            background: linear-gradient(145deg, #3b82f6, #1d4ed8);
+            border-radius: 12px;
+            top: 100px;
+            box-shadow: inset 0 0 10px rgba(255,255,255,0.1);
+        }
+
+        .robot-arm.left {
+            left: -30px;
+            transform: rotate(10deg);
+            animation: armSwingLeft 3s ease-in-out infinite;
+        }
+
+        .robot-arm.right {
+            right: -30px;
+            transform: rotate(-10deg);
+            animation: armSwingRight 3s ease-in-out infinite;
+        }
+
+        @keyframes armSwingLeft {
+            0%, 100% { transform: rotate(10deg); }
+            50% { transform: rotate(15deg); }
+        }
+
+        @keyframes armSwingRight {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(-15deg); }
+        }
+
+        .robot-hand {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: #2563eb;
+            border-radius: 50%;
+        }
+
+        .robot-legs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 5px;
+        }
+
+        .robot-leg {
+            width: 30px;
+            height: 60px;
+            background: linear-gradient(145deg, #3b82f6, #1d4ed8);
+            border-radius: 8px 8px 12px 12px;
+            box-shadow: inset 0 0 10px rgba(255,255,255,0.1);
+        }
+
+        .robot-glow {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 30px;
+            background: radial-gradient(ellipse, rgba(16, 185, 129, 0.4) 0%, transparent 70%);
+            filter: blur(10px);
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+            50% { opacity: 0.8; transform: translateX(-50%) scale(1.1); }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .navbar { padding: 12px 20px; }
@@ -842,6 +1067,45 @@
             <div class="glow-ring"></div>
             <div class="glow-ring"></div>
             <div class="glow-ring"></div>
+
+            <!-- 3D Robot -->
+            <div class="robot-container">
+                <div class="robot">
+                    <!-- Head -->
+                    <div class="robot-head">
+                        <div class="robot-face">
+                            <div class="robot-eye left"></div>
+                            <div class="robot-eye right"></div>
+                            <div class="robot-mouth"></div>
+                        </div>
+                        <div class="robot-antenna">
+                            <div class="antenna-ball"></div>
+                        </div>
+                    </div>
+                    <!-- Neck -->
+                    <div class="robot-neck"></div>
+                    <!-- Body -->
+                    <div class="robot-body">
+                        <div class="robot-chest">
+                            <div class="chest-light"></div>
+                        </div>
+                    </div>
+                    <!-- Arms -->
+                    <div class="robot-arm left">
+                        <div class="robot-hand"></div>
+                    </div>
+                    <div class="robot-arm right">
+                        <div class="robot-hand"></div>
+                    </div>
+                    <!-- Legs -->
+                    <div class="robot-legs">
+                        <div class="robot-leg left"></div>
+                        <div class="robot-leg right"></div>
+                    </div>
+                </div>
+                <!-- Glow effect under robot -->
+                <div class="robot-glow"></div>
+            </div>
         </div>
 
         <!-- Hero Content -->

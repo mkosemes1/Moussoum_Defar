@@ -5,55 +5,625 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moussoum Defar - African AI Infrastructure</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #0d6b3d 0%, #094d2c 50%, #073d22 100%);
+            color: white;
+            padding: 80px 40px;
+            border-radius: 16px;
+            margin-bottom: 48px;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -150px;
+            left: -50px;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 50%;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 32px;
+            position: relative;
+            z-index: 1;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero .btn {
+            padding: 16px 32px;
+            font-size: 16px;
+        }
+
+        .hero .btn-white {
+            background: white;
+            color: #0d6b3d;
+        }
+
+        .hero .btn-white:hover {
+            background: #f0f0f0;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 64px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 32px 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 28px;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 800;
+            color: #0d6b3d;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* About Section */
+        .about {
+            margin-bottom: 64px;
+        }
+
+        .about h2 {
+            text-align: center;
+            font-size: 32px;
+            color: #1e293b;
+            margin-bottom: 16px;
+        }
+
+        .about-subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: #64748b;
+            max-width: 700px;
+            margin: 0 auto 48px;
+        }
+
+        .pillars {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+
+        .pillar {
+            background: white;
+            border-radius: 16px;
+            padding: 40px 32px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .pillar:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+        }
+
+        .pillar-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+
+        .pillar-icon.green {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .pillar-icon.blue {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .pillar-icon.purple {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+        }
+
+        .pillar h3 {
+            font-size: 22px;
+            color: #1e293b;
+            margin-bottom: 12px;
+        }
+
+        .pillar p {
+            font-size: 15px;
+            color: #64748b;
+            line-height: 1.7;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            background: #f8fafc;
+            padding: 64px 40px;
+            border-radius: 16px;
+            margin-bottom: 64px;
+        }
+
+        .how-it-works h2 {
+            text-align: center;
+            font-size: 32px;
+            color: #1e293b;
+            margin-bottom: 48px;
+        }
+
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            position: relative;
+        }
+
+        .steps-container::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 15%;
+            right: 15%;
+            height: 3px;
+            background: linear-gradient(90deg, #10b981, #3b82f6, #8b5cf6);
+            z-index: 0;
+        }
+
+        .step-card {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border: 4px solid #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 28px;
+            font-weight: 800;
+            color: #10b981;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .step-card h3 {
+            font-size: 20px;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .step-card p {
+            font-size: 15px;
+            color: #64748b;
+        }
+
+        /* Countries Section */
+        .countries {
+            margin-bottom: 64px;
+        }
+
+        .countries h2 {
+            text-align: center;
+            font-size: 32px;
+            color: #1e293b;
+            margin-bottom: 16px;
+        }
+
+        .countries-subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: #64748b;
+            margin-bottom: 40px;
+        }
+
+        .countries-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .country-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .country-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        .country-flag {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .country-card h3 {
+            font-size: 20px;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .country-card p {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+
+        .country-tests {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #0d6b3d;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* CTA Section */
+        .cta {
+            background: linear-gradient(135deg, #0d6b3d 0%, #094d2c 100%);
+            color: white;
+            padding: 64px 40px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .cta h2 {
+            font-size: 36px;
+            margin-bottom: 16px;
+        }
+
+        .cta p {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1e293b;
+            color: white;
+            padding: 64px 40px 32px;
+            border-radius: 16px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 48px;
+            margin-bottom: 48px;
+        }
+
+        .footer-brand h3 {
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .footer-brand p {
+            font-size: 15px;
+            color: #94a3b8;
+            line-height: 1.7;
+        }
+
+        .footer-links h4 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            color: white;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: #10b981;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #334155;
+            padding-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-bottom p {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 16px;
+        }
+
+        .footer-social a {
+            width: 40px;
+            height: 40px;
+            background: #334155;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .footer-social a:hover {
+            background: #10b981;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 32px; }
+            .hero p { font-size: 16px; }
+            .hero-buttons { flex-direction: column; }
+            .stats-bar, .pillars, .steps-container, .countries-grid, .footer-grid {
+                grid-template-columns: 1fr;
+            }
+            .steps-container::before { display: none; }
+            .cta-buttons { flex-direction: column; }
+            .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
+        <!-- Hero Section -->
+        <div class="hero">
             <h1>Moussoum Defar</h1>
-            <p>Data and AI Infrastructure for Africa</p>
+            <p>The missing data and AI infrastructure for Africa. We help AI models understand African contexts, languages, and cultures.</p>
+            <div class="hero-buttons">
+                <a href="/templates/client-register.html" class="btn btn-white">Register as Company</a>
+                <a href="/templates/worker-register.html" class="btn btn-outline" style="border-color: white; color: white;">Become a Worker</a>
+            </div>
         </div>
 
-        <div class="roles">
-            <div class="role-card">
-                <div class="role-icon">🏢</div>
-                <h2>I'm a Company</h2>
-                <p>Test your AI models against African benchmarks. See if your chatbot understands Wolof, FCFA, or M-Pesa.</p>
-                <div class="btn-group">
-                    <a href="/templates/client-register.html" class="btn">Register Company</a>
-                    <a href="/templates/client-login.html" class="btn btn-outline">Login</a>
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-icon">🌍</div>
+                <div class="stat-number">3</div>
+                <div class="stat-label">Countries</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon">📝</div>
+                <div class="stat-number">62</div>
+                <div class="stat-label">Test Cases</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon">🗣️</div>
+                <div class="stat-number">10+</div>
+                <div class="stat-label">Languages</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon">💰</div>
+                <div class="stat-number">$0</div>
+                <div class="stat-label">To Start</div>
+            </div>
+        </div>
+
+        <!-- About Section -->
+        <div class="about">
+            <h2>What We Do</h2>
+            <p class="about-subtitle">Moussoum Defar is building the data infrastructure that Africa has been missing in the AI revolution.</p>
+            
+            <div class="pillars">
+                <div class="pillar">
+                    <div class="pillar-icon green">📊</div>
+                    <h3>Data Collection</h3>
+                    <p>Real people across Africa get paid to collect text, voice, and images in their own languages and communities.</p>
+                </div>
+                <div class="pillar">
+                    <div class="pillar-icon blue">🧪</div>
+                    <h3>AI Evaluation</h3>
+                    <p>Test your AI models against African benchmarks. See if they understand mobile money, local languages, and culture.</p>
+                </div>
+                <div class="pillar">
+                    <div class="pillar-icon purple">👥</div>
+                    <h3>Worker System</h3>
+                    <p>Students, linguists, and experts earn money contributing to better AI. Levels, scoring, and gamification.</p>
                 </div>
             </div>
-            <div class="role-card">
-                <div class="role-icon">👤</div>
-                <h2>I'm a Worker</h2>
-                <p>Earn money by collecting data in your language and community. Students, linguists, experts welcome.</p>
-                <div class="btn-group">
-                    <a href="/templates/worker-register.html" class="btn">Register Worker</a>
-                    <a href="/templates/worker-login.html" class="btn btn-outline">Login</a>
+        </div>
+
+        <!-- How It Works -->
+        <div class="how-it-works">
+            <h2>How It Works</h2>
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Choose a Benchmark</h3>
+                    <p>Select the African country and context you want to test against.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Submit Your Model</h3>
+                    <p>Provide your AI model's API endpoint and we'll run the tests.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Get Results</h3>
+                    <p>Receive a detailed report on how your model performs in African contexts.</p>
                 </div>
             </div>
         </div>
 
-        <div class="features">
-            <div class="feature">
-                <div class="feature-icon">📊</div>
-                <h3>Data Collection</h3>
-                <p>Real people, real data. Workers across Africa get paid to collect text, voice, and images.</p>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">🧪</div>
-                <h3>AI Evaluation</h3>
-                <p>Test your AI against 62 African test cases. Mobile money, local languages, culture.</p>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">🎮</div>
-                <h3>Worker System</h3>
-                <p>Students, linguists, experts earn money contributing to better AI. Levels, scoring, gamification.</p>
+        <!-- Countries Section -->
+        <div class="countries">
+            <h2>Available Benchmarks</h2>
+            <p class="countries-subtitle">Start testing your AI models against real African contexts.</p>
+            
+            <div class="countries-grid">
+                <div class="country-card">
+                    <div class="country-flag">🇸🇳</div>
+                    <h3>Senegal</h3>
+                    <p>Wolof, FCFA, Mobile Money, Culture</p>
+                    <span class="country-tests">22 Tests</span>
+                </div>
+                <div class="country-card">
+                    <div class="country-flag">🇳🇬</div>
+                    <h3>Nigeria</h3>
+                    <p>Pidgin, Naira, Fintech, Security</p>
+                    <span class="country-tests">19 Tests</span>
+                </div>
+                <div class="country-card">
+                    <div class="country-flag">🇰🇪</div>
+                    <h3>Kenya</h3>
+                    <p>Sheng, M-Pesa, Culture, Health</p>
+                    <span class="country-tests">21 Tests</span>
+                </div>
             </div>
         </div>
 
+        <!-- CTA Section -->
+        <div class="cta">
+            <h2>Ready to Get Started?</h2>
+            <p>Join us in building the AI infrastructure that Africa deserves.</p>
+            <div class="cta-buttons">
+                <a href="/templates/client-register.html" class="btn btn-white">Test Your AI Model</a>
+                <a href="/templates/worker-register.html" class="btn btn-outline" style="border-color: white; color: white;">Become a Data Worker</a>
+            </div>
+        </div>
+
+        <!-- Footer -->
         <div class="footer">
-            <p>Made in Africa, for Africa.</p>
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>Moussoum Defar</h3>
+                    <p>Building the missing data and AI infrastructure for Africa. We believe AI should understand every African language, culture, and context.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Platform</h4>
+                    <ul>
+                        <li><a href="/templates/client-register.html">For Companies</a></li>
+                        <li><a href="/templates/worker-register.html">For Workers</a></li>
+                        <li><a href="/templates/evaluation.html">Evaluation Lab</a></li>
+                        <li><a href="/api/docs/">API Documentation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Countries</h4>
+                    <ul>
+                        <li><a href="#">Senegal</a></li>
+                        <li><a href="#">Nigeria</a></li>
+                        <li><a href="#">Kenya</a></li>
+                        <li><a href="#">More Coming Soon</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="mailto:malickoseme@gmail.com">malickoseme@gmail.com</a></li>
+                        <li><a href="#">GitHub</a></li>
+                        <li><a href="#">Twitter</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Moussoum Defar. Made in Africa, for Africa.</p>
+                <div class="footer-social">
+                    <a href="#">𝕏</a>
+                    <a href="#">in</a>
+                    <a href="#">GH</a>
+                </div>
+            </div>
         </div>
     </div>
 </body>

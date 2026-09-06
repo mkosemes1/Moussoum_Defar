@@ -94,8 +94,8 @@
         /* Hero with 3D */
         .hero-wrapper {
             padding-top: 100px;
-            padding-bottom: 60px;
-            min-height: 100vh;
+            padding-bottom: 40px;
+            min-height: 90vh;
             background: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
             position: relative;
             overflow: hidden;
@@ -753,9 +753,9 @@
         /* 3D Robot */
         .robot-container {
             position: absolute;
-            right: 10%;
+            right: 8%;
             top: 50%;
-            transform: translateY(-50%);
+            transform: translateY(-50%) scale(1.4);
             perspective: 1000px;
         }
 
@@ -772,15 +772,15 @@
         }
 
         .robot-head {
-            width: 80px;
-            height: 90px;
+            width: 100px;
+            height: 110px;
             background: linear-gradient(145deg, #3b82f6, #1d4ed8);
-            border-radius: 20px 20px 15px 15px;
+            border-radius: 25px 25px 18px 18px;
             margin: 0 auto;
             position: relative;
             transform-style: preserve-3d;
             box-shadow: 
-                inset 0 0 20px rgba(255,255,255,0.1),
+                inset 0 0 25px rgba(255,255,255,0.1),
                 0 10px 30px rgba(59, 130, 246, 0.4);
         }
 
@@ -861,14 +861,14 @@
         }
 
         .robot-body {
-            width: 100px;
-            height: 120px;
+            width: 120px;
+            height: 140px;
             background: linear-gradient(145deg, #3b82f6, #1d4ed8);
-            border-radius: 15px 15px 20px 20px;
+            border-radius: 18px 18px 25px 25px;
             margin: 0 auto;
             position: relative;
             box-shadow: 
-                inset 0 0 30px rgba(255,255,255,0.1),
+                inset 0 0 35px rgba(255,255,255,0.1),
                 0 15px 40px rgba(59, 130, 246, 0.3);
         }
 
@@ -979,8 +979,9 @@
         .car-container {
             position: absolute;
             left: 8%;
-            bottom: 15%;
+            bottom: 12%;
             perspective: 800px;
+            transform: scale(1.5);
         }
 
         .car {
@@ -994,25 +995,25 @@
         }
 
         .car-body {
-            width: 180px;
-            height: 50px;
+            width: 220px;
+            height: 60px;
             background: linear-gradient(145deg, #10b981, #059669);
-            border-radius: 10px 10px 5px 5px;
+            border-radius: 12px 12px 6px 6px;
             position: relative;
             box-shadow: 
-                inset 0 5px 15px rgba(255,255,255,0.2),
-                0 10px 30px rgba(16, 185, 129, 0.4);
+                inset 0 6px 18px rgba(255,255,255,0.2),
+                0 12px 35px rgba(16, 185, 129, 0.4);
         }
 
         .car-top {
             position: absolute;
-            top: -35px;
-            left: 30px;
-            width: 100px;
-            height: 35px;
+            top: -42px;
+            left: 35px;
+            width: 120px;
+            height: 42px;
             background: linear-gradient(145deg, #0d9668, #047857);
-            border-radius: 10px 10px 0 0;
-            box-shadow: inset 0 5px 10px rgba(255,255,255,0.15);
+            border-radius: 12px 12px 0 0;
+            box-shadow: inset 0 6px 12px rgba(255,255,255,0.15);
         }
 
         .car-window {
@@ -1058,12 +1059,12 @@
 
         .car-wheel {
             position: absolute;
-            bottom: -12px;
-            width: 28px;
-            height: 28px;
+            bottom: -15px;
+            width: 35px;
+            height: 35px;
             background: linear-gradient(145deg, #374151, #1f2937);
             border-radius: 50%;
-            box-shadow: inset 0 0 8px rgba(0,0,0,0.5);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
         }
 
         .car-wheel::after {
@@ -1072,8 +1073,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 12px;
-            height: 12px;
+            width: 15px;
+            height: 15px;
             background: linear-gradient(145deg, #6b7280, #4b5563);
             border-radius: 50%;
         }

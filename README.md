@@ -50,19 +50,35 @@ cd Moussoum_Defar
 
 # Setup
 cp .env.example .env
-docker-compose up -d
-docker-compose exec web python manage.py migrate
-docker-compose exec web python manage.py load_benchmarks
-docker-compose exec web python manage.py createsuperuser
+docker compose up -d
+docker compose exec web python manage.py migrate
+docker compose exec web python manage.py load_benchmarks
+docker compose exec web python manage.py createsuperuser
 
 # Run
-docker-compose up
+docker compose up
 ```
 
 **Access:**
 - Admin: http://localhost:8000/admin/
 - API Docs: http://localhost:8000/api/docs/
 - Evaluation UI: http://localhost:8000/templates/evaluation.html
+
+---
+
+## API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/auth/register/` | POST | Register new user |
+| `/api/v1/auth/login/` | POST | Login |
+| `/api/v1/workers/` | GET | List workers |
+| `/api/v1/benchmarks/` | GET | List African benchmarks |
+| `/api/v1/benchmarks/{id}/tests/` | GET | Get test cases for benchmark |
+| `/api/v1/evaluations/` | POST | Submit model for evaluation |
+| `/api/v1/evaluations/{id}/report/` | GET | Get evaluation report |
+| `/api/v1/api-keys/` | GET | Manage API keys |
+| `/api/v1/clients/` | GET | List clients |
 
 ---
 
@@ -108,10 +124,24 @@ curl -X POST http://localhost:8000/api/v1/evaluations/ \
   }'
 ```
 
-### Get Report
+### Get Evaluation Report
 
 ```bash
 curl http://localhost:8000/api/v1/evaluations/1/report/ \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### List Benchmarks
+
+```bash
+curl http://localhost:8000/api/v1/benchmarks/ \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Get Benchmark Tests
+
+```bash
+curl http://localhost:8000/api/v1/benchmarks/1/tests/ \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
@@ -127,6 +157,15 @@ curl http://localhost:8000/api/v1/evaluations/1/report/ \
 
 ---
 
+## Recent Changes
+
+- Fixed URL routing for authentication endpoints
+- Removed deprecated `version` field from docker-compose.yml
+- Added `requests` package for API calls
+- Generated initial database migrations
+
+---
+
 ## Tech Stack
 
 - **Backend:** Django 5 + DRF
@@ -135,6 +174,7 @@ curl http://localhost:8000/api/v1/evaluations/1/report/ \
 - **Tasks:** Celery
 - **Storage:** MinIO (S3-compatible)
 - **Container:** Docker
+- **API Docs:** drf-spectacular (Swagger/OpenAPI)
 
 ---
 

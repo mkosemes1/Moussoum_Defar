@@ -4,71 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moussoum Defar - African AI Infrastructure</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #333; }
-        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
-        header { background: linear-gradient(135deg, #1a5f2a 0%, #2d8a4e 100%); color: white; padding: 40px; border-radius: 10px; margin-bottom: 30px; text-align: center; }
-        h1 { font-size: 36px; margin-bottom: 10px; }
-        .subtitle { opacity: 0.9; font-size: 18px; }
-        .roles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; margin-top: 30px; }
-        .role-card { background: white; border-radius: 10px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; }
-        .role-card h2 { color: #1a5f2a; margin-bottom: 15px; font-size: 24px; }
-        .role-card p { color: #666; margin-bottom: 20px; line-height: 1.6; }
-        .role-icon { font-size: 48px; margin-bottom: 15px; }
-        .btn { display: inline-block; background: #1a5f2a; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin: 5px; transition: background 0.3s; }
-        .btn:hover { background: #2d8a4e; }
-        .btn-outline { background: transparent; border: 2px solid #1a5f2a; color: #1a5f2a; }
-        .btn-outline:hover { background: #1a5f2a; color: white; }
-        .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
-        .feature { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .feature h3 { color: #1a5f2a; margin-bottom: 10px; }
-        .feature p { font-size: 14px; color: #666; }
-        footer { text-align: center; margin-top: 40px; padding: 20px; color: #888; }
-    </style>
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
     <div class="container">
-        <header>
+        <div class="header">
             <h1>Moussoum Defar</h1>
-            <p class="subtitle">Data and AI Infrastructure for Africa</p>
-        </header>
+            <p>Data and AI Infrastructure for Africa</p>
+        </div>
 
         <div class="roles">
             <div class="role-card">
                 <div class="role-icon">🏢</div>
                 <h2>I'm a Company</h2>
                 <p>Test your AI models against African benchmarks. See if your chatbot understands Wolof, FCFA, or M-Pesa.</p>
-                <a href="/templates/client-register.html" class="btn">Register Company</a>
-                <a href="/templates/client-login.html" class="btn btn-outline">Login</a>
+                <div class="btn-group">
+                    <a href="/templates/client-register.html" class="btn">Register Company</a>
+                    <a href="/templates/client-login.html" class="btn btn-outline">Login</a>
+                </div>
             </div>
             <div class="role-card">
                 <div class="role-icon">👤</div>
                 <h2>I'm a Worker</h2>
                 <p>Earn money by collecting data in your language and community. Students, linguists, experts welcome.</p>
-                <a href="/templates/worker-register.html" class="btn">Register Worker</a>
-                <a href="/templates/worker-login.html" class="btn btn-outline">Login</a>
+                <div class="btn-group">
+                    <a href="/templates/worker-register.html" class="btn">Register Worker</a>
+                    <a href="/templates/worker-login.html" class="btn btn-outline">Login</a>
+                </div>
             </div>
         </div>
 
         <div class="features">
             <div class="feature">
+                <div class="feature-icon">📊</div>
                 <h3>Data Collection</h3>
                 <p>Real people, real data. Workers across Africa get paid to collect text, voice, and images.</p>
             </div>
             <div class="feature">
+                <div class="feature-icon">🧪</div>
                 <h3>AI Evaluation</h3>
                 <p>Test your AI against 62 African test cases. Mobile money, local languages, culture.</p>
             </div>
             <div class="feature">
+                <div class="feature-icon">🎮</div>
                 <h3>Worker System</h3>
                 <p>Students, linguists, experts earn money contributing to better AI. Levels, scoring, gamification.</p>
             </div>
         </div>
 
-        <footer>
+        <div class="footer">
             <p>Made in Africa, for Africa.</p>
-        </footer>
+        </div>
     </div>
 </body>
 </html>

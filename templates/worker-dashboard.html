@@ -4,48 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Worker Dashboard - Moussoum Defar</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #333; }
-        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-        header { background: linear-gradient(135deg, #1a5f2a 0%, #2d8a4e 100%); color: white; padding: 30px; border-radius: 10px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
-        h1 { font-size: 24px; }
-        .btn-logout { background: rgba(255,255,255,0.2); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; }
-        .btn-logout:hover { background: rgba(255,255,255,0.3); }
-        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px; }
-        .stat-card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; }
-        .stat-value { font-size: 28px; font-weight: bold; color: #1a5f2a; }
-        .stat-label { font-size: 12px; color: #888; margin-top: 5px; }
-        .card { background: white; border-radius: 10px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .card h2 { color: #1a5f2a; margin-bottom: 15px; font-size: 20px; }
-        .profile-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .profile-item { padding: 15px; background: #f9f9f9; border-radius: 8px; }
-        .profile-item label { font-size: 12px; color: #888; }
-        .profile-item p { font-size: 16px; font-weight: 600; margin-top: 5px; }
-        .collections { margin-top: 20px; }
-        .collection-item { border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; margin-bottom: 10px; }
-        .collection-item h3 { font-size: 16px; margin-bottom: 5px; }
-        .collection-item p { font-size: 14px; color: #666; }
-        .progress-bar { background: #e0e0e0; border-radius: 10px; height: 8px; margin-top: 10px; }
-        .progress-fill { background: #1a5f2a; height: 100%; border-radius: 10px; }
-        .level-badge { display: inline-block; background: #1a5f2a; color: white; padding: 5px 15px; border-radius: 20px; font-size: 14px; }
-        .hidden { display: none; }
-    </style>
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Worker Dashboard</h1>
-            <button class="btn-logout" onclick="logout()">Logout</button>
-        </header>
-
-        <div id="loginPrompt" class="card" style="text-align: center;">
-            <h2>Please Login</h2>
-            <p>You need to login to access your dashboard.</p>
-            <a href="/templates/worker-login.html" class="btn" style="display: inline-block; margin-top: 15px; text-decoration: none;">Login</a>
+        <div class="nav">
+            <a href="/templates/index.html" class="nav-back">← Back to Home</a>
+            <button class="btn btn-outline" onclick="logout()">Logout</button>
         </div>
 
-        <div id="dashboard" class="hidden">
+        <div class="header">
+            <h1>Worker Dashboard</h1>
+            <p>Welcome back, <span id="welcomeName">Worker</span></p>
+        </div>
+
+        <div id="loginPrompt" class="card" style="text-align: center; max-width: 500px; margin: 0 auto;">
+            <h2>Please Login</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 24px;">You need to login to access your dashboard.</p>
+            <a href="/templates/worker-login.html" class="btn">Login</a>
+        </div>
+
+        <div id="dashboard" style="display: none;">
             <div class="stats">
                 <div class="stat-card">
                     <div class="stat-value" id="level">1</div>
@@ -93,16 +72,16 @@
                         <p id="accuracy">0%</p>
                     </div>
                 </div>
-                <div style="margin-top: 15px;">
-                    <label style="font-size: 12px; color: #888;">Bio</label>
-                    <p id="bio" style="margin-top: 5px;">-</p>
+                <div style="margin-top: 20px;">
+                    <label style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Bio</label>
+                    <p id="bio" style="margin-top: 8px; color: var(--text);">-</p>
                 </div>
             </div>
 
             <div class="card">
                 <h2>Available Data Collections</h2>
-                <div id="collections" class="collections">
-                    <p>Loading collections...</p>
+                <div id="collections">
+                    <p style="color: var(--text-secondary);">Loading collections...</p>
                 </div>
             </div>
         </div>
@@ -113,14 +92,14 @@
         const workerData = JSON.parse(localStorage.getItem('workerData') || 'null');
 
         if (!token || !workerData) {
-            document.getElementById('loginPrompt').classList.remove('hidden');
+            document.getElementById('loginPrompt').style.display = 'block';
         } else {
-            document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('dashboard').style.display = 'block';
             loadDashboard();
         }
 
         async function loadDashboard() {
-            // Display worker data
+            document.getElementById('welcomeName').textContent = workerData.user?.username || 'Worker';
             document.getElementById('username').textContent = workerData.user?.username || '-';
             document.getElementById('email').textContent = workerData.user?.email || '-';
             document.getElementById('phone').textContent = workerData.phone || '-';
@@ -133,7 +112,6 @@
             document.getElementById('balance').textContent = '$' + (workerData.balance || 0);
             document.getElementById('accuracy').textContent = (workerData.accuracy || 0).toFixed(1) + '%';
 
-            // Load available collections
             try {
                 const response = await fetch('/api/v1/workers/data-collections/', {
                     headers: { 'Authorization': `Bearer ${token}` }
@@ -152,7 +130,7 @@
             const container = document.getElementById('collections');
             
             if (collections.length === 0) {
-                container.innerHTML = '<p>No active collections available.</p>';
+                container.innerHTML = '<p style="color: var(--text-secondary);">No active collections available at the moment.</p>';
                 return;
             }
 
@@ -160,13 +138,16 @@
                 <div class="collection-item">
                     <h3>${c.title}</h3>
                     <p>${c.description}</p>
-                    <p style="font-size: 12px; color: #888; margin-top: 5px;">
-                        ${c.data_type} | ${c.language?.name || ''} | ${c.country?.name || ''} | $${c.price_per_item}/item
-                    </p>
+                    <div class="collection-meta">
+                        <span>📁 ${c.data_type}</span>
+                        <span>🌍 ${c.language?.name || 'N/A'}</span>
+                        <span>📍 ${c.country?.name || 'N/A'}</span>
+                        <span>💰 $${c.price_per_item}/item</span>
+                    </div>
                     <div class="progress-bar">
                         <div class="progress-fill" style="width: ${c.progress_percentage || 0}%"></div>
                     </div>
-                    <p style="font-size: 12px; color: #888; margin-top: 5px;">
+                    <p style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
                         ${c.current_count || 0} / ${c.target_count || 0} items (${(c.progress_percentage || 0).toFixed(1)}%)
                     </p>
                 </div>

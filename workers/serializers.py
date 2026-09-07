@@ -149,7 +149,7 @@ class DataCollectionSerializer(serializers.ModelSerializer):
 class DataSubmissionSerializer(serializers.ModelSerializer):
     worker = WorkerSerializer(read_only=True)
     collection = DataCollectionSerializer(read_only=True)
-    collection_id = serializers.IntegerField(write_only=True)
+    collection_id = serializers.IntegerField(write_only=True, required=False)
 
     class Meta:
         model = DataSubmission
@@ -158,7 +158,7 @@ class DataSubmissionSerializer(serializers.ModelSerializer):
             'transcription', 'metadata', 'quality_score', 'status',
             'reviewer_notes', 'submitted_at', 'reviewed_at'
         ]
-        read_only_fields = ['worker', 'quality_score', 'status', 'reviewer_notes', 'reviewed_at']
+        read_only_fields = ['worker', 'collection', 'quality_score', 'status', 'reviewer_notes', 'reviewed_at']
 
 
 class QualityLogSerializer(serializers.ModelSerializer):

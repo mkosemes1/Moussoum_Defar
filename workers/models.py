@@ -183,7 +183,7 @@ class DataSubmission(models.Model):
 
     worker = models.ForeignKey(Worker, on_delete=models.CASCADE, related_name='submissions')
     collection = models.ForeignKey(DataCollection, on_delete=models.CASCADE, related_name='submissions')
-    file = models.FileField(upload_to='submissions/%Y/%m/%d/')
+    file = models.FileField(upload_to='submissions/%Y/%m/%d/', blank=True, null=True)
     transcription = models.TextField(blank=True)
     metadata = models.JSONField(default=dict)
     quality_score = models.FloatField(null=True, blank=True)

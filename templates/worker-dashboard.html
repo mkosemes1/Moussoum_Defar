@@ -412,12 +412,14 @@
         }
 
         async function startCollection(id) {
+            const data = prompt('Enter your contribution (text, transcription, or description):');
+            if (!data) return;
             const res = await fetch('/api/v1/workers/collections/' + id + '/submit/', {
                 method: 'POST', headers,
-                body: JSON.stringify({ transcription: 'Sample data from worker', metadata: {} })
+                body: JSON.stringify({ transcription: data, metadata: {} })
             });
-            if (res.ok) alert('Contribution submitted!');
-            else alert('Error submitting contribution');
+            if (res.ok) { alert('Contribution submitted!'); loadCollections(); loadOverview(); }
+            else { const err = await res.json(); alert('Error: ' + JSON.stringify(err)); }
         }
 
         async function startAnnotation(id) {

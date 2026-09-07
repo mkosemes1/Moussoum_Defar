@@ -145,14 +145,34 @@ class DataSubmissionViewSet(viewsets.ModelViewSet):
         serializer.save(worker=worker)
 
 
+# === HELPER ===
+
+def resolve_names_to_ids(data):
+    """Resolve language and country names to IDs in request data."""
+    from .models import Language, Country
+    lang = data.get('language', '')
+    if lang and not str(lang).isdigit():
+        obj = Language.objects.filter(name__iexact=lang).first()
+        if obj:
+            data['language'] = obj.id
+    country = data.get('country', '')
+    if country and not str(country).isdigit():
+        obj = Country.objects.filter(name__iexact=country).first()
+        if obj:
+            data['country'] = obj.id
+    return data
+
+
 # === ANNOTATION TASKS ===
 
-class AnnotationTaskViewSet(viewsets.ReadOnlyModelViewSet):
+class AnnotationTaskViewSet(viewsets.ModelViewSet):
     serializer_class = AnnotationTaskSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        queryset = AnnotationTask.objects.filter(status='in_progress')
+        queryset = AnnotationTask.objects.all()
+        if self.action == 'list' and self.request.query_params.get('available'):
+            queryset = queryset.filter(status='in_progress')
         task_type = self.request.query_params.get('task_type')
         language = self.request.query_params.get('language')
         country = self.request.query_params.get('country')
@@ -168,6 +188,13 @@ class AnnotationTaskViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = queryset.filter(difficulty=difficulty)
 
         return queryset
+
+    def create(self, request, *args, **kwargs):
+        data = resolve_names_to_ids(request.data.copy())
+        serializer = AnnotationTaskSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        task = serializer.save(created_by=request.user)
+        return Response(AnnotationTaskSerializer(task).data, status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=['post'])
     def start(self, request, pk=None):
@@ -217,12 +244,14 @@ class AnnotationTaskViewSet(viewsets.ReadOnlyModelViewSet):
 
 # === RLHF TASKS ===
 
-class RLHFTaskViewSet(viewsets.ReadOnlyModelViewSet):
+class RLHFTaskViewSet(viewsets.ModelViewSet):
     serializer_class = RLHFTaskSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        queryset = RLHFTask.objects.filter(status='in_progress')
+        queryset = RLHFTask.objects.all()
+        if self.action == 'list' and self.request.query_params.get('available'):
+            queryset = queryset.filter(status='in_progress')
         task_type = self.request.query_params.get('task_type')
         language = self.request.query_params.get('language')
         country = self.request.query_params.get('country')
@@ -235,6 +264,13 @@ class RLHFTaskViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = queryset.filter(country__code=country)
 
         return queryset
+
+    def create(self, request, *args, **kwargs):
+        data = resolve_names_to_ids(request.data.copy())
+        serializer = RLHFTaskSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        task = serializer.save(created_by=request.user)
+        return Response(RLHFTaskSerializer(task).data, status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=['post'])
     def start(self, request, pk=None):
@@ -284,12 +320,19 @@ class RLHFTaskViewSet(viewsets.ReadOnlyModelViewSet):
 
 # === SYNTHETIC DATA ===
 
-class SyntheticDataJobViewSet(viewsets.ReadOnlyModelViewSet):
+class SyntheticDataJobViewSet(viewsets.ModelViewSet):
     serializer_class = SyntheticDataJobSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return SyntheticDataJob.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        data = resolve_names_to_ids(request.data.copy())
+        serializer = SyntheticDataJobSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        job = serializer.save(created_by=request.user)
+        return Response(SyntheticDataJobSerializer(job).data, status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=['get'])
     def download(self, request, pk=None):

@@ -129,8 +129,8 @@ class WorkerScoreSerializer(serializers.ModelSerializer):
 
 
 class DataCollectionSerializer(serializers.ModelSerializer):
-    language = LanguageSerializer(read_only=True)
-    country = CountrySerializer(read_only=True)
+    language_name = serializers.CharField(source='language.name', read_only=True, default='')
+    country_name = serializers.CharField(source='country.name', read_only=True, default='')
     progress_percentage = serializers.ReadOnlyField()
     is_complete = serializers.ReadOnlyField()
 
@@ -138,10 +138,12 @@ class DataCollectionSerializer(serializers.ModelSerializer):
         model = DataCollection
         fields = [
             'id', 'title', 'description', 'data_type', 'language', 'country',
+            'language_name', 'country_name',
             'target_count', 'current_count', 'price_per_item', 'status',
             'instructions', 'progress_percentage', 'is_complete',
             'created_at', 'updated_at'
         ]
+        read_only_fields = ['current_count', 'created_at', 'updated_at']
 
 
 class DataSubmissionSerializer(serializers.ModelSerializer):

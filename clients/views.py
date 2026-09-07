@@ -225,11 +225,24 @@ class DataCollectionViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return DataCollection.objects.all().order_by('-created_at')
 
-    def perform_create(self, serializer):
-        serializer.save()
-
     def create(self, request, *args, **kwargs):
-        serializer = DataCollectionSerializer(data=request.data)
+        data = request.data.copy()
+
+        lang_name = data.get('language', '')
+        if lang_name and not str(lang_name).isdigit():
+            from workers.models import Language
+            lang = Language.objects.filter(name__iexact=lang_name).first()
+            if lang:
+                data['language'] = lang.id
+
+        country_name = data.get('country', '')
+        if country_name and not str(country_name).isdigit():
+            from workers.models import Country
+            country = Country.objects.filter(name__iexact=country_name).first()
+            if country:
+                data['country'] = country.id
+
+        serializer = DataCollectionSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         collection = serializer.save()
         return Response(

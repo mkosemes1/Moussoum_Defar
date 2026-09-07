@@ -12,9 +12,7 @@
 <body>
     <div class="container">
         <div class="nav">
-            <a id="navBack" href="/templates/client-dashboard.html" class="nav-back" onclick="
-                if(localStorage.getItem('workerToken') && !localStorage.getItem('clientToken')){this.href='/templates/worker-dashboard.html'}
-            ">← Back to Home</a>
+            <a id="navBack" href="/templates/client-dashboard.html" class="nav-back">← Back to Home</a>
         </div>
 
         <div class="header">
@@ -122,6 +120,17 @@
     </div>
 
     <script>
+        (function() {
+            var back = document.getElementById('navBack');
+            if (localStorage.getItem('clientToken')) {
+                back.href = '/templates/client-dashboard.html';
+            } else if (localStorage.getItem('workerToken')) {
+                back.href = '/templates/worker-dashboard.html';
+            } else {
+                back.href = '/templates/index.html';
+            }
+        })();
+
         // Benchmark selection
         document.querySelectorAll('.benchmark-option').forEach(option => {
             option.addEventListener('click', function() {

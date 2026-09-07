@@ -4,161 +4,449 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Worker Dashboard - Moussoum Defar</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0f1a; color: white; min-height: 100vh; }
+        .layout { display: flex; min-height: 100vh; }
+
+        .sidebar {
+            width: 260px; background: #0f172a; border-right: 1px solid rgba(255,255,255,0.06);
+            padding: 32px 20px; position: fixed; top: 0; bottom: 0; left: 0;
+            display: flex; flex-direction: column;
+        }
+        .sidebar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: white; font-size: 18px; font-weight: 600; margin-bottom: 40px; }
+        .sidebar-logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .sidebar-nav { flex: 1; }
+        .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: rgba(255,255,255,0.5); text-decoration: none; border-radius: 10px; font-size: 14px; font-weight: 500; transition: all 0.2s; margin-bottom: 4px; cursor: pointer; }
+        .sidebar-link:hover { color: white; background: rgba(255,255,255,0.04); }
+        .sidebar-link.active { color: white; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.15); }
+        .sidebar-link .icon { font-size: 18px; width: 24px; text-align: center; }
+        .sidebar-footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px; }
+        .sidebar-user { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06); }
+        .user-avatar { width: 36px; height: 36px; background: rgba(16, 185, 129, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #10b981; }
+        .user-info { flex: 1; }
+        .user-name { font-size: 13px; font-weight: 600; color: white; }
+        .user-role { font-size: 11px; color: rgba(255,255,255,0.4); }
+
+        .main { flex: 1; margin-left: 260px; padding: 40px; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .page-title { font-size: 28px; font-weight: 600; color: white; }
+        .page-subtitle { font-size: 14px; color: rgba(255,255,255,0.4); margin-top: 4px; }
+
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 40px; }
+        .stat-card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 24px; }
+        .stat-card-label { font-size: 12px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .stat-card-value { font-size: 32px; font-weight: 600; color: white; }
+        .stat-card-value.green { color: #10b981; }
+        .stat-card-value.blue { color: #3b82f6; }
+        .stat-card-value.yellow { color: #fbbf24; }
+        .stat-card-value.purple { color: #8b5cf6; }
+
+        .tabs { display: flex; gap: 4px; margin-bottom: 24px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 4px; }
+        .tab { padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.2s; border: none; background: none; font-family: 'Inter', sans-serif; }
+        .tab:hover { color: white; }
+        .tab.active { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+
+        .card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; margin-bottom: 24px; }
+        .card-header { padding: 24px 28px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; }
+        .card-title { font-size: 18px; font-weight: 600; color: white; }
+        .card-body { padding: 28px; }
+
+        .task-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+        .task-card { background: rgba(10, 15, 26, 0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 24px; transition: all 0.2s; }
+        .task-card:hover { border-color: rgba(16, 185, 129, 0.2); transform: translateY(-2px); }
+        .task-type { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .task-type.annotation { color: #10b981; }
+        .task-type.rlhf { color: #3b82f6; }
+        .task-type.collection { color: #8b5cf6; }
+        .task-title { font-size: 16px; font-weight: 600; color: white; margin-bottom: 8px; }
+        .task-desc { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.6; margin-bottom: 16px; }
+        .task-meta { display: flex; gap: 16px; margin-bottom: 16px; }
+        .task-meta-item { font-size: 12px; color: rgba(255,255,255,0.4); }
+        .task-meta-item span { color: white; font-weight: 500; }
+        .task-reward { display: inline-block; padding: 6px 14px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 20px; font-size: 14px; font-weight: 600; color: #10b981; margin-bottom: 16px; }
+        .task-btn { width: 100%; padding: 10px; background: #10b981; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+        .task-btn:hover { background: #059669; }
+        .task-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 500; }
+        .badge-pending { background: rgba(251, 191, 36, 0.12); color: #fbbf24; }
+        .badge-completed { background: rgba(16, 185, 129, 0.12); color: #10b981; }
+        .badge-level { background: rgba(139, 92, 246, 0.12); color: #8b5cf6; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px 16px; font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        td { padding: 14px 16px; font-size: 14px; color: rgba(255,255,255,0.7); border-bottom: 1px solid rgba(255,255,255,0.04); }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+
+        .empty { text-align: center; padding: 60px 20px; }
+        .empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+        .empty-title { font-size: 16px; font-weight: 600; color: white; margin-bottom: 8px; }
+        .empty-desc { font-size: 14px; color: rgba(255,255,255,0.4); }
+
+        .section { display: none; }
+        .section.active { display: block; }
+
+        .btn { padding: 10px 20px; font-size: 14px; font-weight: 500; border-radius: 10px; border: none; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+        .btn-primary { background: #10b981; color: white; }
+        .btn-primary:hover { background: #059669; }
+        .btn-secondary { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.1); }
+
+        .level-bar { display: flex; gap: 4px; margin-top: 12px; }
+        .level-dot { width: 24px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.1); }
+        .level-dot.filled { background: #10b981; }
+
+        .notification-dot { width: 8px; height: 8px; background: #ef4444; border-radius: 50%; position: absolute; top: -2px; right: -2px; }
+        .notif-btn { position: relative; }
+
+        @media (max-width: 1024px) {
+            .sidebar { display: none; }
+            .main { margin-left: 0; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .task-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="nav">
-            <a href="/templates/index.html" class="nav-back">← Back to Home</a>
-            <button class="btn btn-outline" onclick="logout()">Logout</button>
-        </div>
-
-        <div class="header">
-            <h1>Worker Dashboard</h1>
-            <p>Welcome back, <span id="welcomeName">Worker</span></p>
-        </div>
-
-        <div id="loginPrompt" class="card" style="text-align: center; max-width: 500px; margin: 0 auto;">
-            <h2>Please Login</h2>
-            <p style="color: var(--text-secondary); margin-bottom: 24px;">You need to login to access your dashboard.</p>
-            <a href="/templates/worker-login.html" class="btn">Login</a>
-        </div>
-
-        <div id="dashboard" style="display: none;">
-            <div class="stats">
-                <div class="stat-card">
-                    <div class="stat-value" id="level">1</div>
-                    <div class="stat-label">Level</div>
+    <div class="layout">
+        <aside class="sidebar">
+            <a href="/templates/index.html" class="sidebar-logo">
+                <div class="sidebar-logo-icon">M</div>
+                Moussoum Defar
+            </a>
+            <nav class="sidebar-nav">
+                <a class="sidebar-link active" onclick="showSection('overview')"><span class="icon">📊</span> Overview</a>
+                <a class="sidebar-link" onclick="showSection('collections')"><span class="icon">📦</span> Data Collections</a>
+                <a class="sidebar-link" onclick="showSection('annotations')"><span class="icon">🏷️</span> Annotations</a>
+                <a class="sidebar-link" onclick="showSection('rlhf')"><span class="icon">🤖</span> RLHF Tasks</a>
+                <a class="sidebar-link" onclick="showSection('payments')"><span class="icon">💰</span> Earnings</a>
+                <a class="sidebar-link" onclick="showSection('leaderboard')"><span class="icon">🏆</span> Leaderboard</a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <div class="user-avatar" id="userInitial">W</div>
+                    <div class="user-info">
+                        <div class="user-name" id="userName">Worker</div>
+                        <div class="user-role" id="userLevel">Level 1</div>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="qualityScore">0</div>
-                    <div class="stat-label">Quality Score</div>
+            </div>
+        </aside>
+
+        <main class="main">
+            <!-- OVERVIEW -->
+            <div class="section active" id="sec-overview">
+                <div class="page-header">
+                    <div><h1 class="page-title">Welcome back!</h1><p class="page-subtitle">Here's your earnings overview</p></div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="totalTasks">0</div>
-                    <div class="stat-label">Total Tasks</div>
+                <div class="stats-row">
+                    <div class="stat-card"><div class="stat-card-label">Balance</div><div class="stat-card-value green" id="sBalance">$0.00</div></div>
+                    <div class="stat-card"><div class="stat-card-label">Total Earned</div><div class="stat-card-value" id="sEarned">$0.00</div></div>
+                    <div class="stat-card"><div class="stat-card-label">Tasks Done</div><div class="stat-card-value blue" id="sTasks">0</div></div>
+                    <div class="stat-card"><div class="stat-card-label">Quality Score</div><div class="stat-card-value yellow" id="sQuality">0</div></div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="balance">$0</div>
-                    <div class="stat-label">Balance</div>
+
+                <div class="card">
+                    <div class="card-header"><h2 class="card-title">Your Level</h2></div>
+                    <div class="card-body">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                            <span id="levelName" style="font-weight:600;">Level 1 - Data Worker</span>
+                            <span class="badge badge-level" id="levelBadge">Level 1</span>
+                        </div>
+                        <div class="level-bar" id="levelBar">
+                            <div class="level-dot filled"></div>
+                            <div class="level-dot"></div>
+                            <div class="level-dot"></div>
+                            <div class="level-dot"></div>
+                            <div class="level-dot"></div>
+                        </div>
+                        <p style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:12px;">Complete more tasks and maintain high quality to level up.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><h2 class="card-title">Available Tasks</h2></div>
+                    <div class="card-body">
+                        <div class="task-grid" id="overviewTasks"></div>
+                    </div>
                 </div>
             </div>
 
-            <div class="card">
-                <h2>My Profile</h2>
-                <div class="profile-grid">
-                    <div class="profile-item">
-                        <label>Username</label>
-                        <p id="username">-</p>
-                    </div>
-                    <div class="profile-item">
-                        <label>Email</label>
-                        <p id="email">-</p>
-                    </div>
-                    <div class="profile-item">
-                        <label>Phone</label>
-                        <p id="phone">-</p>
-                    </div>
-                    <div class="profile-item">
-                        <label>Country</label>
-                        <p id="country">-</p>
-                    </div>
-                    <div class="profile-item">
-                        <label>Languages</label>
-                        <p id="languages">-</p>
-                    </div>
-                    <div class="profile-item">
-                        <label>Accuracy</label>
-                        <p id="accuracy">0%</p>
-                    </div>
+            <!-- DATA COLLECTIONS -->
+            <div class="section" id="sec-collections">
+                <div class="page-header"><h1 class="page-title">Data Collections</h1><p class="page-subtitle">Contribute data to active collections</p></div>
+                <div class="task-grid" id="collectionsGrid"></div>
+            </div>
+
+            <!-- ANNOTATIONS -->
+            <div class="section" id="sec-annotations">
+                <div class="page-header"><h1 class="page-title">Annotation Tasks</h1><p class="page-subtitle">Label images, text, and audio for AI training</p></div>
+                <div class="tabs">
+                    <button class="tab active" onclick="filterAnnotations('all', this)">All</button>
+                    <button class="tab" onclick="filterAnnotations('image_bbox', this)">Image</button>
+                    <button class="tab" onclick="filterAnnotations('text_classification', this)">Text</button>
+                    <button class="tab" onclick="filterAnnotations('audio_transcription', this)">Audio</button>
                 </div>
-                <div style="margin-top: 20px;">
-                    <label style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Bio</label>
-                    <p id="bio" style="margin-top: 8px; color: var(--text);">-</p>
+                <div class="task-grid" id="annotationsGrid"></div>
+            </div>
+
+            <!-- RLHF -->
+            <div class="section" id="sec-rlhf">
+                <div class="page-header"><h1 class="page-title">RLHF Tasks</h1><p class="page-subtitle">Rate and compare AI responses to make them better</p></div>
+                <div class="task-grid" id="rlhfGrid"></div>
+            </div>
+
+            <!-- PAYMENTS -->
+            <div class="section" id="sec-payments">
+                <div class="page-header">
+                    <div><h1 class="page-title">Earnings & Payments</h1><p class="page-subtitle">Track your earnings and request payouts</p></div>
+                    <button class="btn btn-primary" onclick="requestPayout()">Request Payout</button>
+                </div>
+                <div class="stats-row" style="grid-template-columns: repeat(3, 1fr);">
+                    <div class="stat-card"><div class="stat-card-label">Available Balance</div><div class="stat-card-value green" id="pBalance">$0.00</div></div>
+                    <div class="stat-card"><div class="stat-card-label">Total Earned</div><div class="stat-card-value" id="pEarned">$0.00</div></div>
+                    <div class="stat-card"><div class="stat-card-label">Pending Payouts</div><div class="stat-card-value yellow" id="pPending">0</div></div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h2 class="card-title">Payment History</h2></div>
+                    <div class="card-body">
+                        <table>
+                            <thead><tr><th>Date</th><th>Amount</th><th>Method</th><th>Status</th></tr></thead>
+                            <tbody id="paymentsTable"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            <div class="card">
-                <h2>Available Data Collections</h2>
-                <div id="collections">
-                    <p style="color: var(--text-secondary);">Loading collections...</p>
+            <!-- LEADERBOARD -->
+            <div class="section" id="sec-leaderboard">
+                <div class="page-header"><h1 class="page-title">Leaderboard</h1><p class="page-subtitle">Top workers across Africa</p></div>
+                <div class="card">
+                    <div class="card-body">
+                        <table>
+                            <thead><tr><th>Rank</th><th>Worker</th><th>Country</th><th>Quality Score</th><th>Tasks</th><th>Level</th></tr></thead>
+                            <tbody id="leaderboardTable"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
     <script>
-        const token = localStorage.getItem('workerToken');
-        const workerData = JSON.parse(localStorage.getItem('workerData') || 'null');
+        const TOKEN = localStorage.getItem('workerToken');
+        const workerData = JSON.parse(localStorage.getItem('workerData') || '{}');
+        if (!TOKEN) window.location.href = '/templates/worker-login.html';
 
-        if (!token || !workerData) {
-            document.getElementById('loginPrompt').style.display = 'block';
-        } else {
-            document.getElementById('dashboard').style.display = 'block';
-            loadDashboard();
+        const headers = { 'Authorization': 'Bearer ' + TOKEN, 'Content-Type': 'application/json' };
+        const LEVEL_NAMES = ['', 'Data Worker', 'Verified Annotator', 'Language Specialist', 'AI Evaluator', 'Domain Expert'];
+
+        if (workerData.user) {
+            document.getElementById('userName').textContent = workerData.user.username;
+            document.getElementById('userInitial').textContent = workerData.user.username[0].toUpperCase();
         }
 
-        async function loadDashboard() {
-            document.getElementById('welcomeName').textContent = workerData.user?.username || 'Worker';
-            document.getElementById('username').textContent = workerData.user?.username || '-';
-            document.getElementById('email').textContent = workerData.user?.email || '-';
-            document.getElementById('phone').textContent = workerData.phone || '-';
-            document.getElementById('country').textContent = workerData.country?.name || '-';
-            document.getElementById('languages').textContent = workerData.languages?.map(l => l.name).join(', ') || '-';
-            document.getElementById('bio').textContent = workerData.bio || '-';
-            document.getElementById('level').textContent = workerData.level || 1;
-            document.getElementById('qualityScore').textContent = (workerData.quality_score || 0).toFixed(1);
-            document.getElementById('totalTasks').textContent = workerData.total_tasks || 0;
-            document.getElementById('balance').textContent = '$' + (workerData.balance || 0);
-            document.getElementById('accuracy').textContent = (workerData.accuracy || 0).toFixed(1) + '%';
-
-            try {
-                const response = await fetch('/api/v1/workers/data-collections/', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    displayCollections(data.results || []);
-                }
-            } catch (error) {
-                console.error('Error loading collections:', error);
-            }
+        function showSection(name) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('sec-' + name).classList.add('active');
+            event.currentTarget.classList.add('active');
         }
 
-        function displayCollections(collections) {
-            const container = document.getElementById('collections');
-            
-            if (collections.length === 0) {
-                container.innerHTML = '<p style="color: var(--text-secondary);">No active collections available at the moment.</p>';
+        async function api(url, opts = {}) {
+            const res = await fetch(url, { headers, ...opts });
+            if (res.status === 401) { localStorage.removeItem('workerToken'); window.location.href = '/templates/worker-login.html'; return null; }
+            return res.json();
+        }
+
+        async function loadOverview() {
+            const data = await api('/api/v1/workers/profile/earnings/');
+            if (!data) return;
+            document.getElementById('sBalance').textContent = '$' + parseFloat(data.balance || 0).toFixed(2);
+            document.getElementById('sEarned').textContent = '$' + parseFloat(data.total_earned || 0).toFixed(2);
+            document.getElementById('sTasks').textContent = data.total_tasks || 0;
+            document.getElementById('sQuality').textContent = (data.quality_score || 0).toFixed(1);
+            const level = data.level || 1;
+            document.getElementById('userLevel').textContent = 'Level ' + level + ' - ' + (LEVEL_NAMES[level] || '');
+            document.getElementById('levelName').textContent = 'Level ' + level + ' - ' + (LEVEL_NAMES[level] || '');
+            document.getElementById('levelBadge').textContent = 'Level ' + level;
+            document.querySelectorAll('.level-dot').forEach((d, i) => { d.classList.toggle('filled', i < level); });
+        }
+
+        async function loadCollections() {
+            const data = await api('/api/v1/workers/collections/');
+            if (!data || data.length === 0) {
+                document.getElementById('collectionsGrid').innerHTML = '<div class="empty"><div class="empty-icon">📦</div><div class="empty-title">No collections available</div><div class="empty-desc">Check back later for new data collection tasks.</div></div>';
+                document.getElementById('overviewTasks').innerHTML = '';
                 return;
             }
+            const html = data.slice(0, 6).map(c => `
+                <div class="task-card">
+                    <div class="task-type collection">${c.data_type}</div>
+                    <div class="task-title">${c.title}</div>
+                    <div class="task-desc">${c.description.substring(0, 120)}...</div>
+                    <div class="task-meta">
+                        <div class="task-meta-item">Language: <span>${c.language_name || '-'}</span></div>
+                        <div class="task-meta-item">Country: <span>${c.country_name || '-'}</span></div>
+                    </div>
+                    <div class="task-reward">$${c.price_per_item}/item</div>
+                    <button class="task-btn" onclick="startCollection(${c.id})">Start Contributing</button>
+                </div>
+            `).join('');
+            document.getElementById('collectionsGrid').innerHTML = html;
+            document.getElementById('overviewTasks').innerHTML = html;
+        }
 
-            container.innerHTML = collections.map(c => `
-                <div class="collection-item">
-                    <h3>${c.title}</h3>
-                    <p>${c.description}</p>
-                    <div class="collection-meta">
-                        <span>📁 ${c.data_type}</span>
-                        <span>🌍 ${c.language?.name || 'N/A'}</span>
-                        <span>📍 ${c.country?.name || 'N/A'}</span>
-                        <span>💰 $${c.price_per_item}/item</span>
+        async function loadAnnotations() {
+            const data = await api('/api/v1/workers/annotations/');
+            if (!data || data.length === 0) {
+                document.getElementById('annotationsGrid').innerHTML = '<div class="empty"><div class="empty-icon">🏷️</div><div class="empty-title">No annotation tasks</div><div class="empty-desc">New tasks are added daily. Check back soon!</div></div>';
+                return;
+            }
+            document.getElementById('annotationsGrid').innerHTML = data.map(t => `
+                <div class="task-card">
+                    <div class="task-type annotation">${t.task_type.replace('_', ' ')}</div>
+                    <div class="task-title">${t.title}</div>
+                    <div class="task-desc">${t.description.substring(0, 120)}...</div>
+                    <div class="task-meta">
+                        <div class="task-meta-item">Difficulty: <span>${'★'.repeat(t.difficulty)}</span></div>
+                        <div class="task-meta-item">Language: <span>${t.language_name || '-'}</span></div>
                     </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${c.progress_percentage || 0}%"></div>
-                    </div>
-                    <p style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
-                        ${c.current_count || 0} / ${c.target_count || 0} items (${(c.progress_percentage || 0).toFixed(1)}%)
-                    </p>
+                    <div class="task-reward">$${t.reward}</div>
+                    <button class="task-btn" onclick="startAnnotation(${t.id})">Start Annotation</button>
                 </div>
             `).join('');
         }
 
-        function logout() {
-            localStorage.removeItem('workerToken');
-            localStorage.removeItem('workerData');
-            window.location.href = '/templates/worker-login.html';
+        async function loadRLHF() {
+            const data = await api('/api/v1/workers/rlhf/');
+            if (!data || data.length === 0) {
+                document.getElementById('rlhfGrid').innerHTML = '<div class="empty"><div class="empty-icon">🤖</div><div class="empty-title">No RLHF tasks</div><div class="empty-desc">Help improve AI by rating responses. New tasks coming soon!</div></div>';
+                return;
+            }
+            document.getElementById('rlhfGrid').innerHTML = data.map(t => `
+                <div class="task-card">
+                    <div class="task-type rlhf">${t.task_type.replace('_', ' ')}</div>
+                    <div class="task-title">${t.title}</div>
+                    <div class="task-desc"><strong>Prompt:</strong> ${t.prompt.substring(0, 100)}...</div>
+                    <div class="task-meta">
+                        <div class="task-meta-item">Responses to rate: <span>${t.responses.length}</span></div>
+                        <div class="task-meta-item">Language: <span>${t.language_name || '-'}</span></div>
+                    </div>
+                    <div class="task-reward">$${t.reward}</div>
+                    <button class="task-btn" onclick="startRLHF(${t.id})">Rate Responses</button>
+                </div>
+            `).join('');
         }
+
+        async function loadPayments() {
+            const earnings = await api('/api/v1/workers/profile/earnings/');
+            if (earnings) {
+                document.getElementById('pBalance').textContent = '$' + parseFloat(earnings.balance || 0).toFixed(2);
+                document.getElementById('pEarned').textContent = '$' + parseFloat(earnings.total_earned || 0).toFixed(2);
+                document.getElementById('pPending').textContent = earnings.pending_payments || 0;
+            }
+            const data = await api('/api/v1/workers/payments/');
+            if (!data || data.length === 0) {
+                document.getElementById('paymentsTable').innerHTML = '<tr><td colspan="4" style="text-align:center;color:rgba(255,255,255,0.4);">No payments yet</td></tr>';
+                return;
+            }
+            document.getElementById('paymentsTable').innerHTML = data.map(p => `
+                <tr>
+                    <td>${new Date(p.created_at).toLocaleDateString()}</td>
+                    <td style="font-weight:600;">$${parseFloat(p.amount).toFixed(2)}</td>
+                    <td>${p.method}</td>
+                    <td><span class="badge badge-${p.status}">${p.status}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadLeaderboard() {
+            const data = await api('/api/v1/workers/profile/leaderboard/');
+            if (!data) return;
+            document.getElementById('leaderboardTable').innerHTML = data.map(w => `
+                <tr>
+                    <td style="font-weight:600;color:${w.rank <= 3 ? '#fbbf24' : 'white'};">#${w.rank}</td>
+                    <td style="font-weight:500;">${w.username}</td>
+                    <td>${w.country || '-'}</td>
+                    <td style="color:#10b981;font-weight:600;">${w.quality_score.toFixed(1)}</td>
+                    <td>${w.total_tasks}</td>
+                    <td><span class="badge badge-level">L${w.level}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        async function startCollection(id) {
+            const res = await fetch('/api/v1/workers/collections/' + id + '/submit/', {
+                method: 'POST', headers,
+                body: JSON.stringify({ transcription: 'Sample data from worker', metadata: {} })
+            });
+            if (res.ok) alert('Contribution submitted!');
+            else alert('Error submitting contribution');
+        }
+
+        async function startAnnotation(id) {
+            const annotation = prompt('Enter your annotation (e.g., label, bounding box coords):');
+            if (!annotation) return;
+            const res = await fetch('/api/v1/workers/annotations/' + id + '/submit_annotation/', {
+                method: 'POST', headers,
+                body: JSON.stringify({ annotation_data: { label: annotation }, time_spent_seconds: 60 })
+            });
+            if (res.ok) alert('Annotation submitted! You earned a reward.');
+            else alert('Error submitting annotation');
+        }
+
+        async function startRLHF(id) {
+            const choice = prompt('Which response is better? Enter response index (0, 1, 2...):');
+            if (choice === null) return;
+            const reason = prompt('Why did you choose this response?');
+            const res = await fetch('/api/v1/workers/rlhf/' + id + '/submit_feedback/', {
+                method: 'POST', headers,
+                body: JSON.stringify({ selected_response: parseInt(choice), confidence: 0.9, reasoning: reason || '', time_spent_seconds: 120 })
+            });
+            if (res.ok) alert('Feedback submitted! You earned a reward.');
+            else alert('Error submitting feedback');
+        }
+
+        async function filterAnnotations(type, btn) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            const url = type === 'all' ? '/api/v1/workers/annotations/' : '/api/v1/workers/annotations/?task_type=' + type;
+            const data = await api(url);
+            if (!data) return;
+            document.getElementById('annotationsGrid').innerHTML = data.length === 0
+                ? '<div class="empty"><div class="empty-title">No tasks in this category</div></div>'
+                : data.map(t => `
+                <div class="task-card">
+                    <div class="task-type annotation">${t.task_type.replace('_', ' ')}</div>
+                    <div class="task-title">${t.title}</div>
+                    <div class="task-desc">${t.description.substring(0, 120)}...</div>
+                    <div class="task-reward">$${t.reward}</div>
+                    <button class="task-btn" onclick="startAnnotation(${t.id})">Start</button>
+                </div>
+            `).join('');
+        }
+
+        async function requestPayout() {
+            const amount = prompt('Enter amount to withdraw ($):');
+            if (!amount) return;
+            const phone = prompt('Enter your mobile money phone number:');
+            const res = await fetch('/api/v1/workers/payments/request_payout/', {
+                method: 'POST', headers,
+                body: JSON.stringify({ amount: parseFloat(amount), method: 'mobile_money', phone_number: phone || '' })
+            });
+            if (res.ok) { alert('Payout requested!'); loadPayments(); loadOverview(); }
+            else { const d = await res.json(); alert('Error: ' + (d.error || 'Failed')); }
+        }
+
+        // Init
+        loadOverview();
+        loadCollections();
+        loadAnnotations();
+        loadRLHF();
+        loadPayments();
+        loadLeaderboard();
     </script>
 </body>
 </html>

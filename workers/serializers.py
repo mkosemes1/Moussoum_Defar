@@ -3,7 +3,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from .models import (
     Language, Country, Worker, WorkerLevel,
-    DataCollection, DataSubmission, QualityLog
+    DataCollection, DataSubmission, QualityLog,
+    AnnotationTask, AnnotationResult, RLHFTask, RLHFFeedback,
+    SyntheticDataJob, Payment, Notification
 )
 
 
@@ -163,3 +165,96 @@ class QualityLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = QualityLog
         fields = ['id', 'worker', 'submission', 'score', 'reviewer', 'notes', 'created_at']
+
+
+class AnnotationTaskSerializer(serializers.ModelSerializer):
+    language_name = serializers.CharField(source='language.name', read_only=True, default='')
+    country_name = serializers.CharField(source='country.name', read_only=True, default='')
+
+    class Meta:
+        model = AnnotationTask
+        fields = [
+            'id', 'title', 'description', 'task_type', 'language', 'language_name',
+            'country', 'country_name', 'difficulty', 'reward', 'input_data',
+            'expected_output', 'instructions', 'max_annotations', 'current_annotations',
+            'status', 'created_by', 'created_at', 'updated_at'
+        ]
+        read_only_fields = ['created_by', 'current_annotations', 'created_at', 'updated_at']
+
+
+class AnnotationResultSerializer(serializers.ModelSerializer):
+    worker_name = serializers.CharField(source='worker.user.username', read_only=True)
+
+    class Meta:
+        model = AnnotationResult
+        fields = [
+            'id', 'task', 'worker', 'worker_name', 'annotation_data',
+            'time_spent_seconds', 'quality_score', 'status', 'reviewer_notes',
+            'created_at', 'reviewed_at'
+        ]
+        read_only_fields = ['worker', 'quality_score', 'status', 'reviewer_notes', 'reviewed_at']
+
+
+class RLHFTaskSerializer(serializers.ModelSerializer):
+    language_name = serializers.CharField(source='language.name', read_only=True, default='')
+    country_name = serializers.CharField(source='country.name', read_only=True, default='')
+
+    class Meta:
+        model = RLHFTask
+        fields = [
+            'id', 'title', 'description', 'task_type', 'language', 'language_name',
+            'country', 'country_name', 'prompt', 'responses', 'context',
+            'reward', 'max_workers', 'current_workers', 'status',
+            'created_by', 'created_at', 'updated_at'
+        ]
+        read_only_fields = ['created_by', 'current_workers', 'created_at', 'updated_at']
+
+
+class RLHFFeedbackSerializer(serializers.ModelSerializer):
+    worker_name = serializers.CharField(source='worker.user.username', read_only=True)
+
+    class Meta:
+        model = RLHFFeedback
+        fields = [
+            'id', 'task', 'worker', 'worker_name', 'selected_response',
+            'confidence', 'reasoning', 'time_spent_seconds', 'quality_score', 'created_at'
+        ]
+        read_only_fields = ['worker', 'quality_score']
+
+
+class SyntheticDataJobSerializer(serializers.ModelSerializer):
+    language_name = serializers.CharField(source='language.name', read_only=True, default='')
+    country_name = serializers.CharField(source='country.name', read_only=True, default='')
+
+    class Meta:
+        model = SyntheticDataJob
+        fields = [
+            'id', 'title', 'description', 'generation_type', 'language', 'language_name',
+            'country', 'country_name', 'parameters', 'target_count', 'current_count',
+            'output_data', 'status', 'error_message', 'created_by',
+            'created_at', 'completed_at'
+        ]
+        read_only_fields = ['created_by', 'current_count', 'output_data', 'status', 'created_at', 'completed_at']
+
+
+class PaymentSerializer(serializers.ModelSerializer):
+    worker_name = serializers.CharField(source='worker.user.username', read_only=True)
+
+    class Meta:
+        model = Payment
+        fields = [
+            'id', 'worker', 'worker_name', 'amount', 'currency', 'method',
+            'phone_number', 'reference', 'status', 'task_type', 'task_id',
+            'notes', 'created_at', 'processed_at'
+        ]
+        read_only_fields = ['worker', 'created_at', 'processed_at']
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = [
+            'id', 'user', 'notification_type', 'title', 'message',
+            'data', 'is_read', 'created_at'
+        ]
+        read_only_fields = ['user', 'created_at']

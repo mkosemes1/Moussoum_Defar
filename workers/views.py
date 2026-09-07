@@ -1,16 +1,21 @@
 from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, Sum
+from django.utils import timezone
 from .models import (
     Language, Country, Worker, WorkerLevel,
-    DataCollection, DataSubmission, QualityLog
+    DataCollection, DataSubmission, QualityLog,
+    AnnotationTask, AnnotationResult, RLHFTask, RLHFFeedback,
+    SyntheticDataJob, Payment, Notification
 )
 from .serializers import (
     LanguageSerializer, CountrySerializer, WorkerSerializer,
     WorkerCreateSerializer, WorkerScoreSerializer,
     DataCollectionSerializer, DataSubmissionSerializer,
-    QualityLogSerializer
+    QualityLogSerializer, AnnotationTaskSerializer, AnnotationResultSerializer,
+    RLHFTaskSerializer, RLHFFeedbackSerializer, SyntheticDataJobSerializer,
+    PaymentSerializer, NotificationSerializer
 )
 
 
@@ -71,12 +76,31 @@ class WorkerViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def earnings(self, request):
         worker, created = Worker.objects.get_or_create(user=request.user)
+        payments = Payment.objects.filter(worker=worker)
+        total_earned = payments.filter(status='completed').aggregate(total=Sum('amount'))['total'] or 0
         return Response({
             'balance': str(worker.balance),
             'total_tasks': worker.total_tasks,
             'quality_score': worker.quality_score,
             'level': worker.level,
+            'total_earned': str(total_earned),
+            'pending_payments': payments.filter(status='pending').count(),
         })
+
+    @action(detail=False, methods=['get'])
+    def leaderboard(self, request):
+        workers = Worker.objects.select_related('user', 'country').order_by('-quality_score')[:20]
+        data = []
+        for i, w in enumerate(workers):
+            data.append({
+                'rank': i + 1,
+                'username': w.user.username,
+                'country': w.country.name if w.country else '',
+                'quality_score': w.quality_score,
+                'total_tasks': w.total_tasks,
+                'level': w.level,
+            })
+        return Response(data)
 
 
 class DataCollectionViewSet(viewsets.ReadOnlyModelViewSet):
@@ -119,3 +143,235 @@ class DataSubmissionViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         worker, created = Worker.objects.get_or_create(user=self.request.user)
         serializer.save(worker=worker)
+
+
+# === ANNOTATION TASKS ===
+
+class AnnotationTaskViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = AnnotationTaskSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = AnnotationTask.objects.filter(status='in_progress')
+        task_type = self.request.query_params.get('task_type')
+        language = self.request.query_params.get('language')
+        country = self.request.query_params.get('country')
+        difficulty = self.request.query_params.get('difficulty')
+
+        if task_type:
+            queryset = queryset.filter(task_type=task_type)
+        if language:
+            queryset = queryset.filter(language__code=language)
+        if country:
+            queryset = queryset.filter(country__code=country)
+        if difficulty:
+            queryset = queryset.filter(difficulty=difficulty)
+
+        return queryset
+
+    @action(detail=True, methods=['post'])
+    def start(self, request, pk=None):
+        task = self.get_object()
+        if task.current_annotations >= task.max_annotations:
+            return Response({'error': 'Task is full'}, status=status.HTTP_400_BAD_REQUEST)
+        task.current_annotations += 1
+        if task.current_annotations >= task.max_annotations:
+            task.status = 'completed'
+        task.save()
+        return Response(AnnotationTaskSerializer(task).data)
+
+    @action(detail=True, methods=['post'])
+    def submit_annotation(self, request, pk=None):
+        task = self.get_object()
+        worker, _ = Worker.objects.get_or_create(user=request.user)
+
+        existing = AnnotationResult.objects.filter(task=task, worker=worker).first()
+        if existing:
+            return Response({'error': 'Already submitted'}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = AnnotationResultSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        result = serializer.save(task=task, worker=worker)
+
+        worker.total_tasks += 1
+        worker.balance += task.reward
+        worker.save(update_fields=['total_tasks', 'balance'])
+
+        Notification.objects.create(
+            user=request.user,
+            notification_type='task_completed',
+            title='Annotation Complete',
+            message=f'You earned {task.reward} for annotating: {task.title}',
+            data={'task_id': task.id, 'reward': str(task.reward)}
+        )
+
+        return Response(AnnotationResultSerializer(result).data, status=status.HTTP_201_CREATED)
+
+    @action(detail=False, methods=['get'])
+    def my_results(self, request):
+        worker, _ = Worker.objects.get_or_create(user=request.user)
+        results = AnnotationResult.objects.filter(worker=worker)
+        serializer = AnnotationResultSerializer(results, many=True)
+        return Response(serializer.data)
+
+
+# === RLHF TASKS ===
+
+class RLHFTaskViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = RLHFTaskSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = RLHFTask.objects.filter(status='in_progress')
+        task_type = self.request.query_params.get('task_type')
+        language = self.request.query_params.get('language')
+        country = self.request.query_params.get('country')
+
+        if task_type:
+            queryset = queryset.filter(task_type=task_type)
+        if language:
+            queryset = queryset.filter(language__code=language)
+        if country:
+            queryset = queryset.filter(country__code=country)
+
+        return queryset
+
+    @action(detail=True, methods=['post'])
+    def start(self, request, pk=None):
+        task = self.get_object()
+        if task.current_workers >= task.max_workers:
+            return Response({'error': 'Task is full'}, status=status.HTTP_400_BAD_REQUEST)
+        task.current_workers += 1
+        if task.current_workers >= task.max_workers:
+            task.status = 'completed'
+        task.save()
+        return Response(RLHFTaskSerializer(task).data)
+
+    @action(detail=True, methods=['post'])
+    def submit_feedback(self, request, pk=None):
+        task = self.get_object()
+        worker, _ = Worker.objects.get_or_create(user=request.user)
+
+        existing = RLHFFeedback.objects.filter(task=task, worker=worker).first()
+        if existing:
+            return Response({'error': 'Already submitted'}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = RLHFFeedbackSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        feedback = serializer.save(task=task, worker=worker)
+
+        worker.total_tasks += 1
+        worker.balance += task.reward
+        worker.save(update_fields=['total_tasks', 'balance'])
+
+        Notification.objects.create(
+            user=request.user,
+            notification_type='task_completed',
+            title='RLHF Feedback Complete',
+            message=f'You earned {task.reward} for rating: {task.title}',
+            data={'task_id': task.id, 'reward': str(task.reward)}
+        )
+
+        return Response(RLHFFeedbackSerializer(feedback).data, status=status.HTTP_201_CREATED)
+
+    @action(detail=False, methods=['get'])
+    def my_feedbacks(self, request):
+        worker, _ = Worker.objects.get_or_create(user=request.user)
+        feedbacks = RLHFFeedback.objects.filter(worker=worker)
+        serializer = RLHFFeedbackSerializer(feedbacks, many=True)
+        return Response(serializer.data)
+
+
+# === SYNTHETIC DATA ===
+
+class SyntheticDataJobViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = SyntheticDataJobSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return SyntheticDataJob.objects.all()
+
+    @action(detail=True, methods=['get'])
+    def download(self, request, pk=None):
+        job = self.get_object()
+        if job.status != 'completed':
+            return Response({'error': 'Job not completed yet'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({
+            'title': job.title,
+            'type': job.generation_type,
+            'count': job.current_count,
+            'data': job.output_data
+        })
+
+
+# === PAYMENTS ===
+
+class PaymentViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = PaymentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        worker, _ = Worker.objects.get_or_create(user=self.request.user)
+        return Payment.objects.filter(worker=worker)
+
+    @action(detail=False, methods=['post'])
+    def request_payout(self, request):
+        worker, _ = Worker.objects.get_or_create(user=request.user)
+        amount = request.data.get('amount')
+        method = request.data.get('method', 'mobile_money')
+        phone = request.data.get('phone_number', '')
+
+        if not amount or float(amount) <= 0:
+            return Response({'error': 'Invalid amount'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if float(amount) > float(worker.balance):
+            return Response({'error': 'Insufficient balance'}, status=status.HTTP_400_BAD_REQUEST)
+
+        payment = Payment.objects.create(
+            worker=worker,
+            amount=amount,
+            currency='USD',
+            method=method,
+            phone_number=phone,
+            status='processing',
+            notes=f'Payout request via {method}'
+        )
+
+        worker.balance -= amount
+        worker.save(update_fields=['balance'])
+
+        Notification.objects.create(
+            user=worker.user,
+            notification_type='payment_processing',
+            title='Payment Processing',
+            message=f'Your payout of ${amount} via {method} is being processed.',
+            data={'payment_id': payment.id, 'amount': str(amount)}
+        )
+
+        return Response(PaymentSerializer(payment).data, status=status.HTTP_201_CREATED)
+
+
+# === NOTIFICATIONS ===
+
+class NotificationViewSet(viewsets.ModelViewSet):
+    serializer_class = NotificationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Notification.objects.filter(user=self.request.user)
+
+    @action(detail=True, methods=['post'])
+    def mark_read(self, request, pk=None):
+        notification = self.get_object()
+        notification.mark_read()
+        return Response({'status': 'ok'})
+
+    @action(detail=False, methods=['post'])
+    def mark_all_read(self, request):
+        Notification.objects.filter(user=request.user, is_read=False).update(is_read=True)
+        return Response({'status': 'ok'})
+
+    @action(detail=False, methods=['get'])
+    def unread_count(self, request):
+        count = Notification.objects.filter(user=request.user, is_read=False).count()
+        return Response({'count': count})

@@ -8,6 +8,8 @@ from .models import Client, Subscription
 from .serializers import (
     ClientSerializer, ClientCreateSerializer, SubscriptionSerializer
 )
+from workers.models import DataCollection
+from workers.serializers import DataCollectionSerializer
 
 
 class RegisterView(viewsets.ViewSet):
@@ -58,7 +60,6 @@ class RegisterView(viewsets.ViewSet):
             website=request.data.get('website', '')
         )
 
-        # Create free subscription
         from django.utils import timezone
         from datetime import timedelta
         Subscription.objects.create(
@@ -197,12 +198,10 @@ class ClientViewSet(viewsets.ModelViewSet):
         from django.utils import timezone
         from datetime import timedelta
 
-        # Cancel current subscription
         Subscription.objects.filter(
             client=client, status='active'
         ).update(status='cancelled')
 
-        # Create new subscription
         subscription = Subscription.objects.create(
             client=client,
             plan=new_plan,
@@ -217,3 +216,23 @@ class ClientViewSet(viewsets.ModelViewSet):
         client.save()
 
         return Response(SubscriptionSerializer(subscription).data)
+
+
+class DataCollectionViewSet(viewsets.ModelViewSet):
+    serializer_class = DataCollectionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return DataCollection.objects.all().order_by('-created_at')
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+    def create(self, request, *args, **kwargs):
+        serializer = DataCollectionSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        collection = serializer.save()
+        return Response(
+            DataCollectionSerializer(collection).data,
+            status=status.HTTP_201_CREATED
+        )

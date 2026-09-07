@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Dashboard - Moussoum Defar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0f1a; color: white; min-height: 100vh; }
+        .layout { display: flex; min-height: 100vh; }
+
+        .sidebar {
+            width: 260px; background: #0f172a; border-right: 1px solid rgba(255,255,255,0.06);
+            padding: 32px 20px; position: fixed; top: 0; bottom: 0; left: 0;
+            display: flex; flex-direction: column;
+        }
+        .sidebar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: white; font-size: 18px; font-weight: 600; margin-bottom: 40px; }
+        .sidebar-logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, #3b82f6, #2563eb); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .sidebar-nav { flex: 1; }
+        .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: rgba(255,255,255,0.5); text-decoration: none; border-radius: 10px; font-size: 14px; font-weight: 500; transition: all 0.2s; margin-bottom: 4px; cursor: pointer; }
+        .sidebar-link:hover { color: white; background: rgba(255,255,255,0.04); }
+        .sidebar-link.active { color: white; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.15); }
+        .sidebar-link .icon { font-size: 18px; width: 24px; text-align: center; }
+        .sidebar-section { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.25); text-transform: uppercase; letter-spacing: 0.08em; padding: 16px 16px 8px; }
+        .sidebar-footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px; }
+        .sidebar-user { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06); }
+        .user-avatar { width: 36px; height: 36px; background: rgba(59, 130, 246, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #3b82f6; }
+        .user-info { flex: 1; }
+        .user-name { font-size: 13px; font-weight: 600; color: white; }
+        .user-role { font-size: 11px; color: rgba(255,255,255,0.4); }
+
+        .main { flex: 1; margin-left: 260px; padding: 40px; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .page-title { font-size: 28px; font-weight: 600; color: white; }
+        .page-subtitle { font-size: 14px; color: rgba(255,255,255,0.4); margin-top: 4px; }
+
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 40px; }
+        .stat-card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 24px; }
+        .stat-card-label { font-size: 12px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .stat-card-value { font-size: 32px; font-weight: 600; color: white; }
+        .stat-card-value.green { color: #10b981; }
+        .stat-card-value.blue { color: #3b82f6; }
+        .stat-card-value.purple { color: #8b5cf6; }
+
+        .card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; margin-bottom: 24px; }
+        .card-header { padding: 24px 28px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; }
+        .card-title { font-size: 18px; font-weight: 600; color: white; }
+        .card-body { padding: 28px; }
+
+        .tabs { display: flex; gap: 4px; margin-bottom: 24px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 4px; }
+        .tab { padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.2s; border: none; background: none; font-family: 'Inter', sans-serif; }
+        .tab:hover { color: white; }
+        .tab.active { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+
+        .section { display: none; }
+        .section.active { display: block; }
+
+        .btn { padding: 10px 20px; font-size: 14px; font-weight: 500; border-radius: 10px; border: none; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+        .btn-primary { background: #3b82f6; color: white; }
+        .btn-primary:hover { background: #2563eb; }
+        .btn-secondary { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.1); }
+        .btn-danger { background: rgba(220, 38, 38, 0.1); color: #fca5a5; border: 1px solid rgba(220, 38, 38, 0.2); }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group.full { grid-column: 1 / -1; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.6); }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 12px 16px; background: rgba(10, 15, 26, 0.8); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; font-size: 14px; color: white; font-family: 'Inter', sans-serif; transition: all 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        .form-group select option { background: #1e293b; }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        .form-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 8px; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px 16px; font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        td { padding: 14px 16px; font-size: 14px; color: rgba(255,255,255,0.7); border-bottom: 1px solid rgba(255,255,255,0.04); }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 500; }
+        .badge-active { background: rgba(16, 185, 129, 0.12); color: #10b981; }
+        .badge-pending { background: rgba(251, 191, 36, 0.12); color: #fbbf24; }
+        .badge-completed { background: rgba(59, 130, 246, 0.12); color: #3b82f6; }
+        .badge-running { background: rgba(139, 92, 246, 0.12); color: #8b5cf6; }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+        .modal-overlay.open { opacity: 1; pointer-events: all; }
+        .modal { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto; transform: translateY(20px); transition: transform 0.2s; }
+        .modal-overlay.open .modal { transform: translateY(0); }
+        .modal-header { padding: 24px 28px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; }
+        .modal-title { font-size: 18px; font-weight: 600; }
+        .modal-close { width: 32px; height: 32px; background: rgba(255,255,255,0.06); border: none; border-radius: 8px; color: rgba(255,255,255,0.5); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .modal-close:hover { background: rgba(255,255,255,0.1); color: white; }
+        .modal-body { padding: 28px; }
+
+        .alert { padding: 12px 16px; border-radius: 10px; font-size: 13px; margin-bottom: 16px; display: none; }
+        .alert.show { display: block; }
+        .alert-success { background: rgba(16, 185, 129, 0.1); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.2); }
+        .alert-error { background: rgba(220, 38, 38, 0.1); color: #fca5a5; border: 1px solid rgba(220, 38, 38, 0.2); }
+
+        .empty { text-align: center; padding: 60px 20px; }
+        .empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+        .empty-title { font-size: 16px; font-weight: 600; color: white; margin-bottom: 8px; }
+        .empty-desc { font-size: 14px; color: rgba(255,255,255,0.4); margin-bottom: 24px; }
+
+        .progress-bar { width: 100%; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #3b82f6, #2563eb); border-radius: 3px; transition: width 0.3s; }
+
+        @media (max-width: 1024px) {
+            .sidebar { display: none; }
+            .main { margin-left: 0; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <a href="/templates/index.html" class="sidebar-logo">
+                <div class="sidebar-logo-icon">M</div>
+                Moussoum Defar
+            </a>
+            <nav class="sidebar-nav">
+                <a class="sidebar-link active" onclick="showSection('overview', this)"><span class="icon">📊</span> Overview</a>
+                <div class="sidebar-section">Data</div>
+                <a class="sidebar-link" onclick="showSection('collections', this)"><span class="icon">📦</span> Data Collections</a>
+                <a class="sidebar-link" onclick="showSection('annotations', this)"><span class="icon">🏷️</span> Annotation Tasks</a>
+                <a class="sidebar-link" onclick="showSection('rlhf', this)"><span class="icon">🤖</span> RLHF Tasks</a>
+                <a class="sidebar-link" onclick="showSection('synthetic', this)"><span class="icon">🧬</span> Synthetic Data</a>
+                <div class="sidebar-section">Tools</div>
+                <a class="sidebar-link" onclick="showSection('evaluation', this)"><span class="icon">🧪</span> AI Evaluation</a>
+                <a href="/api/docs/" class="sidebar-link"><span class="icon">📖</span> API Docs</a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <div class="user-avatar" id="userInitial">C</div>
+                    <div class="user-info">
+                        <div class="user-name" id="userName">Client</div>
+                        <div class="user-role">Company</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main">
+            <!-- OVERVIEW -->
+            <div class="section active" id="sec-overview">
+                <div class="page-header"><h1 class="page-title">Dashboard</h1></div>
+                <div class="stats-row">
+                    <div class="stat-card"><div class="stat-card-label">Collections</div><div class="stat-card-value blue" id="sCollections">0</div></div>
+                    <div class="stat-card"><div class="stat-card-label">Annotations</div><div class="stat-card-value green" id="sAnnotations">0</div></div>
+                    <div class="stat-card"><div class="stat-card-label">RLHF Tasks</div><div class="stat-card-value purple" id="sRLHF">0</div></div>
+                    <div class="stat-card"><div class="stat-card-label">Synthetic Jobs</div><div class="stat-card-value" id="sSynthetic">0</div></div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h2 class="card-title">Quick Actions</h2></div>
+                    <div class="card-body" style="display:flex;gap:16px;flex-wrap:wrap;">
+                        <button class="btn btn-primary" onclick="openModal('collection')">+ New Data Collection</button>
+                        <button class="btn btn-primary" onclick="openModal('annotation')">+ New Annotation Task</button>
+                        <button class="btn btn-primary" onclick="openModal('rlhf')">+ New RLHF Task</button>
+                        <button class="btn btn-primary" onclick="openModal('synthetic')">+ Generate Synthetic Data</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DATA COLLECTIONS -->
+            <div class="section" id="sec-collections">
+                <div class="page-header"><h1 class="page-title">Data Collections</h1><button class="btn btn-primary" onclick="openModal('collection')">+ New Collection</button></div>
+                <div class="card"><div class="card-body">
+                    <table><thead><tr><th>Title</th><th>Type</th><th>Language</th><th>Country</th><th>Progress</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="collectionsTable"></tbody></table>
+                </div></div>
+            </div>
+
+            <!-- ANNOTATIONS -->
+            <div class="section" id="sec-annotations">
+                <div class="page-header"><h1 class="page-title">Annotation Tasks</h1><button class="btn btn-primary" onclick="openModal('annotation')">+ New Task</button></div>
+                <div class="card"><div class="card-body">
+                    <table><thead><tr><th>Title</th><th>Type</th><th>Language</th><th>Difficulty</th><th>Reward</th><th>Progress</th><th>Status</th></tr></thead>
+                    <tbody id="annotationsTable"></tbody></table>
+                </div></div>
+            </div>
+
+            <!-- RLHF -->
+            <div class="section" id="sec-rlhf">
+                <div class="page-header"><h1 class="page-title">RLHF Tasks</h1><button class="btn btn-primary" onclick="openModal('rlhf')">+ New Task</button></div>
+                <div class="card"><div class="card-body">
+                    <table><thead><tr><th>Title</th><th>Type</th><th>Language</th><th>Prompt</th><th>Responses</th><th>Workers</th><th>Status</th></tr></thead>
+                    <tbody id="rlhfTable"></tbody></table>
+                </div></div>
+            </div>
+
+            <!-- SYNTHETIC -->
+            <div class="section" id="sec-synthetic">
+                <div class="page-header"><h1 class="page-title">Synthetic Data</h1><button class="btn btn-primary" onclick="openModal('synthetic')">+ New Job</button></div>
+                <div class="card"><div class="card-body">
+                    <table><thead><tr><th>Title</th><th>Type</th><th>Language</th><th>Target</th><th>Generated</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="syntheticTable"></tbody></table>
+                </div></div>
+            </div>
+
+            <!-- EVALUATION -->
+            <div class="section" id="sec-evaluation">
+                <div class="page-header"><h1 class="page-title">AI Evaluation</h1><button class="btn btn-primary" onclick="window.location.href='/templates/evaluation.html'">Open Lab</button></div>
+                <div class="card"><div class="card-body"><p style="color:rgba(255,255,255,0.5);">Go to the Evaluation Lab to test your AI models against African benchmarks.</p></div></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">New Task</h3>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        const TOKEN = localStorage.getItem('clientToken');
+        const clientData = JSON.parse(localStorage.getItem('clientData') || '{}');
+        if (!TOKEN) window.location.href = '/templates/client-login.html';
+
+        const headers = { 'Authorization': 'Bearer ' + TOKEN, 'Content-Type': 'application/json' };
+
+        if (clientData.company_name) {
+            document.getElementById('userName').textContent = clientData.company_name;
+            document.getElementById('userInitial').textContent = clientData.company_name[0].toUpperCase();
+        }
+
+        const LANGUAGES = [
+            { code: 'wo', name: 'Wolof' }, { code: 'fr', name: 'French' }, { code: 'en', name: 'English' },
+            { code: 'pcm', name: 'Pidgin' }, { code: 'ha', name: 'Hausa' }, { code: 'sw', name: 'Swahili' },
+            { code: 'sh', name: 'Sheng' }, { code: 'ak', name: 'Akan' }, { code: 'am', name: 'Amharic' },
+            { code: 'bm', name: 'Bambara' }, { code: 'yo', name: 'Yoruba' }, { code: 'ig', name: 'Igbo' },
+            { code: 'zu', name: 'Zulu' }, { code: 'af', name: 'Afrikaans' }, { code: 'rw', name: 'Kinyarwanda' },
+            { code: 'sn', name: 'Shona' }
+        ];
+        const COUNTRIES = [
+            { code: 'SN', name: 'Senegal' }, { code: 'NG', name: 'Nigeria' }, { code: 'KE', name: 'Kenya' },
+            { code: 'GH', name: 'Ghana' }, { code: 'CI', name: 'Ivory Coast' }, { code: 'ML', name: 'Mali' },
+            { code: 'CM', name: 'Cameroon' }, { code: 'TZ', name: 'Tanzania' }, { code: 'ET', name: 'Ethiopia' },
+            { code: 'ZA', name: 'South Africa' }
+        ];
+
+        function showSection(name, el) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('sec-' + name).classList.add('active');
+            if (el) el.classList.add('active');
+        }
+
+        async function api(url, opts = {}) {
+            const res = await fetch(url, { headers, ...opts });
+            if (res.status === 401) { localStorage.removeItem('clientToken'); window.location.href = '/templates/client-login.html'; return null; }
+            return res.json();
+        }
+
+        function langOpts() { return LANGUAGES.map(l => `<option value="${l.code}">${l.name}</option>`).join(''); }
+        function countryOpts() { return COUNTRIES.map(c => `<option value="${c.code}">${c.name}</option>`).join(''); }
+
+        async function loadOverview() {
+            const [collections, annotations, rlhf, synthetic] = await Promise.all([
+                api('/api/v1/clients/data-collections/'),
+                api('/api/v1/workers/annotations/'),
+                api('/api/v1/workers/rlhf/'),
+                api('/api/v1/workers/synthetic/'),
+            ]);
+            document.getElementById('sCollections').textContent = (collections || []).length;
+            document.getElementById('sAnnotations').textContent = (annotations || []).length;
+            document.getElementById('sRLHF').textContent = (rlhf || []).length;
+            document.getElementById('sSynthetic').textContent = (synthetic || []).length;
+        }
+
+        async function loadCollections() {
+            const data = await api('/api/v1/clients/data-collections/');
+            if (!data || data.length === 0) {
+                document.getElementById('collectionsTable').innerHTML = '<tr><td colspan="7" class="empty"><div class="empty-title">No collections</div></td></tr>';
+                return;
+            }
+            document.getElementById('collectionsTable').innerHTML = data.map(c => {
+                const progress = c.target_count > 0 ? Math.round((c.current_count / c.target_count) * 100) : 0;
+                return `<tr>
+                    <td style="font-weight:500;color:white;">${c.title}</td>
+                    <td>${c.data_type}</td>
+                    <td>${c.language_name || '-'}</td>
+                    <td>${c.country_name || '-'}</td>
+                    <td><div style="display:flex;align-items:center;gap:10px;"><div class="progress-bar" style="width:80px;"><div class="progress-fill" style="width:${progress}%;"></div></div><span style="font-size:12px;color:rgba(255,255,255,0.5);">${c.current_count}/${c.target_count}</span></div></td>
+                    <td><span class="badge badge-${c.status}">${c.status}</span></td>
+                    <td><button class="btn btn-danger" style="padding:6px 12px;font-size:12px;" onclick="deleteItem('/api/v1/clients/data-collections/${c.id}/')">Delete</button></td>
+                </tr>`;
+            }).join('');
+        }
+
+        async function loadAnnotations() {
+            const data = await api('/api/v1/workers/annotations/');
+            if (!data || data.length === 0) {
+                document.getElementById('annotationsTable').innerHTML = '<tr><td colspan="7" class="empty"><div class="empty-title">No annotation tasks</div></td></tr>';
+                return;
+            }
+            document.getElementById('annotationsTable').innerHTML = data.map(t => `
+                <tr>
+                    <td style="font-weight:500;color:white;">${t.title}</td>
+                    <td>${t.task_type.replace('_', ' ')}</td>
+                    <td>${t.language_name || '-'}</td>
+                    <td>${'★'.repeat(t.difficulty)}</td>
+                    <td style="color:#10b981;font-weight:600;">$${t.reward}</td>
+                    <td>${t.current_annotations}/${t.max_annotations}</td>
+                    <td><span class="badge badge-${t.status}">${t.status}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadRLHF() {
+            const data = await api('/api/v1/workers/rlhf/');
+            if (!data || data.length === 0) {
+                document.getElementById('rlhfTable').innerHTML = '<tr><td colspan="7" class="empty"><div class="empty-title">No RLHF tasks</div></td></tr>';
+                return;
+            }
+            document.getElementById('rlhfTable').innerHTML = data.map(t => `
+                <tr>
+                    <td style="font-weight:500;color:white;">${t.title}</td>
+                    <td>${t.task_type.replace('_', ' ')}</td>
+                    <td>${t.language_name || '-'}</td>
+                    <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.prompt}</td>
+                    <td>${t.responses.length}</td>
+                    <td>${t.current_workers}/${t.max_workers}</td>
+                    <td><span class="badge badge-${t.status}">${t.status}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadSynthetic() {
+            const data = await api('/api/v1/workers/synthetic/');
+            if (!data || data.length === 0) {
+                document.getElementById('syntheticTable').innerHTML = '<tr><td colspan="7" class="empty"><div class="empty-title">No synthetic jobs</div></td></tr>';
+                return;
+            }
+            document.getElementById('syntheticTable').innerHTML = data.map(j => `
+                <tr>
+                    <td style="font-weight:500;color:white;">${j.title}</td>
+                    <td>${j.generation_type.replace('_', ' ')}</td>
+                    <td>${j.language_name || '-'}</td>
+                    <td>${j.target_count}</td>
+                    <td>${j.current_count}</td>
+                    <td><span class="badge badge-${j.status}">${j.status}</span></td>
+                    <td>${j.status === 'completed' ? '<button class="btn btn-secondary" style="padding:6px 12px;font-size:12px;" onclick="downloadSynthetic(' + j.id + ')">Download</button>' : ''}</td>
+                </tr>
+            `).join('');
+        }
+
+        async function deleteItem(url) {
+            if (!confirm('Delete this item?')) return;
+            await fetch(url, { method: 'DELETE', headers });
+            loadCollections();
+        }
+
+        async function downloadSynthetic(id) {
+            const data = await api('/api/v1/workers/synthetic/' + id + '/download/');
+            if (data) {
+                const blob = new Blob([JSON.stringify(data.data, null, 2)], { type: 'application/json' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = data.title + '.json';
+                a.click();
+            }
+        }
+
+        function openModal(type) {
+            const title = { collection: 'New Data Collection', annotation: 'New Annotation Task', rlhf: 'New RLHF Task', synthetic: 'Generate Synthetic Data' }[type];
+            document.getElementById('modalTitle').textContent = title;
+
+            const forms = {
+                collection: `
+                    <form id="createForm" onsubmit="submitForm(event, 'collection')">
+                        <div class="form-group full"><label>Title *</label><input type="text" id="fTitle" required placeholder="e.g. Wolof Voice Commands"></div>
+                        <div class="form-group full"><label>Description *</label><textarea id="fDesc" required placeholder="Describe what data you need..."></textarea></div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Data Type *</label><select id="fType"><option value="text">Text</option><option value="audio">Audio</option><option value="image">Image</option><option value="video">Video</option><option value="document">Document</option></select></div>
+                            <div class="form-group"><label>Language *</label><select id="fLang">${langOpts()}</select></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Country *</label><select id="fCountry">${countryOpts()}</select></div>
+                            <div class="form-group"><label>Target Count</label><input type="number" id="fTarget" value="100" min="1"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Price per Item ($)</label><input type="number" id="fPrice" value="0.10" min="0.01" step="0.01"></div>
+                            <div class="form-group"><label>Status</label><select id="fStatus"><option value="active">Active</option><option value="paused">Paused</option></select></div>
+                        </div>
+                        <div class="form-group full"><label>Instructions</label><textarea id="fInstructions" placeholder="Special instructions for workers..."></textarea></div>
+                        <div class="form-actions"><button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button><button type="submit" class="btn btn-primary">Create</button></div>
+                    </form>`,
+                annotation: `
+                    <form id="createForm" onsubmit="submitForm(event, 'annotation')">
+                        <div class="form-group full"><label>Title *</label><input type="text" id="fTitle" required placeholder="e.g. Classify Senegalese market images"></div>
+                        <div class="form-group full"><label>Description *</label><textarea id="fDesc" required placeholder="What should annotators do..."></textarea></div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Task Type *</label><select id="fTaskType"><option value="image_bbox">Image Bounding Box</option><option value="image_classification">Image Classification</option><option value="text_classification">Text Classification</option><option value="text_ner">Named Entity Recognition</option><option value="text_sentiment">Sentiment Analysis</option><option value="text_translation">Translation</option><option value="audio_transcription">Audio Transcription</option><option value="conversation_rating">Conversation Rating</option></select></div>
+                            <div class="form-group"><label>Language *</label><select id="fLang">${langOpts()}</select></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Country</label><select id="fCountry">${countryOpts()}</select></div>
+                            <div class="form-group"><label>Difficulty</label><select id="fDifficulty"><option value="1">Easy</option><option value="2" selected>Medium</option><option value="3">Hard</option><option value="4">Expert</option></select></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Reward ($)</label><input type="number" id="fReward" value="0.10" min="0.01" step="0.01"></div>
+                            <div class="form-group"><label>Max Workers</label><input type="number" id="fMaxWorkers" value="3" min="1"></div>
+                        </div>
+                        <div class="form-group full"><label>Instructions</label><textarea id="fInstructions" placeholder="Detailed instructions for annotators..."></textarea></div>
+                        <div class="form-actions"><button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button><button type="submit" class="btn btn-primary">Create Task</button></div>
+                    </form>`,
+                rlhf: `
+                    <form id="createForm" onsubmit="submitForm(event, 'rlhf')">
+                        <div class="form-group full"><label>Title *</label><input type="text" id="fTitle" required placeholder="e.g. Compare Wolof translation quality"></div>
+                        <div class="form-group full"><label>Description *</label><textarea id="fDesc" required placeholder="What should workers evaluate..."></textarea></div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Task Type *</label><select id="fTaskType"><option value="comparison">Response Comparison (A vs B)</option><option value="ranking">Rank Multiple Responses</option><option value="rating">Rate Response Quality</option><option value="preference">Preference Pair</option><option value="correction">Text Correction</option></select></div>
+                            <div class="form-group"><label>Language *</label><select id="fLang">${langOpts()}</select></div>
+                        </div>
+                        <div class="form-group full"><label>AI Prompt *</label><textarea id="fPrompt" required placeholder="The prompt given to the AI model..."></textarea></div>
+                        <div class="form-group full"><label>AI Responses (one per line) *</label><textarea id="fResponses" required placeholder="Response A&#10;Response B&#10;Response C"></textarea></div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Reward ($)</label><input type="number" id="fReward" value="0.15" min="0.01" step="0.01"></div>
+                            <div class="form-group"><label>Max Workers</label><input type="number" id="fMaxWorkers" value="5" min="1"></div>
+                        </div>
+                        <div class="form-actions"><button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button><button type="submit" class="btn btn-primary">Create Task</button></div>
+                    </form>`,
+                synthetic: `
+                    <form id="createForm" onsubmit="submitForm(event, 'synthetic')">
+                        <div class="form-group full"><label>Title *</label><input type="text" id="fTitle" required placeholder="e.g. Generate Yoruba Q&A pairs"></div>
+                        <div class="form-group full"><label>Description</label><textarea id="fDesc" placeholder="Description of the synthetic data..."></textarea></div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Generation Type *</label><select id="fGenType"><option value="conversation">Conversation Generation</option><option value="translation">Translation Pairs</option><option value="qa_pairs">Q&A Pairs</option><option value="text_variations">Text Variations</option><option value="entity_data">Named Entity Data</option><option value="sentiment_data">Sentiment Labeled Text</option></select></div>
+                            <div class="form-group"><label>Language *</label><select id="fLang">${langOpts()}</select></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Country</label><select id="fCountry">${countryOpts()}</select></div>
+                            <div class="form-group"><label>Target Count</label><input type="number" id="fTarget" value="100" min="1"></div>
+                        </div>
+                        <div class="form-actions"><button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button><button type="submit" class="btn btn-primary">Generate</button></div>
+                    </form>`
+            };
+
+            document.getElementById('modalBody').innerHTML = forms[type];
+            document.getElementById('modal').classList.add('open');
+        }
+
+        function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+        async function submitForm(e, type) {
+            e.preventDefault();
+            let url, data;
+
+            if (type === 'collection') {
+                data = {
+                    title: document.getElementById('fTitle').value,
+                    description: document.getElementById('fDesc').value,
+                    data_type: document.getElementById('fType').value,
+                    language: LANGUAGES.find(l => l.code === document.getElementById('fLang').value)?.name || '',
+                    country: COUNTRIES.find(c => c.code === document.getElementById('fCountry').value)?.name || '',
+                    target_count: parseInt(document.getElementById('fTarget').value) || 100,
+                    price_per_item: parseFloat(document.getElementById('fPrice').value) || 0.10,
+                    status: document.getElementById('fStatus').value,
+                    instructions: document.getElementById('fInstructions').value,
+                };
+                url = '/api/v1/clients/data-collections/';
+            } else if (type === 'annotation') {
+                data = {
+                    title: document.getElementById('fTitle').value,
+                    description: document.getElementById('fDesc').value,
+                    task_type: document.getElementById('fTaskType').value,
+                    language: LANGUAGES.find(l => l.code === document.getElementById('fLang').value)?.name || '',
+                    country: COUNTRIES.find(c => c.code === document.getElementById('fCountry').value)?.name || '',
+                    difficulty: parseInt(document.getElementById('fDifficulty').value) || 2,
+                    reward: parseFloat(document.getElementById('fReward').value) || 0.10,
+                    max_annotations: parseInt(document.getElementById('fMaxWorkers').value) || 3,
+                    instructions: document.getElementById('fInstructions').value,
+                    input_data: {},
+                    expected_output: {},
+                    status: 'in_progress',
+                };
+                url = '/api/v1/workers/annotations/';
+            } else if (type === 'rlhf') {
+                data = {
+                    title: document.getElementById('fTitle').value,
+                    description: document.getElementById('fDesc').value,
+                    task_type: document.getElementById('fTaskType').value,
+                    language: LANGUAGES.find(l => l.code === document.getElementById('fLang').value)?.name || '',
+                    prompt: document.getElementById('fPrompt').value,
+                    responses: document.getElementById('fResponses').value.split('\n').filter(r => r.trim()),
+                    reward: parseFloat(document.getElementById('fReward').value) || 0.15,
+                    max_workers: parseInt(document.getElementById('fMaxWorkers').value) || 5,
+                    status: 'in_progress',
+                };
+                url = '/api/v1/workers/rlhf/';
+            } else if (type === 'synthetic') {
+                data = {
+                    title: document.getElementById('fTitle').value,
+                    description: document.getElementById('fDesc').value,
+                    generation_type: document.getElementById('fGenType').value,
+                    language: LANGUAGES.find(l => l.code === document.getElementById('fLang').value)?.name || '',
+                    country: COUNTRIES.find(c => c.code === document.getElementById('fCountry').value)?.name || '',
+                    target_count: parseInt(document.getElementById('fTarget').value) || 100,
+                };
+                url = '/api/v1/workers/synthetic/';
+            }
+
+            const res = await fetch(url, { method: 'POST', headers, body: JSON.stringify(data) });
+            if (res.ok) {
+                closeModal();
+                if (type === 'collection') loadCollections();
+                else if (type === 'annotation') loadAnnotations();
+                else if (type === 'rlhf') loadRLHF();
+                else if (type === 'synthetic') loadSynthetic();
+                loadOverview();
+            } else {
+                const err = await res.json();
+                alert('Error: ' + JSON.stringify(err));
+            }
+        }
+
+        // Init
+        loadOverview();
+        loadCollections();
+        loadAnnotations();
+        loadRLHF();
+        loadSynthetic();
+    </script>
+</body>
+</html>

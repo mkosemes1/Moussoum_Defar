@@ -234,3 +234,249 @@ class QualityLog(models.Model):
 
     def __str__(self):
         return f"{self.worker} - Score: {self.score}"
+
+
+# === SCALE AI FEATURES ADAPTED FOR AFRICA ===
+
+class AnnotationTask(models.Model):
+    """Image/text/audio annotation task (like Scale AI labeling)."""
+    TASK_TYPE_CHOICES = [
+        ('image_bbox', 'Image Bounding Box'),
+        ('image_segmentation', 'Image Segmentation'),
+        ('image_classification', 'Image Classification'),
+        ('text_classification', 'Text Classification'),
+        ('text_ner', 'Named Entity Recognition'),
+        ('text_sentiment', 'Sentiment Analysis'),
+        ('text_translation', 'Translation'),
+        ('audio_transcription', 'Audio Transcription'),
+        ('audio_classification', 'Audio Classification'),
+        ('conversation_rating', 'Conversation Rating'),
+    ]
+
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+        ('review', 'Under Review'),
+    ]
+
+    DIFFICULTY_CHOICES = [
+        (1, 'Easy'),
+        (2, 'Medium'),
+        (3, 'Hard'),
+        (4, 'Expert'),
+    ]
+
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    task_type = models.CharField(max_length=25, choices=TASK_TYPE_CHOICES)
+    language = models.ForeignKey(Language, on_delete=models.SET_NULL, null=True, blank=True)
+    country = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True, blank=True)
+    difficulty = models.IntegerField(choices=DIFFICULTY_CHOICES, default=2)
+    reward = models.DecimalField(max_digits=8, decimal_places=4, default=0.10)
+    input_data = models.JSONField(default=dict, help_text='Data to annotate')
+    expected_output = models.JSONField(default=dict, help_text='Expected annotation format')
+    instructions = models.TextField(blank=True)
+    max_annotations = models.IntegerField(default=3, help_text='Max workers per task')
+    current_annotations = models.IntegerField(default=0)
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='pending')
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='created_annotation_tasks')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.title} ({self.get_task_type_display()})"
+
+
+class AnnotationResult(models.Model):
+    """Worker annotation submission."""
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
+
+    task = models.ForeignKey(AnnotationTask, on_delete=models.CASCADE, related_name='results')
+    worker = models.ForeignKey(Worker, on_delete=models.CASCADE, related_name='annotations')
+    annotation_data = models.JSONField(default=dict, help_text='The annotation output')
+    time_spent_seconds = models.IntegerField(default=0)
+    quality_score = models.FloatField(null=True, blank=True)
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='pending')
+    reviewer_notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.worker} - {self.task.title}"
+
+
+class RLHFTask(models.Model):
+    """Reinforcement Learning from Human Feedback task."""
+    TASK_TYPE_CHOICES = [
+        ('comparison', 'Response Comparison (A vs B)'),
+        ('ranking', 'Rank Multiple Responses'),
+        ('rating', 'Rate Response Quality'),
+        ('preference', 'Preference Pair'),
+        ('correction', 'Text Correction'),
+    ]
+
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+    ]
+
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    task_type = models.CharField(max_length=20, choices=TASK_TYPE_CHOICES)
+    language = models.ForeignKey(Language, on_delete=models.SET_NULL, null=True, blank=True)
+    country = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True, blank=True)
+    prompt = models.TextField(help_text='The AI prompt/query')
+    responses = models.JSONField(default=list, help_text='List of AI responses to evaluate')
+    context = models.JSONField(default=dict, help_text='Additional context for evaluation')
+    reward = models.DecimalField(max_digits=8, decimal_places=4, default=0.15)
+    max_workers = models.IntegerField(default=5)
+    current_workers = models.IntegerField(default=0)
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='pending')
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='created_rlhftasks')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name_plural = 'RLHF tasks'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.title} ({self.get_task_type_display()})"
+
+
+class RLHFFeedback(models.Model):
+    """Worker feedback on RLHF task."""
+    task = models.ForeignKey(RLHFTask, on_delete=models.CASCADE, related_name='feedbacks')
+    worker = models.ForeignKey(Worker, on_delete=models.CASCADE, related_name='rlhf_feedbacks')
+    selected_response = models.IntegerField(help_text='Index of preferred response')
+    confidence = models.FloatField(default=0.8, help_text='Worker confidence 0-1')
+    reasoning = models.TextField(blank=True, help_text='Why this response was chosen')
+    time_spent_seconds = models.IntegerField(default=0)
+    quality_score = models.FloatField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        unique_together = ['task', 'worker']
+
+    def __str__(self):
+        return f"{self.worker} - {self.task.title}"
+
+
+class SyntheticDataJob(models.Model):
+    """Synthetic data generation job."""
+    GENERATION_TYPE_CHOICES = [
+        ('conversation', 'Conversation Generation'),
+        ('translation', 'Translation Pairs'),
+        ('qa_pairs', 'Q&A Pairs'),
+        ('text_variations', 'Text Variations'),
+        ('entity_data', 'Named Entity Data'),
+        ('sentiment_data', 'Sentiment Labeled Text'),
+    ]
+
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('running', 'Running'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+    ]
+
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    generation_type = models.CharField(max_length=25, choices=GENERATION_TYPE_CHOICES)
+    language = models.ForeignKey(Language, on_delete=models.SET_NULL, null=True, blank=True)
+    country = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True, blank=True)
+    parameters = models.JSONField(default=dict, help_text='Generation parameters')
+    target_count = models.IntegerField(default=100)
+    current_count = models.IntegerField(default=0)
+    output_data = models.JSONField(default=list, help_text='Generated data')
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='pending')
+    error_message = models.TextField(blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='synthetic_jobs')
+    created_at = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.title} ({self.get_generation_type_display()})"
+
+
+class Payment(models.Model):
+    """Worker payment/earning record."""
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('processing', 'Processing'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+    ]
+
+    METHOD_CHOICES = [
+        ('mobile_money', 'Mobile Money'),
+        ('bank_transfer', 'Bank Transfer'),
+        ('crypto', 'Cryptocurrency'),
+    ]
+
+    worker = models.ForeignKey(Worker, on_delete=models.CASCADE, related_name='payments')
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    currency = models.CharField(max_length=10, default='USD')
+    method = models.CharField(max_length=20, choices=METHOD_CHOICES, default='mobile_money')
+    phone_number = models.CharField(max_length=20, blank=True, help_text='For mobile money')
+    reference = models.CharField(max_length=200, blank=True)
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='pending')
+    task_type = models.CharField(max_length=50, blank=True, help_text='Type of task earned from')
+    task_id = models.IntegerField(null=True, blank=True, help_text='ID of completed task')
+    notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    processed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.worker} - {self.amount} {self.currency} ({self.status})"
+
+
+class Notification(models.Model):
+    """User notification."""
+    TYPE_CHOICES = [
+        ('task_assigned', 'Task Assigned'),
+        ('task_completed', 'Task Completed'),
+        ('payment_received', 'Payment Received'),
+        ('payment_processing', 'Payment Processing'),
+        ('level_up', 'Level Up'),
+        ('evaluation_complete', 'Evaluation Complete'),
+        ('collection_ready', 'Collection Ready'),
+        ('system', 'System'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    notification_type = models.CharField(max_length=25, choices=TYPE_CHOICES)
+    title = models.CharField(max_length=200)
+    message = models.TextField()
+    data = models.JSONField(default=dict, help_text='Additional data')
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user} - {self.title}"
+
+    def mark_read(self):
+        self.is_read = True
+        self.save(update_fields=['is_read'])

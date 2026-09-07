@@ -9,7 +9,7 @@ from .serializers import (
     ClientSerializer, ClientCreateSerializer, SubscriptionSerializer
 )
 from workers.models import DataCollection
-from workers.serializers import DataCollectionSerializer
+from workers.serializers import DataCollectionSerializer, DataSubmissionSerializer
 
 
 class RegisterView(viewsets.ViewSet):
@@ -244,7 +244,7 @@ class DataCollectionViewSet(viewsets.ModelViewSet):
 
         serializer = DataCollectionSerializer(data=data)
         serializer.is_valid(raise_exception=True)
-        collection = serializer.save()
+        collection = serializer.save(created_by=request.user)
 
         from workers.models import Notification
         Notification.objects.create(
@@ -259,3 +259,13 @@ class DataCollectionViewSet(viewsets.ModelViewSet):
             DataCollectionSerializer(collection).data,
             status=status.HTTP_201_CREATED
         )
+
+
+class DataSubmissionViewSet(viewsets.ModelViewSet):
+    serializer_class = DataSubmissionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return DataSubmission.objects.filter(
+            collection__created_by=self.request.user
+        ).select_related('worker__user', 'collection').order_by('-submitted_at')

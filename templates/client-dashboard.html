@@ -45,6 +45,8 @@
         .stat-card-value.green { color: #10b981; }
         .stat-card-value.blue { color: #10b981; }
         .stat-card-value.purple { color: #8b5cf6; }
+        .stat-card-value.orange { color: #f59e0b; }
+        .stat-card-value.red { color: #ef4444; }
 
         .card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; margin-bottom: 24px; }
         .card-header { padding: 24px 28px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; }
@@ -152,6 +154,7 @@
                 <a class="sidebar-link active" onclick="showSection('overview', this)"><span class="icon">📊</span> Overview</a>
                 <div class="sidebar-section">Data</div>
                 <a class="sidebar-link" onclick="showSection('collections', this)"><span class="icon">📦</span> Data Collections</a>
+                <a class="sidebar-link" onclick="showSection('submissions', this)"><span class="icon">📥</span> Collected Data</a>
                 <a class="sidebar-link" onclick="showSection('annotations', this)"><span class="icon">🏷️</span> Annotation Tasks</a>
                 <a class="sidebar-link" onclick="showSection('rlhf', this)"><span class="icon">🤖</span> RLHF Tasks</a>
                 <a class="sidebar-link" onclick="showSection('synthetic', this)"><span class="icon">🧬</span> Synthetic Data</a>
@@ -207,6 +210,21 @@
                 <div class="card"><div class="card-body">
                     <table><thead><tr><th>Title</th><th>Type</th><th>Language</th><th>Country</th><th>Progress</th><th>Status</th><th>Actions</th></tr></thead>
                     <tbody id="collectionsTable"></tbody></table>
+                </div></div>
+            </div>
+
+            <!-- COLLECTED DATA (Submissions) -->
+            <div class="section" id="sec-submissions">
+                <div class="page-header"><h1 class="page-title">Collected Data</h1><p class="page-subtitle">View all submissions from workers across your collections</p></div>
+                <div class="stats-row">
+                    <div class="stat-card"><div class="stat-card-label">Total Submissions</div><div class="stat-card-value blue" id="sTotalSubs">0</div></div>
+                    <div class="stat-card"><div class="stat-card-label">Pending Review</div><div class="stat-card-value orange" id="sPendingSubs">0</div></div>
+                    <div class="stat-card"><div class="stat-card-label">Approved</div><div class="stat-card-value green" id="sApprovedSubs">0</div></div>
+                    <div class="stat-card"><div class="stat-card-label">Rejected</div><div class="stat-card-value red" id="sRejectedSubs">0</div></div>
+                </div>
+                <div class="card"><div class="card-body">
+                    <table><thead><tr><th>Worker</th><th>Collection</th><th>Type</th><th>Content</th><th>Status</th><th>Submitted</th></tr></thead>
+                    <tbody id="submissionsTable"></tbody></table>
                 </div></div>
             </div>
 
@@ -391,6 +409,39 @@
                     <td>${j.status === 'completed' ? '<button class="btn btn-secondary" style="padding:6px 12px;font-size:12px;" onclick="downloadSynthetic(' + j.id + ')">Download</button>' : ''}</td>
                 </tr>
             `).join('');
+        }
+
+        async function loadSubmissions() {
+            const res = await api('/api/v1/clients/submissions/');
+            const data = res?.results || res || [];
+            document.getElementById('sTotalSubs').textContent = data.length;
+            document.getElementById('sPendingSubs').textContent = data.filter(s => s.status === 'pending').length;
+            document.getElementById('sApprovedSubs').textContent = data.filter(s => s.status === 'approved').length;
+            document.getElementById('sRejectedSubs').textContent = data.filter(s => s.status === 'rejected').length;
+            if (!data || data.length === 0) {
+                document.getElementById('submissionsTable').innerHTML = '<tr><td colspan="6" class="empty"><div class="empty-title">No submissions yet</div><div class="empty-desc">Workers haven\'t contributed to your collections yet.</div></td></tr>';
+                return;
+            }
+            document.getElementById('submissionsTable').innerHTML = data.map(s => {
+                const workerName = s.worker?.user?.username || 'Unknown';
+                const collTitle = s.collection?.title || 'N/A';
+                const dataType = s.collection?.data_type || '-';
+                let content = s.transcription || '';
+                if (s.file) {
+                    const fileName = s.file.split('/').pop();
+                    content += (content ? ' | ' : '') + '<a href="' + s.file + '" target="_blank" style="color:#60a5fa;">📎 ' + fileName + '</a>';
+                }
+                if (!content) content = '<span style="color:rgba(255,255,255,0.3);">Empty</span>';
+                const date = new Date(s.submitted_at).toLocaleDateString();
+                return `<tr>
+                    <td style="font-weight:500;color:white;">${workerName}</td>
+                    <td>${collTitle}</td>
+                    <td><span class="task-type collection" style="display:inline-block;margin:0;">${dataType}</span></td>
+                    <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${content}</td>
+                    <td><span class="badge badge-${s.status}">${s.status}</span></td>
+                    <td>${date}</td>
+                </tr>`;
+            }).join('');
         }
 
         async function deleteItem(url) {
@@ -633,6 +684,7 @@
         // Init
         loadOverview();
         loadCollections();
+        loadSubmissions();
         loadAnnotations();
         loadRLHF();
         loadSynthetic();

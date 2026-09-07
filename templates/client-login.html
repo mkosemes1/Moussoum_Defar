@@ -259,7 +259,7 @@
                 localStorage.setItem('clientToken', result.tokens.access);
                 localStorage.setItem('clientData', JSON.stringify(result.client));
 
-                window.location.href = '/templates/evaluation.html';
+                window.location.href = '/templates/client-dashboard.html';
 
             } catch (error) {
                 errorDiv.textContent = error.message;

@@ -304,7 +304,8 @@
         }
 
         async function loadCollections() {
-            const data = await api('/api/v1/workers/collections/');
+            const res = await api('/api/v1/workers/collections/');
+            const data = res?.results || res || [];
             if (!data || data.length === 0) {
                 document.getElementById('collectionsGrid').innerHTML = '<div class="empty"><div class="empty-icon">📦</div><div class="empty-title">No collections available</div><div class="empty-desc">Check back later for new data collection tasks.</div></div>';
                 document.getElementById('overviewTasks').innerHTML = '';
@@ -328,7 +329,8 @@
         }
 
         async function loadAnnotations() {
-            const data = await api('/api/v1/workers/annotations/');
+            const res = await api('/api/v1/workers/annotations/');
+            const data = (res && res.results) ? res.results : (res || []);
             if (!data || data.length === 0) {
                 document.getElementById('annotationsGrid').innerHTML = '<div class="empty"><div class="empty-icon">🏷️</div><div class="empty-title">No annotation tasks</div><div class="empty-desc">New tasks are added daily. Check back soon!</div></div>';
                 return;
@@ -349,7 +351,8 @@
         }
 
         async function loadRLHF() {
-            const data = await api('/api/v1/workers/rlhf/');
+            const res = await api('/api/v1/workers/rlhf/');
+            const data = (res && res.results) ? res.results : (res || []);
             if (!data || data.length === 0) {
                 document.getElementById('rlhfGrid').innerHTML = '<div class="empty"><div class="empty-icon">🤖</div><div class="empty-title">No RLHF tasks</div><div class="empty-desc">Help improve AI by rating responses. New tasks coming soon!</div></div>';
                 return;
@@ -376,7 +379,8 @@
                 document.getElementById('pEarned').textContent = '$' + parseFloat(earnings.total_earned || 0).toFixed(2);
                 document.getElementById('pPending').textContent = earnings.pending_payments || 0;
             }
-            const data = await api('/api/v1/workers/payments/');
+            const res2 = await api('/api/v1/workers/payments/');
+            const data = (res2 && res2.results) ? res2.results : (res2 || []);
             if (!data || data.length === 0) {
                 document.getElementById('paymentsTable').innerHTML = '<tr><td colspan="4" style="text-align:center;color:rgba(255,255,255,0.4);">No payments yet</td></tr>';
                 return;
@@ -442,7 +446,8 @@
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             btn.classList.add('active');
             const url = type === 'all' ? '/api/v1/workers/annotations/' : '/api/v1/workers/annotations/?task_type=' + type;
-            const data = await api(url);
+            const res = await api(url);
+            const data = (res && res.results) ? res.results : (res || []);
             if (!data) return;
             document.getElementById('annotationsGrid').innerHTML = data.length === 0
                 ? '<div class="empty"><div class="empty-title">No tasks in this category</div></div>'

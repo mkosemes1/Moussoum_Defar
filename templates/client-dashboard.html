@@ -305,14 +305,15 @@
                 api('/api/v1/workers/rlhf/'),
                 api('/api/v1/workers/synthetic/'),
             ]);
-            document.getElementById('sCollections').textContent = (collections || []).length;
-            document.getElementById('sAnnotations').textContent = (annotations || []).length;
-            document.getElementById('sRLHF').textContent = (rlhf || []).length;
-            document.getElementById('sSynthetic').textContent = (synthetic || []).length;
+            document.getElementById('sCollections').textContent = (collections?.results || collections || []).length;
+            document.getElementById('sAnnotations').textContent = (annotations?.results || annotations || []).length;
+            document.getElementById('sRLHF').textContent = (rlhf?.results || rlhf || []).length;
+            document.getElementById('sSynthetic').textContent = (synthetic?.results || synthetic || []).length;
         }
 
         async function loadCollections() {
-            const data = await api('/api/v1/clients/data-collections/');
+            const res = await api('/api/v1/clients/data-collections/');
+            const data = res?.results || res || [];
             if (!data || data.length === 0) {
                 document.getElementById('collectionsTable').innerHTML = '<tr><td colspan="7" class="empty"><div class="empty-title">No collections</div></td></tr>';
                 return;
@@ -332,7 +333,8 @@
         }
 
         async function loadAnnotations() {
-            const data = await api('/api/v1/workers/annotations/');
+            const res = await api('/api/v1/workers/annotations/');
+            const data = res?.results || res || [];
             if (!data || data.length === 0) {
                 document.getElementById('annotationsTable').innerHTML = '<tr><td colspan="7" class="empty"><div class="empty-title">No annotation tasks</div></td></tr>';
                 return;
@@ -351,7 +353,8 @@
         }
 
         async function loadRLHF() {
-            const data = await api('/api/v1/workers/rlhf/');
+            const res = await api('/api/v1/workers/rlhf/');
+            const data = res?.results || res || [];
             if (!data || data.length === 0) {
                 document.getElementById('rlhfTable').innerHTML = '<tr><td colspan="7" class="empty"><div class="empty-title">No RLHF tasks</div></td></tr>';
                 return;
@@ -370,7 +373,8 @@
         }
 
         async function loadSynthetic() {
-            const data = await api('/api/v1/workers/synthetic/');
+            const res = await api('/api/v1/workers/synthetic/');
+            const data = res?.results || res || [];
             if (!data || data.length === 0) {
                 document.getElementById('syntheticTable').innerHTML = '<tr><td colspan="7" class="empty"><div class="empty-title">No synthetic jobs</div></td></tr>';
                 return;

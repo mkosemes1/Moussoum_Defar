@@ -245,6 +245,16 @@ class DataCollectionViewSet(viewsets.ModelViewSet):
         serializer = DataCollectionSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         collection = serializer.save()
+
+        from workers.models import Notification
+        Notification.objects.create(
+            user=request.user,
+            notification_type='collection_ready',
+            title='Collection Created',
+            message=f'Your data collection "{collection.title}" is now active and ready for workers.',
+            data={'collection_id': collection.id}
+        )
+
         return Response(
             DataCollectionSerializer(collection).data,
             status=status.HTTP_201_CREATED

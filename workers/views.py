@@ -194,6 +194,15 @@ class AnnotationTaskViewSet(viewsets.ModelViewSet):
         serializer = AnnotationTaskSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         task = serializer.save(created_by=request.user)
+
+        Notification.objects.create(
+            user=request.user,
+            notification_type='task_assigned',
+            title='Annotation Task Created',
+            message=f'New annotation task "{task.title}" is ready for workers.',
+            data={'task_id': task.id}
+        )
+
         return Response(AnnotationTaskSerializer(task).data, status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=['post'])
@@ -270,6 +279,15 @@ class RLHFTaskViewSet(viewsets.ModelViewSet):
         serializer = RLHFTaskSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         task = serializer.save(created_by=request.user)
+
+        Notification.objects.create(
+            user=request.user,
+            notification_type='task_assigned',
+            title='RLHF Task Created',
+            message=f'New RLHF task "{task.title}" is ready for workers.',
+            data={'task_id': task.id}
+        )
+
         return Response(RLHFTaskSerializer(task).data, status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=['post'])
@@ -332,6 +350,15 @@ class SyntheticDataJobViewSet(viewsets.ModelViewSet):
         serializer = SyntheticDataJobSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         job = serializer.save(created_by=request.user)
+
+        Notification.objects.create(
+            user=request.user,
+            notification_type='task_assigned',
+            title='Synthetic Data Job Created',
+            message=f'Synthetic data generation "{job.title}" has been started.',
+            data={'job_id': job.id}
+        )
+
         return Response(SyntheticDataJobSerializer(job).data, status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=['get'])

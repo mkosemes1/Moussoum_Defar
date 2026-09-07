@@ -100,6 +100,28 @@
         .notification-dot { width: 8px; height: 8px; background: #ef4444; border-radius: 50%; position: absolute; top: -2px; right: -2px; }
         .notif-btn { position: relative; }
 
+        /* Notification Panel */
+        .notif-wrapper { position: relative; }
+        .notif-bell { width: 40px; height: 40px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; position: relative; font-size: 18px; }
+        .notif-bell:hover { background: rgba(255,255,255,0.1); }
+        .notif-badge { position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; background: #ef4444; color: white; border-radius: 9px; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 4px; display: none; }
+        .notif-badge.show { display: flex; }
+        .notif-panel { position: absolute; top: calc(100% + 8px); right: 0; width: 380px; max-height: 480px; background: #1e293b; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); display: none; z-index: 100; overflow: hidden; }
+        .notif-panel.open { display: block; }
+        .notif-panel-header { padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; }
+        .notif-panel-header h3 { font-size: 15px; font-weight: 600; }
+        .notif-mark-read { background: none; border: none; color: #10b981; font-size: 12px; font-weight: 500; cursor: pointer; font-family: 'Inter', sans-serif; }
+        .notif-mark-read:hover { text-decoration: underline; }
+        .notif-list { max-height: 400px; overflow-y: auto; }
+        .notif-item { padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.04); cursor: pointer; transition: background 0.15s; }
+        .notif-item:hover { background: rgba(255,255,255,0.03); }
+        .notif-item.unread { background: rgba(16, 185, 129, 0.05); border-left: 3px solid #10b981; }
+        .notif-item-title { font-size: 13px; font-weight: 600; color: white; margin-bottom: 4px; }
+        .notif-item-msg { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+        .notif-item-time { font-size: 11px; color: rgba(255,255,255,0.3); margin-top: 6px; }
+        .notif-empty { text-align: center; padding: 40px 20px; color: rgba(255,255,255,0.4); font-size: 14px; }
+        .notif-icon { display: inline-block; margin-right: 6px; }
+
         @media (max-width: 1024px) {
             .sidebar { display: none; }
             .main { margin-left: 0; }
@@ -139,6 +161,13 @@
             <div class="section active" id="sec-overview">
                 <div class="page-header">
                     <div><h1 class="page-title">Welcome back!</h1><p class="page-subtitle">Here's your earnings overview</p></div>
+                    <div class="notif-wrapper" id="notifWrapper">
+                        <div class="notif-bell" onclick="toggleNotifPanel()">🔔<div class="notif-badge" id="notifBadge">0</div></div>
+                        <div class="notif-panel" id="notifPanel">
+                            <div class="notif-panel-header"><h3>Notifications</h3><button class="notif-mark-read" onclick="markAllRead()">Mark all read</button></div>
+                            <div class="notif-list" id="notifList"><div class="notif-empty">No notifications yet</div></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="stats-row">
                     <div class="stat-card"><div class="stat-card-label">Balance</div><div class="stat-card-value green" id="sBalance">$0.00</div></div>
@@ -440,6 +469,69 @@
             else { const d = await res.json(); alert('Error: ' + (d.error || 'Failed')); }
         }
 
+        // === NOTIFICATIONS ===
+        const NOTIF_ICONS = { task_assigned: '📋', task_completed: '✅', payment_received: '💰', payment_processing: '⏳', level_up: '🎉', evaluation_complete: '🧪', collection_ready: '📦', system: 'ℹ️' };
+
+        async function loadNotifications() {
+            const res = await api('/api/v1/workers/notifications/');
+            if (!res) return;
+            const data = res.results || res;
+            if (!data || data.length === 0) {
+                document.getElementById('notifList').innerHTML = '<div class="notif-empty">No notifications yet</div>';
+                return;
+            }
+            document.getElementById('notifList').innerHTML = data.map(n => `
+                <div class="notif-item ${n.is_read ? '' : 'unread'}" onclick="markNotifRead(${n.id}, this)">
+                    <div class="notif-item-title"><span class="notif-icon">${NOTIF_ICONS[n.notification_type] || 'ℹ️'}</span>${n.title}</div>
+                    <div class="notif-item-msg">${n.message}</div>
+                    <div class="notif-item-time">${timeAgo(n.created_at)}</div>
+                </div>
+            `).join('');
+            updateNotifBadge(data);
+        }
+
+        function updateNotifBadge(notifs) {
+            const unread = notifs.filter(n => !n.is_read).length;
+            const badge = document.getElementById('notifBadge');
+            badge.textContent = unread;
+            badge.classList.toggle('show', unread > 0);
+        }
+
+        function toggleNotifPanel() {
+            const panel = document.getElementById('notifPanel');
+            panel.classList.toggle('open');
+        }
+
+        async function markNotifRead(id, el) {
+            el.classList.remove('unread');
+            await api('/api/v1/workers/notifications/' + id + '/', { method: 'PATCH', body: JSON.stringify({ is_read: true }) });
+            const badge = document.getElementById('notifBadge');
+            const current = parseInt(badge.textContent) - 1;
+            badge.textContent = Math.max(0, current);
+            if (current <= 0) badge.classList.remove('show');
+        }
+
+        async function markAllRead() {
+            await api('/api/v1/workers/notifications/mark_all_read/', { method: 'POST' });
+            document.querySelectorAll('.notif-item.unread').forEach(el => el.classList.remove('unread'));
+            document.getElementById('notifBadge').textContent = '0';
+            document.getElementById('notifBadge').classList.remove('show');
+        }
+
+        function timeAgo(dateStr) {
+            const diff = (Date.now() - new Date(dateStr).getTime()) / 1000;
+            if (diff < 60) return 'Just now';
+            if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+            if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+            return Math.floor(diff / 86400) + 'd ago';
+        }
+
+        // Close notif panel on outside click
+        document.addEventListener('click', function(e) {
+            const w = document.getElementById('notifWrapper');
+            if (w && !w.contains(e.target)) document.getElementById('notifPanel').classList.remove('open');
+        });
+
         // Init
         loadOverview();
         loadCollections();
@@ -447,6 +539,8 @@
         loadRLHF();
         loadPayments();
         loadLeaderboard();
+        loadNotifications();
+        setInterval(loadNotifications, 30000);
     </script>
 </body>
 </html>

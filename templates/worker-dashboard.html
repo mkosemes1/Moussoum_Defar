@@ -146,6 +146,7 @@
                 <a class="sidebar-link" onclick="showSection('leaderboard')"><span class="icon">🏆</span> Leaderboard</a>
             </nav>
             <div class="sidebar-footer">
+                <a onclick="logout()" class="sidebar-link" style="margin-bottom:12px;color:rgba(255,100,100,0.6);cursor:pointer;"><span class="icon">🚪</span> Logout</a>
                 <div class="sidebar-user">
                     <div class="user-avatar" id="userInitial">W</div>
                     <div class="user-info">
@@ -536,6 +537,12 @@
             const w = document.getElementById('notifWrapper');
             if (w && !w.contains(e.target)) document.getElementById('notifPanel').classList.remove('open');
         });
+
+        function logout() {
+            localStorage.removeItem('workerToken');
+            localStorage.removeItem('workerData');
+            window.location.href = '/templates/worker-login.html';
+        }
 
         // Init
         loadOverview();

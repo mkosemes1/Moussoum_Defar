@@ -160,6 +160,7 @@
                 <a href="/api/docs/" class="sidebar-link"><span class="icon">📖</span> API Docs</a>
             </nav>
             <div class="sidebar-footer">
+                <a onclick="logout()" class="sidebar-link" style="margin-bottom:12px;color:rgba(255,100,100,0.6);cursor:pointer;"><span class="icon">🚪</span> Logout</a>
                 <div class="sidebar-user">
                     <div class="user-avatar" id="userInitial">C</div>
                     <div class="user-info">
@@ -622,6 +623,12 @@
             const w = document.getElementById('notifWrapper');
             if (w && !w.contains(e.target)) document.getElementById('notifPanel').classList.remove('open');
         });
+
+        function logout() {
+            localStorage.removeItem('clientToken');
+            localStorage.removeItem('clientData');
+            window.location.href = '/templates/client-login.html';
+        }
 
         // Init
         loadOverview();
